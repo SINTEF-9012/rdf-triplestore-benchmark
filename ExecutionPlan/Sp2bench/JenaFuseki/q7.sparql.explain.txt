@@ -1,0 +1,120 @@
+Picked up _JAVA_OPTIONS: -Djava.io.tmpdir=/data/java/tmp
+12:16:43 INFO  exec            :: QUERY
+  PREFIX  dcterms: <http://purl.org/dc/terms/>
+  PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  foaf: <http://xmlns.com/foaf/0.1/>
+  PREFIX  dc:   <http://purl.org/dc/elements/1.1/>
+  
+  SELECT DISTINCT  ?title
+  WHERE
+    { ?class  rdfs:subClassOf     foaf:Document .
+      ?doc    rdf:type            ?class ;
+              dc:title            ?title .
+      ?bag2   ?member2            ?doc .
+      ?doc2   dcterms:references  ?bag2
+      OPTIONAL
+        { ?class3  rdfs:subClassOf     foaf:Document .
+          ?doc3    rdf:type            ?class3 ;
+                   dcterms:references  ?bag3 .
+          ?bag3    ?member3            ?doc
+          OPTIONAL
+            { ?class4  rdfs:subClassOf     foaf:Document .
+              ?doc4    rdf:type            ?class4 ;
+                       dcterms:references  ?bag4 .
+              ?bag4    ?member4            ?doc3
+            }
+          FILTER ( ! bound(?doc4) )
+        }
+      FILTER ( ! bound(?doc3) )
+    }
+12:16:43 INFO  exec            :: ALGEBRA
+  (distinct
+    (project (?title)
+      (filter (! (bound ?doc3))
+        (conditional
+          (quadpattern
+            (quad <urn:x-arq:DefaultGraphNode> ?class <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://xmlns.com/foaf/0.1/Document>)
+            (quad <urn:x-arq:DefaultGraphNode> ?doc <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?class)
+            (quad <urn:x-arq:DefaultGraphNode> ?doc <http://purl.org/dc/elements/1.1/title> ?title)
+            (quad <urn:x-arq:DefaultGraphNode> ?bag2 ?member2 ?doc)
+            (quad <urn:x-arq:DefaultGraphNode> ?doc2 <http://purl.org/dc/terms/references> ?bag2)
+          )
+          (filter (! (bound ?doc4))
+            (conditional
+              (quadpattern
+                (quad <urn:x-arq:DefaultGraphNode> ?class3 <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://xmlns.com/foaf/0.1/Document>)
+                (quad <urn:x-arq:DefaultGraphNode> ?doc3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?class3)
+                (quad <urn:x-arq:DefaultGraphNode> ?doc3 <http://purl.org/dc/terms/references> ?bag3)
+                (quad <urn:x-arq:DefaultGraphNode> ?bag3 ?member3 ?doc)
+              )
+              (quadpattern
+                (quad <urn:x-arq:DefaultGraphNode> ?class4 <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://xmlns.com/foaf/0.1/Document>)
+                (quad <urn:x-arq:DefaultGraphNode> ?doc4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?class4)
+                (quad <urn:x-arq:DefaultGraphNode> ?doc4 <http://purl.org/dc/terms/references> ?bag4)
+                (quad <urn:x-arq:DefaultGraphNode> ?bag4 ?member4 ?doc3)
+              )))))))
+12:16:43 INFO  exec            :: TDB2
+  (distinct
+    (project (?title)
+      (filter (! (bound ?doc3))
+        (conditional
+          (quadpattern
+            (quad <urn:x-arq:DefaultGraphNode> ?class <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://xmlns.com/foaf/0.1/Document>)
+            (quad <urn:x-arq:DefaultGraphNode> ?doc <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?class)
+            (quad <urn:x-arq:DefaultGraphNode> ?doc <http://purl.org/dc/elements/1.1/title> ?title)
+            (quad <urn:x-arq:DefaultGraphNode> ?bag2 ?member2 ?doc)
+            (quad <urn:x-arq:DefaultGraphNode> ?doc2 <http://purl.org/dc/terms/references> ?bag2)
+          )
+          (filter (! (bound ?doc4))
+            (conditional
+              (quadpattern
+                (quad <urn:x-arq:DefaultGraphNode> ?class3 <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://xmlns.com/foaf/0.1/Document>)
+                (quad <urn:x-arq:DefaultGraphNode> ?doc3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?class3)
+                (quad <urn:x-arq:DefaultGraphNode> ?doc3 <http://purl.org/dc/terms/references> ?bag3)
+                (quad <urn:x-arq:DefaultGraphNode> ?bag3 ?member3 ?doc)
+              )
+              (quadpattern
+                (quad <urn:x-arq:DefaultGraphNode> ?class4 <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://xmlns.com/foaf/0.1/Document>)
+                (quad <urn:x-arq:DefaultGraphNode> ?doc4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?class4)
+                (quad <urn:x-arq:DefaultGraphNode> ?doc4 <http://purl.org/dc/terms/references> ?bag4)
+                (quad <urn:x-arq:DefaultGraphNode> ?bag4 ?member4 ?doc3)
+              )))))))
+12:16:43 INFO  exec            :: Execute
+  ?class rdfs:subClassOf <http://xmlns.com/foaf/0.1/Document>
+  ?doc rdf:type ?class
+  ?doc <http://purl.org/dc/elements/1.1/title> ?title
+  ?bag2 ?member2 ?doc
+  ?doc2 <http://purl.org/dc/terms/references> ?bag2
+12:16:55 INFO  exec            :: TDB2
+  (filter (! (bound ?doc4))
+    (conditional
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> ?class3 <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://xmlns.com/foaf/0.1/Document>)
+        (quad <urn:x-arq:DefaultGraphNode> ?doc3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?class3)
+        (quad <urn:x-arq:DefaultGraphNode> ?doc3 <http://purl.org/dc/terms/references> ?bag3)
+        (quad <urn:x-arq:DefaultGraphNode> ?bag3 ?member3 <http://localhost/publications/articles/Journal1/1949/Article16>)
+      )
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> ?class4 <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://xmlns.com/foaf/0.1/Document>)
+        (quad <urn:x-arq:DefaultGraphNode> ?doc4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?class4)
+        (quad <urn:x-arq:DefaultGraphNode> ?doc4 <http://purl.org/dc/terms/references> ?bag4)
+        (quad <urn:x-arq:DefaultGraphNode> ?bag4 ?member4 ?doc3)
+      )))
+12:16:55 INFO  exec            :: Execute
+  ?class3 rdfs:subClassOf <http://xmlns.com/foaf/0.1/Document>
+  ?doc3 rdf:type ?class3
+  ?doc3 <http://purl.org/dc/terms/references> ?bag3
+  ?bag3 ?member3 <http://localhost/publications/articles/Journal1/1949/Article16>
+12:16:59 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> ?class4 <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://xmlns.com/foaf/0.1/Document>)
+    (quad <urn:x-arq:DefaultGraphNode> ?doc4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?class4)
+    (quad <urn:x-arq:DefaultGraphNode> ?doc4 <http://purl.org/dc/terms/references> ?bag4)
+    (quad <urn:x-arq:DefaultGraphNode> ?bag4 ?member4 <http://localhost/publications/articles/Journal2/1954/Article40>)
+  )
+12:16:59 INFO  exec            :: Execute
+  ?class4 rdfs:subClassOf <http://xmlns.com/foaf/0.1/Document>
+  ?doc4 rdf:type ?class4
+  ?doc4 <http://purl.org/dc/terms/references> ?bag4
+  ?bag4 ?member4 <http://localhost/publications/articles/Journal2/1954/Article40>

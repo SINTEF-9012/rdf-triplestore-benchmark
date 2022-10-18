@@ -1,0 +1,1 @@
+Variable used when already in-scope: ?image in ((AGG ?.0 SAMPLE(?image)) AS ?image)

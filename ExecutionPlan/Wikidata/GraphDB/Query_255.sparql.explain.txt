@@ -1,0 +1,37 @@
+plan
+"PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT (SAMPLE(?father) AS ?father) ?fatherLabel (SAMPLE(?picture) AS ?picture) (COUNT(?father) AS ?children)
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?father wdt:P39 wd:Q19546 . # 	Collection size: 269.0	Predicate collection size: 1159676.0	Unique subjects: 696725.0	Unique objects: 112541.0	Current complexity: 269.0
+    ?father wdt:P31 wd:Q5 . # 	Collection size: 9398589.0	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 269.0
+    ?subj wdt:P22 ?father . # 	Collection size: 897413.0	Predicate collection size: 897413.0	Unique subjects: 895262.0	Unique objects: 494727.0	Current complexity: 487.954158556133
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 487.954158556133
+  
+  OPTIONAL
+  {
+    
+    { # ----- Begin optimization group 2 -----
+      
+      ?father wdt:P18 ?picture . # 	Collection size: 4084993.0	Predicate collection size: 4084993.0	Unique subjects: 3952654.0	Unique objects: 3821255.0	Current complexity: 1.0334810484297385
+      
+    } # ----- End optimization group 2 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 1.0334810484297385
+    
+  }
+}
+GROUP BY ?fatherLabel
+ORDER BY DESC(?children)
+LIMIT 50
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

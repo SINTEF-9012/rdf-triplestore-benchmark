@@ -1,0 +1,76 @@
+12:35:25 INFO  exec            :: QUERY
+  PREFIX  schema: <http://schema.org/>
+  PREFIX  pq:   <http://www.wikidata.org/prop/qualifier/>
+  PREFIX  bd:   <http://www.bigdata.com/rdf#>
+  PREFIX  pr:   <http://www.wikidata.org/prop/reference/>
+  PREFIX  ps:   <http://www.wikidata.org/prop/statement/>
+  PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
+  PREFIX  geof: <http://www.opengis.net/def/geosparql/function/>
+  PREFIX  wdt:  <http://www.wikidata.org/prop/direct/>
+  PREFIX  wds:  <http://www.wikidata.org/entity/statement/>
+  PREFIX  wdv:  <http://www.wikidata.org/value/>
+  PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>
+  PREFIX  skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX  psn:  <http://www.wikidata.org/prop/statement/value-normalized/>
+  PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX  pqn:  <http://www.wikidata.org/prop/qualifier/value-normalized/>
+  PREFIX  wd:   <http://www.wikidata.org/entity/>
+  PREFIX  geo:  <http://www.opengis.net/ont/geosparql#>
+  PREFIX  psv:  <http://www.wikidata.org/prop/statement/value/>
+  PREFIX  dct:  <http://purl.org/dc/terms/>
+  PREFIX  pqv:  <http://www.wikidata.org/prop/qualifier/value/>
+  PREFIX  ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+  PREFIX  wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+  PREFIX  wdref: <http://www.wikidata.org/reference/>
+  PREFIX  prov: <http://www.w3.org/ns/prov#>
+  PREFIX  cc:   <http://creativecommons.org/ns#>
+  PREFIX  wikibase: <http://wikiba.se/ontology#>
+  PREFIX  prn:  <http://www.wikidata.org/prop/reference/value-normalized/>
+  PREFIX  p:    <http://www.wikidata.org/prop/>
+  PREFIX  wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+  PREFIX  prv:  <http://www.wikidata.org/prop/reference/value/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  hint: <http://www.bigdata.com/queryHints#>
+  PREFIX  wdno: <http://www.wikidata.org/prop/novalue/>
+  
+  SELECT  ?propertyLabel ?propertyDescription (COUNT(?propertyclaim) AS ?count)
+  WHERE
+    { ?item     wdt:P31               wd:Q3305213 .
+      ?property  wikibase:propertyType  wikibase:ExternalId ;
+                wdt:P31               wd:Q44847669 ;
+                wikibase:claim        ?propertyclaim .
+      ?item     ?propertyclaim        _:b0
+    }
+  GROUP BY ?propertyLabel ?propertyDescription
+  ORDER BY DESC(?count)
+  LIMIT   100
+12:35:25 INFO  exec            :: ALGEBRA
+  (project (?propertyLabel ?propertyDescription ?count)
+    (top (100 (desc ?count))
+      (extend ((?count ?.0))
+        (group (?propertyLabel ?propertyDescription) ((?.0 (count ?propertyclaim)))
+          (quadpattern
+            (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q3305213>)
+            (quad <urn:x-arq:DefaultGraphNode> ?property <http://wikiba.se/ontology#propertyType> <http://wikiba.se/ontology#ExternalId>)
+            (quad <urn:x-arq:DefaultGraphNode> ?property <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q44847669>)
+            (quad <urn:x-arq:DefaultGraphNode> ?property <http://wikiba.se/ontology#claim> ?propertyclaim)
+            (quad <urn:x-arq:DefaultGraphNode> ?item ?propertyclaim ??0)
+          )))))
+12:35:25 INFO  exec            :: TDB2
+  (project (?propertyLabel ?propertyDescription ?count)
+    (top (100 (desc ?count))
+      (extend ((?count ?.0))
+        (group (?propertyLabel ?propertyDescription) ((?.0 (count ?propertyclaim)))
+          (quadpattern
+            (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q3305213>)
+            (quad <urn:x-arq:DefaultGraphNode> ?property <http://wikiba.se/ontology#propertyType> <http://wikiba.se/ontology#ExternalId>)
+            (quad <urn:x-arq:DefaultGraphNode> ?property <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q44847669>)
+            (quad <urn:x-arq:DefaultGraphNode> ?property <http://wikiba.se/ontology#claim> ?propertyclaim)
+            (quad <urn:x-arq:DefaultGraphNode> ?item ?propertyclaim ??0)
+          )))))
+12:35:25 INFO  exec            :: Execute
+  ?item <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q3305213>
+  ?property <http://wikiba.se/ontology#propertyType> <http://wikiba.se/ontology#ExternalId>
+  ?property <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q44847669>
+  ?property <http://wikiba.se/ontology#claim> ?propertyclaim
+  ?item ?propertyclaim ??0

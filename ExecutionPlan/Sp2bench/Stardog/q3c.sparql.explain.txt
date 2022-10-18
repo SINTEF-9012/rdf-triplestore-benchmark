@@ -1,0 +1,33 @@
+Explaining Query:
+
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX swrc:  <http://swrc.ontoware.org/ontology#>
+PREFIX bench: <http://localhost/vocabulary/bench/>
+
+SELECT ?article
+WHERE {
+  ?article rdf:type bench:Article .
+  ?article ?property ?value
+  FILTER (?property=swrc:isbn)
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 84 ms and returned 0 result(s)
+Pre-execution time: 2 ms (2.4%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Projection(?article) [#1.7M], results: 0, wall time: 0 ms (0.0%)
+`─ Bind(<http://swrc.ontoware.org/ontology#isbn> AS ?property) sortedBy=?property [#1.7M], results: 0, wall time: 0 ms (0.0%)
+   `─ MergeJoin(?article) [#1.7M], results: 0, wall time: 5 ms (6.0%)
+      +─ Scan[POSC](?article, rdf:type, <http://localhost/vocabulary/bench/Article>) [#1.9M], results: 27K (with gaps), wall time: 34 ms (40.5%)
+      `─ Scan[PSOC](?article, <http://swrc.ontoware.org/ontology#isbn>, ?value) [#9.1M], results: 27K (with gaps), wall time: 42 ms (50.0%)
+

@@ -1,0 +1,83 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT ?lang (COUNT(DISTINCT ?article) AS ?count) WHERE {
+  hint:Query hint:optimizer "None".
+  ?item wdt:P1367 ?yp_id .
+  ?article schema:about ?item . # find articles about things with a BBC 'Your paintings' artist identifier
+  ?article schema:isPartOf / wikibase:wikiGroup "wikipedia" . # only Wikipedias articles
+  hint:Prior hint:gearing "forward" .
+  # This hint says to search the property chain above from left to right ("forward"),
+  # i.e. it is checked if each previously found value for ?article is linked to a Wikipedia.
+  # The default ("reverse") would be to search it from right to left, i.e. find all Wikipedia
+  # articles first, and then select the intersection with the previously found values of ?article.
+  ?article schema:inLanguage ?lang .
+} GROUP BY ?lang
+ORDER BY DESC (?count)
+
+The Query Plan:
+
+Profiling results:
+Query executed in 12878 ms and returned 1 result(s)
+Total used memory: 11M
+Pre-execution time: 25 ms (0.2%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+OrderBy(DESC(?count)) [#1], memory: 256K (2.3%), results: 1, wall time: 0 ms (0.0%)
+`─ Projection(?lang, ?count) [#1], results: 1, wall time: 0 ms (0.0%)
+   `─ Group(by=[?lang] aggregates=[(COUNT(DISTINCT ?article) AS ?count)]) [#1], results: 1, wall time: 0 ms (0.0%)
+      `─ NestedLoopJoin(_) [#1], results: 0, wall time: 1 ms (0.0%)
+         +─ NestedLoopJoin(_) [#1], results: 0, wall time: 18 ms (0.1%)
+         │  +─ DirectHashJoin(?article) [#1], results: 69K, wall time: 70 ms (0.5%)
+         │  │  +─ MergeJoin(?ruxlpbym) [#1], results: 69K, wall time: 25 ms (0.2%)
+         │  │  │  +─ Scan[POSC](?ruxlpbym, <http://wikiba.se/ontology#wikiGroup>, "wikipedia") [#1], results: 265 (with gaps), wall time: 0 ms (0.0%)
+         │  │  │  `─ Sort(?ruxlpbym) [#1], memory: 5.1M (47.7%), results: 69K (with gaps), wall time: 137 ms (1.1%)
+         │  │  │     `─ BindJoin(?item) [#1], results: 80K, wall time: 8739 ms (67.9%)
+         │  │  │        +─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P1367>, ?yp_id) [#1], results: 24K, wall time: 25 ms (0.2%)
+         │  │  │        `─ MergeJoin(?article) [#80.4M]
+         │  │  │           +─ Scan[PSOC](?article, <http://schema.org/isPartOf>, ?ruxlpbym) [#80.3M]
+         │  │  │           `─ Scan[PSOC](?article, <http://schema.org/about>, ?item) [#179.1M]
+         │  │  `─ Scan[PSOC](?article, <http://schema.org/inLanguage>, ?lang) [#80.3M], results: 139K (with gaps), wall time: 3726 ms (28.9%)
+         │  `─ Scan[SPOC](<http://www.bigdata.com/queryHints#Prior>, <http://www.bigdata.com/queryHints#gearing>, "forward") [#1], results: 0, wall time: 111 ms (0.9%)
+         `─ Scan[SPOC](<http://www.bigdata.com/queryHints#Query>, <http://www.bigdata.com/queryHints#optimizer>, "None") [#1], results: 0, wall time: 0 ms (0.0%)
+

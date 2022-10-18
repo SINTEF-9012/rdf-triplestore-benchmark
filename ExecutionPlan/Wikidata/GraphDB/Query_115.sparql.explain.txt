@@ -1,0 +1,31 @@
+plan
+"PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+
+SELECT ?elevation ?unit ?unitLabel ?item ?itemLabel ?itemDescription ?coord
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?p_triples psv:P2044 ?psv_triples . # 	Collection size: 1342668.0	Predicate collection size: 1342668.0	Unique subjects: 1342668.0	Unique objects: 36914.0	Current complexity: 1342668.0
+    ?psv_triples wikibase:quantityAmount ?elevation . # 	Collection size: 5.2760141E7	Predicate collection size: 5.2760141E7	Unique subjects: 5.2760141E7	Unique objects: 3.2844397E7	Current complexity: 1342668.0
+    FILTER (?elevation > 8000)
+    ?psv_triples wikibase:quantityUnit ?unit . # 	Collection size: 5.2760141E7	Predicate collection size: 5.2760141E7	Unique subjects: 5.2760141E7	Unique objects: 2483.0	Current complexity: 1342668.0
+    ?item p:P2044 ?p_triples . # 	Collection size: 1342697.0	Predicate collection size: 1342697.0	Unique subjects: 1325156.0	Unique objects: 1342697.0	Current complexity: 1342668.0
+    ?item wdt:P625 ?coord . # 	Collection size: 8827101.0	Predicate collection size: 8827101.0	Unique subjects: 8669631.0	Unique objects: 8596918.0	Current complexity: 1367055.419713711
+    ?p_triples rdf:type wikibase:BestRank . # 	Collection size: 1.312775988E9	Predicate collection size: 3.088670173E9	Unique subjects: 1.775527553E9	Unique objects: 1214.0	Current complexity: 1367055.419713711
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 1367055.419713711
+  
+}
+ORDER BY DESC(?elevation)
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

@@ -1,0 +1,100 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT DISTINCT ?lang ?name WHERE {
+  ?article schema:about wd:Q5 ;
+              schema:inLanguage ?lang ;
+              schema:name ?name ;
+              schema:isPartOf [ wikibase:wikiGroup "wikipedia" ] .
+  FILTER(?lang in ('en', 'uz', 'ru', 'ko')) .
+  FILTER (!CONTAINS(?name, ':')) .
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 368762 ms and returned 4 result(s)
+Total used memory: 1.3G
+Pre-execution time: 1705 ms (0.5%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Distinct [#1], memory: 224K (0.0%), results: 4, wall time: 0 ms (0.0%)
+`─ Projection(?lang, ?name) [#3], results: 4, wall time: 0 ms (0.0%)
+   `─ MergeJoin(?article) [#3], results: 4, wall time: 1 ms (0.0%)
+      +─ Scan[PSOC](?article, <http://schema.org/isPartOf>, ?_anon_1) [#80.3M], results: 9 (with gaps), wall time: 4 ms (0.0%)
+      `─ Filter(!(CONTAINS(?name, ":"))) [#3], results: 4 (with gaps), wall time: 1 ms (0.0%)
+         `─ MergeJoin(?article) [#4], results: 4 (with gaps), wall time: 1 ms (0.0%)
+            +─ MergeJoin(?article) [#25], results: 9 (with gaps), wall time: 1 ms (0.0%)
+            │  +─ Scan[POSC](?article, <http://schema.org/about>, <http://www.wikidata.org/entity/Q5>) [#7], results: 10 (with gaps), wall time: 0 ms (0.0%)
+            │  `─ Scan[PSOC](?article, <http://schema.org/name>, ?name) [#667.0M], results: 9 (with gaps), wall time: 6 ms (0.0%)
+            `─ Sort(?article) [#4], memory: 657M (50.0%), results: 6 (with gaps), wall time: 11796 ms (3.2%)
+               `─ MergeJoin(?_anon_1) [#4], results: 12.3M, wall time: 2756 ms (0.7%)
+                  +─ Scan[POSC](?_anon_1, <http://wikiba.se/ontology#wikiGroup>, "wikipedia") [#1], results: 4 (with gaps), wall time: 2 ms (0.0%)
+                  `─ Union [#4], results: 12.3M (with gaps), wall time: 1965 ms (0.5%)
+                     +─ Union [#3], results: 11.4M (with gaps), wall time: 1641 ms (0.4%)
+                     │  +─ Union [#2], results: 9.1M (with gaps), wall time: 1221 ms (0.3%)
+                     │  │  +─ DirectHashJoin(?article) [#1], results: 8.9M (with gaps), wall time: 17855 ms (4.8%)
+                     │  │  │  +─ MergeJoin(?_anon_1) [#1], results: 72.2M, wall time: 17372 ms (4.7%)
+                     │  │  │  │  +─ Scan[POSC](?_anon_1, <http://wikiba.se/ontology#wikiGroup>, "wikipedia") [#1], results: 325 (with gaps), wall time: 1 ms (0.0%)
+                     │  │  │  │  `─ Scan[POSC](?article, <http://schema.org/isPartOf>, ?_anon_1) [#80.3M], results: 72.2M (with gaps), wall time: 30368 ms (8.2%)
+                     │  │  │  `─ Bind("en" AS ?lang) sortedBy=?article [#14.1M], results: 81.1M (with gaps), wall time: 16033 ms (4.3%)
+                     │  │  │     `─ Scan[POSC](?article, <http://schema.org/inLanguage>, "en") [#14.1M], results: 81.1M (with gaps), wall time: 96185 ms (26.1%)
+                     │  │  `─ BindJoin(?_anon_1) [#1], results: 158K (with gaps), wall time: 26520 ms (7.2%)
+                     │  │     +─ Scan[POSC](?_anon_1, <http://wikiba.se/ontology#wikiGroup>, "wikipedia") [#1], results: 325, wall time: 1 ms (0.0%)
+                     │  │     `─ MergeJoin(?article) [#167K]
+                     │  │        +─ Bind("uz" AS ?lang) sortedBy=?article [#159K]
+                     │  │        │  `─ Scan[POSC](?article, <http://schema.org/inLanguage>, "uz") [#159K]
+                     │  │        `─ Scan[PSOC](?article, <http://schema.org/isPartOf>, ?_anon_1) [#80.3M]
+                     │  `─ BindJoin(?_anon_1) [#1], results: 2.3M (with gaps), wall time: 87778 ms (23.8%)
+                     │     +─ Scan[POSC](?_anon_1, <http://wikiba.se/ontology#wikiGroup>, "wikipedia") [#1], results: 325, wall time: 1 ms (0.0%)
+                     │     `─ MergeJoin(?article) [#2.9M]
+                     │        +─ Bind("ru" AS ?lang) sortedBy=?article [#2.9M]
+                     │        │  `─ Scan[POSC](?article, <http://schema.org/inLanguage>, "ru") [#2.9M]
+                     │        `─ Scan[PSOC](?article, <http://schema.org/isPartOf>, ?_anon_1) [#80.3M]
+                     `─ BindJoin(?_anon_1) [#1], results: 893K (with gaps), wall time: 55543 ms (15.1%)
+                        +─ Scan[POSC](?_anon_1, <http://wikiba.se/ontology#wikiGroup>, "wikipedia") [#1], results: 325, wall time: 1 ms (0.0%)
+                        `─ MergeJoin(?article) [#909K]
+                           +─ Bind("ko" AS ?lang) sortedBy=?article [#908K]
+                           │  `─ Scan[POSC](?article, <http://schema.org/inLanguage>, "ko") [#908K]
+                           `─ Scan[PSOC](?article, <http://schema.org/isPartOf>, ?_anon_1) [#80.3M]
+

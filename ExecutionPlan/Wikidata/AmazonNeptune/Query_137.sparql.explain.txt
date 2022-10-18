@@ -1,0 +1,123 @@
+Query:
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+#defaultView:Map{"hide":["?atm","?geometry"], "layer": "?bankLabel"}
+
+PREFIX lgdo: <http://linkedgeodata.org/ontology/>
+PREFIX geom: <http://geovocab.org/geometry#>
+PREFIX bif: <bif:>
+
+SELECT ?atm ?geometry ?bank ?bankLabel WHERE {
+  hint:Query hint:optimizer "None".
+  
+#  SERVICE <http://linkedgeodata.org/sparql> {
+#    { ?atm a lgdo:Bank; lgdo:atm true. }
+#    UNION { ?atm a lgdo:Atm. }
+    
+#    ?atm geom:geometry [geo:asWKT ?geometry];
+#         lgdo:operator ?operator.
+#    FILTER(bif:st_intersects(?geometry, bif:st_point(11.5746898, 48.1479876), 5)) # 5 km around Munich
+#  }
+  
+  BIND(STRLANG(?operator, "de") as ?bankLabel) 
+  ?bank rdfs:label ?bankLabel.
+  
+  # bank is part of the Bankcard service network, either via an explicit statement or implicitly due to its legal form (unless explicitly excluded)
+  { ?bank wdt:P527 wd:Q806724. }
+  UNION { ?bank wdt:P1454 wd:Q5349747. }
+  MINUS { wd:Q806724 wdt:P3113 ?bank. }
+}
+
+╔════╤════════╤════════╤════════════════════╤═════════════════════════════════════════════════════════════════════════════╤═══════════╤══════════╤═══════════╤═══════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name               │ Arguments                                                                   │ Mode      │ Units In │ Units Out │ Ratio │ Time (ms) ║
+╠════╪════════╪════════╪════════════════════╪═════════════════════════════════════════════════════════════════════════════╪═══════════╪══════════╪═══════════╪═══════╪═══════════╣
+║ 0  │ 1      │ -      │ SolutionInjection  │ solutions=[{}]                                                              │ -         │ 0        │ 1         │ 0.00  │ 0         ║
+╟────┼────────┼────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 1  │ 2      │ -      │ PipelineJoin       │ pattern=distinct(hint:Query, hint:optimizer, "None"^^xsd:string)            │ -         │ 1        │ 0         │ 0.00  │ 0         ║
+║    │        │        │                    │ joinType=join                                                               │           │          │           │       │           ║
+║    │        │        │                    │ joinProjectionVars=[]                                                       │           │          │           │       │           ║
+║    │        │        │                    │ patternEstimate=0                                                           │           │          │           │       │           ║
+╟────┼────────┼────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 2  │ 3      │ 5      │ Copy               │ -                                                                           │ duplicate │ 0        │ 0         │ 0.00  │ 0         ║
+╟────┼────────┼────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 3  │ 4      │ -      │ Copy               │ -                                                                           │ forward   │ 0        │ 0         │ 0.00  │ 0         ║
+╟────┼────────┼────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 4  │ 7      │ -      │ PipelineJoin       │ pattern=distinct(?bank, wdt:P527, wd:Q806724)                               │ -         │ 0        │ 0         │ 0.00  │ 0         ║
+║    │        │        │                    │ joinType=join                                                               │           │          │           │       │           ║
+║    │        │        │                    │ joinProjectionVars=[?bank]                                                  │           │          │           │       │           ║
+║    │        │        │                    │ patternEstimate=1                                                           │           │          │           │       │           ║
+╟────┼────────┼────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 5  │ 6      │ -      │ Copy               │ -                                                                           │ forward   │ 0        │ 0         │ 0.00  │ 0         ║
+╟────┼────────┼────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 6  │ 7      │ -      │ PipelineJoin       │ pattern=distinct(?bank, wdt:P1454, wd:Q5349747)                             │ -         │ 0        │ 0         │ 0.00  │ 0         ║
+║    │        │        │                    │ joinType=join                                                               │           │          │           │       │           ║
+║    │        │        │                    │ joinProjectionVars=[?bank]                                                  │           │          │           │       │           ║
+║    │        │        │                    │ patternEstimate=779                                                         │           │          │           │       │           ║
+╟────┼────────┼────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 7  │ 8      │ -      │ Copy               │ -                                                                           │ forward   │ 0        │ 0         │ 0.00  │ 0         ║
+╟────┼────────┼────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 8  │ 9      │ 10     │ ConditionalRouting │ condition=needsMaterialization(STRLANG(?_internalVar2, "de"^^xsd:string))   │ -         │ 0        │ 0         │ 0.00  │ 0         ║
+╟────┼────────┼────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 9  │ 10     │ -      │ TermResolution     │ vars=[?_internalVar2]                                                       │ id2value  │ 0        │ 0         │ 0.00  │ 0         ║
+╟────┼────────┼────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 10 │ 11     │ -      │ Filter             │ condition=BIND(STRLANG(?_internalVar2, "de"^^xsd:string) AS ?_internalVar1) │ -         │ 0        │ 0         │ 0.00  │ 0         ║
+╟────┼────────┼────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 11 │ 12     │ -      │ TermResolution     │ vars=[?_internalVar1]                                                       │ value2id  │ 0        │ 0         │ 0.00  │ 0         ║
+╟────┼────────┼────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 12 │ 13     │ -      │ VariableAlignment  │ sourceVar=?_internalVar1                                                    │ -         │ 0        │ 0         │ 0.00  │ 0         ║
+║    │        │        │                    │ targetVar=?bankLabel                                                        │           │          │           │       │           ║
+╟────┼────────┼────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 13 │ 14     │ -      │ PipelineJoin       │ pattern=distinct(?bank, rdfs:label, ?bankLabel)                             │ -         │ 0        │ 0         │ 0.00  │ 0         ║
+║    │        │        │                    │ joinType=join                                                               │           │          │           │       │           ║
+║    │        │        │                    │ joinProjectionVars=[?bank, ?bankLabel]                                      │           │          │           │       │           ║
+║    │        │        │                    │ patternEstimate=1269479684                                                  │           │          │           │       │           ║
+╟────┼────────┼────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 14 │ 15     │ -      │ HashIndexBuild     │ solutionSet=solutionSet1                                                    │ -         │ 0        │ 0         │ 0.00  │ 1         ║
+║    │        │        │                    │ joinVars=[?bank]                                                            │           │          │           │       │           ║
+║    │        │        │                    │ sourceType=pipeline                                                         │           │          │           │       │           ║
+╟────┼────────┼────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 15 │ 16     │ -      │ PipelineJoin       │ pattern=distinct(wd:Q806724, wdt:P3113, ?bank)                              │ -         │ 0        │ 0         │ 0.00  │ 0         ║
+║    │        │        │                    │ joinType=join                                                               │           │          │           │       │           ║
+║    │        │        │                    │ joinProjectionVars=[?bank]                                                  │           │          │           │       │           ║
+║    │        │        │                    │ patternEstimate=1                                                           │           │          │           │       │           ║
+╟────┼────────┼────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 16 │ 17     │ -      │ HashIndexJoin      │ solutionSet=solutionSet1                                                    │ -         │ 0        │ 0         │ 0.00  │ 0         ║
+║    │        │        │                    │ joinType=minus                                                              │           │          │           │       │           ║
+╟────┼────────┼────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 17 │ 18     │ -      │ Projection         │ vars=[?atm, ?geometry, ?bank, ?bankLabel]                                   │ retain    │ 0        │ 0         │ 0.00  │ 0         ║
+╟────┼────────┼────────┼────────────────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 18 │ -      │ -      │ TermResolution     │ vars=[?atm, ?geometry, ?bank, ?bankLabel]                                   │ id2value  │ 0        │ 0         │ 0.00  │ 0         ║
+╚════╧════════╧════════╧════════════════════╧═════════════════════════════════════════════════════════════════════════════╧═══════════╧══════════╧═══════════╧═══════╧═══════════╝
+

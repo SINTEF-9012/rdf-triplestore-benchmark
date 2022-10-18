@@ -1,0 +1,30 @@
+plan
+"PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+
+SELECT ?l ?lemma ?demoPlaceLabel ?coords
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?l rdf:type ontolex:LexicalEntry . # 	Collection size: 0.0	Predicate collection size: 3.088670173E9	Unique subjects: 1.775527553E9	Unique objects: 1214.0	Current complexity: 0.0
+    ?l dct:language ?language . # 	Collection size: 0.0	Predicate collection size: 0.0	Unique subjects: 0.0	Unique objects: 0.0	Current complexity: 0.0
+    ?l wikibase:lemma ?lemma . # 	Collection size: 0.0	Predicate collection size: 0.0	Unique subjects: 0.0	Unique objects: 0.0	Current complexity: 0.0
+    ?language wdt:P218 ""sv"" . # 	Collection size: 1.0	Predicate collection size: 187.0	Unique subjects: 187.0	Unique objects: 185.0	Current complexity: 0.0
+    ?l ontolex:sense ?sense . # 	Collection size: 0.0	Predicate collection size: 0.0	Unique subjects: 0.0	Unique objects: 0.0	Current complexity: 0.0
+    ?sense wdt:P6271 ?demoPlace . # 	Collection size: 3.0	Predicate collection size: 3.0	Unique subjects: 3.0	Unique objects: 3.0	Current complexity: 0.0
+    ?demoPlace wdt:P625 ?coords . # 	Collection size: 8827101.0	Predicate collection size: 8827101.0	Unique subjects: 8669631.0	Unique objects: 8596918.0	Current complexity: 0.0
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 0.0
+  
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

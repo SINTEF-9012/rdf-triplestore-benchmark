@@ -1,0 +1,87 @@
+Query:
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+#title:All forms in Swedish missing a pronunciation for the form with a representation identical to the lemma of the lexeme
+# So9q 13-01-2021
+SELECT ?l ?lemma ?form ?audio WHERE {
+  ?l dct:language wd:Q9027;
+     wikibase:lemma ?lemma; 
+     ontolex:lexicalForm ?form .
+  ?form ontolex:representation ?lemma .
+  minus {?form wdt:P443 ?audio.}
+}
+
+╔════╤════════╤════════╤═══════════════════╤═════════════════════════════════════════════════════════╤══════════╤══════════╤═══════════╤═══════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name              │ Arguments                                               │ Mode     │ Units In │ Units Out │ Ratio │ Time (ms) ║
+╠════╪════════╪════════╪═══════════════════╪═════════════════════════════════════════════════════════╪══════════╪══════════╪═══════════╪═══════╪═══════════╣
+║ 0  │ 1      │ -      │ SolutionInjection │ solutions=[{}]                                          │ -        │ 0        │ 1         │ 0.00  │ 0         ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 1  │ 2      │ -      │ PipelineJoin      │ pattern=distinct(?l, wikibase:lemma, ?lemma)            │ -        │ 1        │ 0         │ 0.00  │ 0         ║
+║    │        │        │                   │ joinType=join                                           │          │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?l, ?lemma]                         │          │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=0                                       │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 2  │ 3      │ -      │ PipelineJoin      │ pattern=distinct(?l, ontolex:lexicalForm, ?form)        │ -        │ 0        │ 0         │ 0.00  │ 0         ║
+║    │        │        │                   │ joinType=join                                           │          │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?l, ?form]                          │          │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=0                                       │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 3  │ 4      │ -      │ PipelineJoin      │ pattern=distinct(?form, ontolex:representation, ?lemma) │ -        │ 0        │ 0         │ 0.00  │ 0         ║
+║    │        │        │                   │ joinType=join                                           │          │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?form, ?lemma]                      │          │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=0                                       │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 4  │ 5      │ -      │ PipelineJoin      │ pattern=distinct(?l, dct:language, wd:Q9027)            │ -        │ 0        │ 0         │ 0.00  │ 0         ║
+║    │        │        │                   │ joinType=join                                           │          │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?l]                                 │          │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=1                                       │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 5  │ 6      │ -      │ HashIndexBuild    │ solutionSet=solutionSet1                                │ -        │ 0        │ 0         │ 0.00  │ 1         ║
+║    │        │        │                   │ joinVars=[?form]                                        │          │          │           │       │           ║
+║    │        │        │                   │ sourceType=pipeline                                     │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 6  │ 7      │ -      │ PipelineJoin      │ pattern=distinct(?form, wdt:P443, ?audio)               │ -        │ 0        │ 0         │ 0.00  │ 0         ║
+║    │        │        │                   │ joinType=join                                           │          │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?form, ?audio]                      │          │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=112364                                  │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 7  │ 8      │ -      │ HashIndexJoin     │ solutionSet=solutionSet1                                │ -        │ 0        │ 0         │ 0.00  │ 0         ║
+║    │        │        │                   │ joinType=minus                                          │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 8  │ 9      │ -      │ Projection        │ vars=[?l, ?lemma, ?form, ?audio]                        │ retain   │ 0        │ 0         │ 0.00  │ 0         ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 9  │ -      │ -      │ TermResolution    │ vars=[?l, ?lemma, ?form, ?audio]                        │ id2value │ 0        │ 0         │ 0.00  │ 0         ║
+╚════╧════════╧════════╧═══════════════════╧═════════════════════════════════════════════════════════╧══════════╧══════════╧═══════════╧═══════╧═══════════╝
+

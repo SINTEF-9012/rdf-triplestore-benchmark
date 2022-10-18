@@ -1,0 +1,150 @@
+Query:
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+#Interesting maintenance query that shows the relative prominence of a country's current (living) population on Wikidata. The query tends to time out when using all countries at once, but it might be possible to get the figures for each individual country by using uncommenting the line as indicated below
+SELECT
+  ?country ?countryLabel
+  ?wikiPersons
+  ?population
+  (ROUND(?wikiPersons/?population*1000000) AS ?wikiPersonsPerM)
+WHERE
+{
+  { SELECT ?country (count(*) as ?wikiPersons) WHERE {
+    {SELECT DISTINCT ?person ?country WHERE {
+      wd:Q458 wdt:P150 ?country .   # European Union  contains administrative territorial entity
+      # BIND( wd:Q30 AS ?country ) # use instead of previous line to check individual countries
+      ?person wdt:P31 wd:Q5 .
+      ?person wdt:P27 ?country .
+      FILTER NOT EXISTS{ ?person wdt:P570 ?date } # only count living people
+    } }
+  } GROUP BY ?country  }
+  ?country wdt:P1082 ?population
+  #SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
+}
+ORDER BY DESC(?wikiPersonsPerM)
+
+╔════╤════════╤════════╤════════════════════╤════════════════════════════════════════════════════════════════════════════════════════════════════╤══════════╤══════════╤═══════════╤═══════════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name               │ Arguments                                                                                          │ Mode     │ Units In │ Units Out │ Ratio     │ Time (ms) ║
+╠════╪════════╪════════╪════════════════════╪════════════════════════════════════════════════════════════════════════════════════════════════════╪══════════╪══════════╪═══════════╪═══════════╪═══════════╣
+║ 0  │ 1      │ -      │ SolutionInjection  │ solutions=[{}]                                                                                     │ -        │ 0        │ 1         │ 0.00      │ 0         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 1  │ 2      │ -      │ NamedSubquery      │ subQuery=subQuery1                                                                                 │ -        │ 1        │ 1         │ 1.00      │ 104976    ║
+║    │        │        │                    │ solutionSet=solutionSet1                                                                           │          │          │           │           │           ║
+║    │        │        │                    │ joinVars=[?country]                                                                                │          │          │           │           │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 2  │ 3      │ -      │ PipelineJoin       │ pattern=distinct(?country, wdt:P1082, ?population)                                                 │ -        │ 1        │ 707068    │ 707068.00 │ 2687      ║
+║    │        │        │                    │ joinType=join                                                                                      │          │          │           │           │           ║
+║    │        │        │                    │ joinProjectionVars=[?country, ?population]                                                         │          │          │           │           │           ║
+║    │        │        │                    │ patternEstimate=1752782                                                                            │          │          │           │           │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 3  │ 4      │ -      │ HashIndexJoin      │ solutionSet=solutionSet1                                                                           │ -        │ 707068   │ 27        │ 0.00      │ 326       ║
+║    │        │        │                    │ joinType=join                                                                                      │          │          │           │           │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 4  │ 5      │ 6      │ ConditionalRouting │ condition=needsMaterialization(round(((?wikiPersons / ?population) * "1000000"^^xsd:integer)))     │ -        │ 27       │ 27        │ 1.00      │ 4         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 5  │ 6      │ -      │ TermResolution     │ vars=[?wikiPersons, ?population]                                                                   │ id2value │ 0        │ 0         │ 0.00      │ 0         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 6  │ 7      │ -      │ Filter             │ condition=BIND(round(((?wikiPersons / ?population) * "1000000"^^xsd:integer)) AS ?wikiPersonsPerM) │ -        │ 27       │ 27        │ 1.00      │ 2         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 7  │ 8      │ -      │ TermResolution     │ vars=[?wikiPersonsPerM]                                                                            │ id2value │ 27       │ 27        │ 1.00      │ 0         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 8  │ 9      │ -      │ Sort               │ sortOrder=[DESC(?wikiPersonsPerM)]                                                                 │ -        │ 27       │ 27        │ 1.00      │ 1         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 9  │ 10     │ -      │ Projection         │ vars=[?country, ?countryLabel, ?wikiPersons, ?population, ?wikiPersonsPerM]                        │ retain   │ 27       │ 27        │ 1.00      │ 0         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 10 │ -      │ -      │ TermResolution     │ vars=[?country, ?countryLabel, ?wikiPersons, ?population, ?wikiPersonsPerM]                        │ id2value │ 27       │ 27        │ 1.00      │ 14        ║
+╚════╧════════╧════════╧════════════════════╧════════════════════════════════════════════════════════════════════════════════════════════════════╧══════════╧══════════╧═══════════╧═══════════╧═══════════╝
+
+
+subQuery1
+╔════╤════════╤════════╤════════════════════╤════════════════════════════════════════════════════════╤══════════╤══════════╤═══════════╤══════════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name               │ Arguments                                              │ Mode     │ Units In │ Units Out │ Ratio    │ Time (ms) ║
+╠════╪════════╪════════╪════════════════════╪════════════════════════════════════════════════════════╪══════════╪══════════╪═══════════╪══════════╪═══════════╣
+║ 0  │ 1      │ -      │ Distinct           │ vars=[?country, ?wikiPersons]                          │ -        │ 1        │ 1         │ 1.00     │ 1         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 1  │ 2      │ -      │ HashIndexBuild     │ solutionSet=solutionSet2                               │ -        │ 1        │ 1         │ 1.00     │ 0         ║
+║    │        │        │                    │ joinVars=[]                                            │          │          │           │          │           ║
+║    │        │        │                    │ sourceType=pipeline                                    │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 2  │ 3      │ -      │ PipelineJoin       │ pattern=distinct(wd:Q458, wdt:P150, ?country)          │ -        │ 1        │ 27        │ 27.00    │ 1         ║
+║    │        │        │                    │ joinType=join                                          │          │          │           │          │           ║
+║    │        │        │                    │ joinProjectionVars=[?country]                          │          │          │           │          │           ║
+║    │        │        │                    │ patternEstimate=27                                     │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 3  │ 4      │ -      │ PipelineJoin       │ pattern=distinct(?person, wdt:P27, ?country)           │ -        │ 27       │ 1372306   │ 50826.15 │ 15434     ║
+║    │        │        │                    │ joinType=join                                          │          │          │           │          │           ║
+║    │        │        │                    │ joinProjectionVars=[?person, ?country]                 │          │          │           │          │           ║
+║    │        │        │                    │ patternEstimate=3608490                                │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 4  │ 5      │ -      │ HashIndexBuild     │ solutionSet=solutionSet3                               │ -        │ 1372306  │ 1364795   │ 0.99     │ 85926     ║
+║    │        │        │                    │ joinVars=[?person]                                     │          │          │           │          │           ║
+║    │        │        │                    │ sourceType=pipeline                                    │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 5  │ 6      │ -      │ PipelineJoin       │ pattern=distinct(?person, wdt:P570, ?date)             │ -        │ 1364795  │ 567773    │ 0.42     │ 1587429   ║
+║    │        │        │                    │ joinType=join                                          │          │          │           │          │           ║
+║    │        │        │                    │ joinProjectionVars=[?person, ?date]                    │          │          │           │          │           ║
+║    │        │        │                    │ cutoffLimit=1                                          │          │          │           │          │           ║
+║    │        │        │                    │ patternEstimate=2293970                                │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 6  │ 7      │ -      │ HashIndexJoin      │ solutionSet=solutionSet3                               │ -        │ 567773   │ 1372306   │ 2.42     │ 7519      ║
+║    │        │        │                    │ joinType=existence check                               │          │          │           │          │           ║
+║    │        │        │                    │ existenceCheckResultVar=?_internalVar1                 │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 7  │ 8      │ 9      │ ConditionalRouting │ condition=needsMaterialization(!(?_internalVar1))      │ -        │ 1372306  │ 1372306   │ 1.00     │ 11626     ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 8  │ 9      │ -      │ TermResolution     │ vars=[?_internalVar1]                                  │ id2value │ 0        │ 0         │ 0.00     │ 0         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 9  │ 10     │ -      │ Filter             │ condition=!(?_internalVar1)                            │ -        │ 1372306  │ 799793    │ 0.58     │ 36469     ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 10 │ 11     │ -      │ PipelineJoin       │ pattern=distinct(?person, wdt:P31, wd:Q5)              │ -        │ 799793   │ 798046    │ 1.00     │ 74190     ║
+║    │        │        │                    │ joinType=join                                          │          │          │           │          │           ║
+║    │        │        │                    │ joinProjectionVars=[?person]                           │          │          │           │          │           ║
+║    │        │        │                    │ patternEstimate=28612002                               │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 11 │ 12     │ -      │ Projection         │ vars=[?_internalVar1]                                  │ drop     │ 798046   │ 798046    │ 1.00     │ 348       ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 12 │ 13     │ -      │ Distinct           │ vars=[?person, ?country]                               │ -        │ 798046   │ 798046    │ 1.00     │ 2864      ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 13 │ 14     │ -      │ Projection         │ vars=[?person, ?country]                               │ retain   │ 798046   │ 798046    │ 1.00     │ 158       ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 14 │ 15     │ -      │ HashIndexJoin      │ solutionSet=solutionSet2                               │ -        │ 798046   │ 798046    │ 1.00     │ 108       ║
+║    │        │        │                    │ joinType=join                                          │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 15 │ 16     │ -      │ Aggregate          │ groupBy=[?country]                                     │ -        │ 798046   │ 27        │ 0.00     │ 316       ║
+║    │        │        │                    │ aggregates=[?country, BIND(COUNT(?*) AS ?wikiPersons)] │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 16 │ -      │ -      │ Projection         │ vars=[?country, ?wikiPersons]                          │ retain   │ 27       │ 27        │ 1.00     │ 0         ║
+╚════╧════════╧════════╧════════════════════╧════════════════════════════════════════════════════════╧══════════╧══════════╧═══════════╧══════════╧═══════════╝
+

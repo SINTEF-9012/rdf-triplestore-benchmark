@@ -1,0 +1,52 @@
+plan
+"PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?muni ?muniLabel ?location
+{
+  {
+    {
+      
+      { # ----- Begin optimization group 1 -----
+        
+        ?instanceOf ps:P31 wd:Q2039348 . # 	Collection size: 1647.0	Predicate collection size: 1.01013738E8	Unique subjects: 1.01013738E8	Unique objects: 84429.0	Current complexity: 1647.0
+        ?muni p:P31 ?instanceOf . # 	Collection size: 1.01013746E8	Predicate collection size: 1.01013746E8	Unique subjects: 9.2070357E7	Unique objects: 1.01013746E8	Current complexity: 1647.0
+        ?muni wdt:P625 ?location . # 	Collection size: 8827101.0	Predicate collection size: 8827101.0	Unique subjects: 8669631.0	Unique objects: 8596918.0	Current complexity: 1676.9151244153297
+        
+      } # ----- End optimization group 1 -----
+      # ESTIMATED NUMBER OF ITERATIONS: 1676.9151244153297
+      
+    }
+    MINUS
+    {
+      
+      { # ----- Begin optimization group 2 -----
+        
+        ?muni wdt:P31 wd:Q7265977 . # 	Collection size: 52.0	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 52.0
+        
+      } # ----- End optimization group 2 -----
+      # ESTIMATED NUMBER OF ITERATIONS: 52.0
+      
+    }
+  }
+  MINUS
+  {
+    
+    { # ----- Begin optimization group 3 -----
+      
+      ?instanceOf pq:P582 ?endTime . # 	Collection size: 3466703.0	Predicate collection size: 3466703.0	Unique subjects: 3463361.0	Unique objects: 144875.0	Current complexity: 3466703.0
+      
+    } # ----- End optimization group 3 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 3466703.0
+    
+  }
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

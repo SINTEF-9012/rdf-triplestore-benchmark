@@ -1,0 +1,92 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT ?continent ?river ?continentLabel ?riverLabel
+WHERE
+{
+  {
+    SELECT ?continent (MAX(?length) AS ?length)
+    WHERE
+    {
+      ?river wdt:P31/wdt:P279* wd:Q355304;
+             wdt:P2043 ?length;
+             wdt:P30 ?continent.
+    }
+    GROUP BY ?continent
+  }
+  ?river wdt:P31/wdt:P279* wd:Q355304;
+         wdt:P2043 ?length;
+         wdt:P30 ?continent.
+  #SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+ORDER BY ?continentLabel
+
+The Query Plan:
+
+Profiling results:
+Query executed in 8356 ms and returned 0 result(s)
+Total used memory: 1.3M
+Pre-execution time: 142 ms (1.7%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+OrderBy(ASC(?continentLabel)) [#1], results: 0, wall time: 8 ms (0.1%)
+`─ Projection(?continent, ?river, ?continentLabel, ?riverLabel) [#1], results: 0, wall time: 0 ms (0.0%)
+   `─ MergeJoin(?river) [#1], results: 0, wall time: 1 ms (0.0%)
+      +─ BindJoin(?river) [#413K], results: 1, wall time: 2043 ms (24.4%)
+      │  +─ Scan[PSOC](?river, <http://www.wikidata.org/prop/direct/P30>, ?continent) [#82K], results: 320, wall time: 3 ms (0.0%)
+      │  `─ DirectHashJoin(?seaicpnm) [#882.9M]
+      │     +─ PropertyPath(?seaicpnm -> <http://www.wikidata.org/entity/Q355304>, minLength=0, reversed) [#48K]
+      │     │  `─ Scan[POSC](?seaicpnm, <http://www.wikidata.org/prop/direct/P279>, <http://www.wikidata.org/entity/Q355304>) [#52]
+      │     `─ Scan[POSC](?river, <http://www.wikidata.org/prop/direct/P31>, ?seaicpnm) [#97.7M]
+      `─ HashJoin(?length) [#1], memory: 288K (22.5%), results: 0 (with gaps), wall time: 204 ms (2.4%)
+         +─ Scan[PSOC](?river, <http://www.wikidata.org/prop/direct/P2043>, ?length) [#256K], results: 256K (with gaps), wall time: 96 ms (1.1%)
+         `─ Projection(?continent, ?length) [#1], results: 11, wall time: 0 ms (0.0%)
+            `─ Group(by=[?continent] aggregates=[(MAX(?length) AS ?length)]) [#929], memory: 352K (27.5%), results: 11, wall time: 90 ms (1.1%)
+               `─ BindJoin(?kbubgsio) [#929], results: 2.7K, wall time: 2403 ms (28.8%)
+                  +─ NaryJoin(?river) [#5], results: 5.3K, wall time: 30 ms (0.4%)
+                  │  +─ Scan[PSOC](?river, <http://www.wikidata.org/prop/direct/P31>, ?kbubgsio) [#97.7M], results: 30K (with gaps), wall time: 3214 ms (38.5%)
+                  │  +─ Scan[PSOC](?river, <http://www.wikidata.org/prop/direct/P30>, ?continent) [#82K], results: 24K (with gaps), wall time: 50 ms (0.6%)
+                  │  `─ Scan[PSOC](?river, <http://www.wikidata.org/prop/direct/P2043>, ?length) [#256K], results: 26K (with gaps), wall time: 68 ms (0.8%)
+                  `─ PropertyPath(?kbubgsio -> <http://www.wikidata.org/entity/Q355304>, minLength=0, reversed) [#48K]
+                     `─ Scan[POSC](?kbubgsio, <http://www.wikidata.org/prop/direct/P279>, <http://www.wikidata.org/entity/Q355304>) [#52]
+

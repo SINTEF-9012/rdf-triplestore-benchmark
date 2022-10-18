@@ -1,0 +1,30 @@
+Picked up _JAVA_OPTIONS: -Djava.io.tmpdir=/data/java/tmp
+12:12:24 INFO  exec            :: QUERY
+  PREFIX  swrc: <http://swrc.ontoware.org/ontology#>
+  PREFIX  bench: <http://localhost/vocabulary/bench/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  
+  SELECT  ?article
+  WHERE
+    { ?article  rdf:type   bench:Article ;
+                ?property  ?value
+      FILTER ( ?property = swrc:month )
+    }
+12:12:24 INFO  exec            :: ALGEBRA
+  (project (?article)
+    (assign ((?property <http://swrc.ontoware.org/ontology#month>))
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> ?article <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost/vocabulary/bench/Article>)
+        (quad <urn:x-arq:DefaultGraphNode> ?article <http://swrc.ontoware.org/ontology#month> ?value)
+      )))
+12:12:24 INFO  exec            :: TDB2
+  (project (?article)
+    (assign ((?property <http://swrc.ontoware.org/ontology#month>))
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> ?article <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost/vocabulary/bench/Article>)
+        (quad <urn:x-arq:DefaultGraphNode> ?article <http://swrc.ontoware.org/ontology#month> ?value)
+      )))
+12:12:24 INFO  exec            :: Execute
+  ?article rdf:type <http://localhost/vocabulary/bench/Article>
+  ?article <http://swrc.ontoware.org/ontology#month> ?value
+Time: 8.127 sec

@@ -1,0 +1,119 @@
+Query:
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+# variants that are associated with renal cell carcinoma
+SELECT DISTINCT ?civic_id ?item ?itemLabel
+WHERE
+{
+  VALUES ?property {
+                      wdt:P3356 # positive diagnostic predictor
+                      wdt:P3357 # negative diagnostic predictor
+                      wdt:P3358 # positive prognostic predicator
+                      wdt:P3359 # negative prognostic predictor
+                     }
+    ?item wdt:P3329 ?civic_id .
+    {?item  ?property wd:Q1164529.} # wd:Q1164529 = renal cell carcinoma
+    UNION
+    {?item p:P3354 ?o . # positive therapeutic predictor
+     ?o pq:P2175 wd:Q1164529 .}
+    UNION
+    {?item p:P3354 ?o . # negative therapeutic predictor
+     ?o pq:P2175 wd:Q1164529 .}
+     
+  #SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en" }
+}
+
+╔════╤════════╤════════╤═══════════════════╤════════════════════════════════════════════════════════════╤═══════════╤══════════╤═══════════╤═══════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name              │ Arguments                                                  │ Mode      │ Units In │ Units Out │ Ratio │ Time (ms) ║
+╠════╪════════╪════════╪═══════════════════╪════════════════════════════════════════════════════════════╪═══════════╪══════════╪═══════════╪═══════╪═══════════╣
+║ 0  │ 1      │ -      │ SolutionInjection │ solutions=[                                                │ -         │ 0        │ 4         │ 0.00  │ 0         ║
+║    │        │        │                   │ { ?property -> wdt:P3356 },                                │           │          │           │       │           ║
+║    │        │        │                   │ { ?property -> wdt:P3357 },                                │           │          │           │       │           ║
+║    │        │        │                   │ { ?property -> wdt:P3358 },                                │           │          │           │       │           ║
+║    │        │        │                   │ ... (1 more)                                               │           │          │           │       │           ║
+║    │        │        │                   │ ]                                                          │           │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 1  │ 2      │ 3      │ Copy              │ -                                                          │ duplicate │ 4        │ 8         │ 2.00  │ 0         ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 2  │ 5      │ 8      │ Copy              │ -                                                          │ duplicate │ 4        │ 8         │ 2.00  │ 1         ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 3  │ 4      │ -      │ Copy              │ -                                                          │ forward   │ 4        │ 4         │ 1.00  │ 0         ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 4  │ 11     │ -      │ PipelineJoin      │ pattern=distinct(?item, ?property, wd:Q1164529)            │ -         │ 4        │ 3         │ 0.75  │ 1         ║
+║    │        │        │                   │ inlineFilters=[                                            │           │          │           │       │           ║
+║    │        │        │                   │ ?property IN (wdt:P3356, wdt:P3357, wdt:P3358... (1 more)) │           │          │           │       │           ║
+║    │        │        │                   │ ]                                                          │           │          │           │       │           ║
+║    │        │        │                   │ joinType=join                                              │           │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?item, ?property]                      │           │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=3                                          │           │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 5  │ 6      │ -      │ Copy              │ -                                                          │ forward   │ 4        │ 4         │ 1.00  │ 0         ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 6  │ 7      │ -      │ PipelineJoin      │ pattern=distinct(?o, pq:P2175, wd:Q1164529)                │ -         │ 4        │ 48        │ 12.00 │ 0         ║
+║    │        │        │                   │ joinType=join                                              │           │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?o]                                    │           │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=48                                         │           │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 7  │ 11     │ -      │ PipelineJoin      │ pattern=distinct(?item, p:P3354, ?o)                       │ -         │ 48       │ 32        │ 0.67  │ 8         ║
+║    │        │        │                   │ joinType=join                                              │           │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?item, ?o]                             │           │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=5032                                       │           │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 8  │ 9      │ -      │ Copy              │ -                                                          │ forward   │ 4        │ 4         │ 1.00  │ 0         ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 9  │ 10     │ -      │ PipelineJoin      │ pattern=distinct(?o, pq:P2175, wd:Q1164529)                │ -         │ 4        │ 48        │ 12.00 │ 0         ║
+║    │        │        │                   │ joinType=join                                              │           │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?o]                                    │           │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=48                                         │           │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 10 │ 11     │ -      │ PipelineJoin      │ pattern=distinct(?item, p:P3354, ?o)                       │ -         │ 48       │ 32        │ 0.67  │ 8         ║
+║    │        │        │                   │ joinType=join                                              │           │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?item, ?o]                             │           │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=5032                                       │           │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 11 │ 12     │ -      │ Copy              │ -                                                          │ forward   │ 67       │ 67        │ 1.00  │ 1         ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 12 │ 13     │ -      │ PipelineJoin      │ pattern=distinct(?item, wdt:P3329, ?civic_id)              │ -         │ 67       │ 67        │ 1.00  │ 87        ║
+║    │        │        │                   │ joinType=join                                              │           │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?item, ?civic_id]                      │           │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=7780                                       │           │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 13 │ 14     │ -      │ Distinct          │ vars=[?civic_id, ?item, ?itemLabel]                        │ -         │ 67       │ 10        │ 0.15  │ 3         ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 14 │ 15     │ -      │ Projection        │ vars=[?civic_id, ?item, ?itemLabel]                        │ retain    │ 10       │ 10        │ 1.00  │ 1         ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 15 │ -      │ -      │ TermResolution    │ vars=[?civic_id, ?item, ?itemLabel]                        │ id2value  │ 10       │ 10        │ 1.00  │ 49        ║
+╚════╧════════╧════════╧═══════════════════╧════════════════════════════════════════════════════════════╧═══════════╧══════════╧═══════════╧═══════╧═══════════╝
+

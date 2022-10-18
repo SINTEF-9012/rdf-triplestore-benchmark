@@ -1,0 +1,45 @@
+plan
+"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?cell_line ?cell_line_name ?tld ?tld_name ?url
+{
+  {
+    SELECT ?cell_line ?cell_line_name
+    {
+      
+      { # ----- Begin optimization group 1 -----
+        
+        ?cell_line wdt:P31 wd:Q21014462 . # 	Collection size: 130952.0	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 130952.0
+        ?cell_line rdfs:label ?cell_line_name . # 	Collection size: 5.86690314E8	Predicate collection size: 5.86690314E8	Unique subjects: 9.4931813E7	Unique objects: 5.4875668E8	Current complexity: 809299.5126820974
+        FILTER (LANG(?cell_line_name) = ""en"")
+        FILTER (REGEX(STR(?cell_line_name), ""^[\\w\\-\\.]+\\.[A-z]+$"", *))
+        
+      } # ----- End optimization group 1 -----
+      # ESTIMATED NUMBER OF ITERATIONS: 809299.5126820974
+      
+    }
+  }
+  
+  { # ----- Begin optimization group 2 -----
+    
+    ArbitraryLengthPath ( min=0, from _anon_21bc7a21_095e_491f_9189_4e3168460363, to __const_24c7df91_uri) over {
+	 [ _anon_21bc7a21_095e_491f_9189_4e3168460363 http://www.wikidata.org/prop/direct/P279 http://www.wikidata.org/entity/Q14296 ]
+	 }  # Collection size: 500.0
+    ?tld wdt:P31 ?_anon_21bc7a21_095e_491f_9189_4e3168460363 . # 	Collection size: 9.768112E7	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 4.884056E10
+    ?tld rdfs:label ?tld_name . # 	Collection size: 5.86690314E8	Predicate collection size: 5.86690314E8	Unique subjects: 9.4931813E7	Unique objects: 5.4875668E8	Current complexity: 3.018406851909153E11
+    
+  } # ----- End optimization group 2 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 3.018406851909153E11
+  
+  BIND (IRI_FUNCTION(concat(""http://"", ?cell_line_name)) AS ?url)
+  FILTER (LANG(?tld_name) = ""en"")
+  FILTER (REGEX(STR(?cell_line_name), concat(replace(?tld_name, ""\\."", ""\\\\.""), ""$""), ""i""))
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

@@ -1,0 +1,41 @@
+Picked up _JAVA_OPTIONS: -Djava.io.tmpdir=/data/java/tmp
+12:10:24 INFO  exec            :: QUERY
+  PREFIX  swrc: <http://swrc.ontoware.org/ontology#>
+  PREFIX  bench: <http://localhost/vocabulary/bench/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  dcterms: <http://purl.org/dc/terms/>
+  PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX  foaf: <http://xmlns.com/foaf/0.1/>
+  PREFIX  dc:   <http://purl.org/dc/elements/1.1/>
+  
+  SELECT  ?inproc ?author ?booktitle ?title ?proc ?ee ?page ?url ?yr ?abstract
+  WHERE
+    { ?inproc  rdf:type         bench:Inproceedings ;
+               dc:creator       ?author ;
+               bench:booktitle  ?booktitle ;
+               dc:title         ?title ;
+               dcterms:partOf   ?proc ;
+               rdfs:seeAlso     ?ee ;
+               swrc:pages       ?page ;
+               foaf:homepage    ?url ;
+               dcterms:issued   ?yr
+      OPTIONAL
+        { ?inproc  bench:abstract  ?abstract }
+    }
+  ORDER BY ?yr
+12:10:24 INFO  exec            :: ALGEBRA
+  (project (?inproc ?author ?booktitle ?title ?proc ?ee ?page ?url ?yr ?abstract)
+    (order (?yr)
+      (conditional
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?inproc <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost/vocabulary/bench/Inproceedings>)
+          (quad <urn:x-arq:DefaultGraphNode> ?inproc <http://purl.org/dc/elements/1.1/creator> ?author)
+          (quad <urn:x-arq:DefaultGraphNode> ?inproc <http://localhost/vocabulary/bench/booktitle> ?booktitle)
+          (quad <urn:x-arq:DefaultGraphNode> ?inproc <http://purl.org/dc/elements/1.1/title> ?title)
+          (quad <urn:x-arq:DefaultGraphNode> ?inproc <http://purl.org/dc/terms/partOf> ?proc)
+          (quad <urn:x-arq:DefaultGraphNode> ?inproc <http://www.w3.org/2000/01/rdf-schema#seeAlso> ?ee)
+          (quad <urn:x-arq:DefaultGraphNode> ?inproc <http://swrc.ontoware.org/ontology#pages> ?page)
+          (quad <urn:x-arq:DefaultGraphNode> ?inproc <http://xmlns.com/foaf/0.1/homepage> ?url)
+          (quad <urn:x-arq:DefaultGraphNode> ?inproc <http://purl.org/dc/terms/issued> ?yr)
+        )
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?inproc <http://localhost/vocabulary/bench/abstract> ?abstract)))))

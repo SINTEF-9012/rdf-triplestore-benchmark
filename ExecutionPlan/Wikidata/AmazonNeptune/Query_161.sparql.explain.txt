@@ -1,0 +1,146 @@
+Query:
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+select ?senator ?senatorLabel ?districtLabel ?partyLabel ?assumedOffice (sample(?image) as ?image) where {
+  # Get all senators
+  ?senator p:P39 ?posheld; # With position held
+           p:P102 ?partystatement. # And with a certain party
+  
+  # Get the party
+  ?partystatement ps:P102 ?party.
+  minus { ?partystatement pq:P582 ?partyEnd. } # but minus the ones the senator is no longer a member of
+  minus { ?party wdt:P361 ?partOf. } # and the 'Minnesota Democratic–Farmer–Labor Party' and such
+  
+  # Check on the position in the senate
+  ?posheld ps:P39 wd:Q4416090; # Position held is in the senate
+           pq:P768 ?district;
+           pq:P580 ?assumedOffice. # And should have a starttime
+  
+  minus { ?posheld pq:P582 ?endTime. } # But not an endtime 
+  
+  # Add an image
+  optional { ?senator wdt:P18 ?image. }
+         
+#  service wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+} group by ?senator ?senatorLabel ?districtLabel ?partyLabel ?assumedOffice order by ?senatorLabel
+
+╔════╤════════╤════════╤═══════════════════╤═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╤══════════╤══════════╤═══════════╤═════════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name              │ Arguments                                                                                                         │ Mode     │ Units In │ Units Out │ Ratio   │ Time (ms) ║
+╠════╪════════╪════════╪═══════════════════╪═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╪══════════╪══════════╪═══════════╪═════════╪═══════════╣
+║ 0  │ 1      │ -      │ SolutionInjection │ solutions=[{}]                                                                                                    │ -        │ 0        │ 1         │ 0.00    │ 0         ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 1  │ 2      │ -      │ PipelineJoin      │ pattern=distinct(?posheld, ps:P39, wd:Q4416090)                                                                   │ -        │ 1        │ 9937      │ 9937.00 │ 479       ║
+║    │        │        │                   │ joinType=join                                                                                                     │          │          │           │         │           ║
+║    │        │        │                   │ joinProjectionVars=[?posheld]                                                                                     │          │          │           │         │           ║
+║    │        │        │                   │ patternEstimate=15212                                                                                             │          │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 2  │ 3      │ -      │ PipelineJoin      │ pattern=distinct(?posheld, pq:P768, ?district)                                                                    │ -        │ 9937     │ 9917      │ 1.00    │ 17378     ║
+║    │        │        │                   │ joinType=join                                                                                                     │          │          │           │         │           ║
+║    │        │        │                   │ joinProjectionVars=[?posheld, ?district]                                                                          │          │          │           │         │           ║
+║    │        │        │                   │ patternEstimate=666768                                                                                            │          │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 3  │ 4      │ -      │ PipelineJoin      │ pattern=distinct(?senator, p:P39, ?posheld)                                                                       │ -        │ 9917     │ 9917      │ 1.00    │ 1693      ║
+║    │        │        │                   │ joinType=join                                                                                                     │          │          │           │         │           ║
+║    │        │        │                   │ joinProjectionVars=[?senator, ?posheld]                                                                           │          │          │           │         │           ║
+║    │        │        │                   │ patternEstimate=3966316                                                                                           │          │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 4  │ 5      │ -      │ PipelineJoin      │ pattern=distinct(?senator, p:P102, ?partystatement)                                                               │ -        │ 9917     │ 11216     │ 1.13    │ 3221      ║
+║    │        │        │                   │ joinType=join                                                                                                     │          │          │           │         │           ║
+║    │        │        │                   │ joinProjectionVars=[?senator, ?partystatement]                                                                    │          │          │           │         │           ║
+║    │        │        │                   │ patternEstimate=1007372                                                                                           │          │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 5  │ 6      │ -      │ PipelineJoin      │ pattern=distinct(?partystatement, ps:P102, ?party)                                                                │ -        │ 11216    │ 11187     │ 1.00    │ 2678      ║
+║    │        │        │                   │ joinType=join                                                                                                     │          │          │           │         │           ║
+║    │        │        │                   │ joinProjectionVars=[?partystatement, ?party]                                                                      │          │          │           │         │           ║
+║    │        │        │                   │ patternEstimate=1010068                                                                                           │          │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 6  │ 7      │ -      │ PipelineJoin      │ pattern=distinct(?posheld, pq:P580, ?assumedOffice)                                                               │ -        │ 11187    │ 11187     │ 1.00    │ 655       ║
+║    │        │        │                   │ joinType=join                                                                                                     │          │          │           │         │           ║
+║    │        │        │                   │ joinProjectionVars=[?posheld, ?assumedOffice]                                                                     │          │          │           │         │           ║
+║    │        │        │                   │ patternEstimate=15357804                                                                                          │          │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 7  │ 8      │ -      │ HashIndexBuild    │ solutionSet=solutionSet3                                                                                          │ -        │ 11187    │ 2227      │ 0.20    │ 85        ║
+║    │        │        │                   │ joinVars=[?partystatement]                                                                                        │          │          │           │         │           ║
+║    │        │        │                   │ sourceType=pipeline                                                                                               │          │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 8  │ 9      │ -      │ PipelineJoin      │ pattern=distinct(?partystatement, pq:P582, ?partyEnd)                                                             │ -        │ 2227     │ 33        │ 0.01    │ 71        ║
+║    │        │        │                   │ joinType=join                                                                                                     │          │          │           │         │           ║
+║    │        │        │                   │ joinProjectionVars=[?partystatement, ?partyEnd]                                                                   │          │          │           │         │           ║
+║    │        │        │                   │ patternEstimate=6197272                                                                                           │          │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 9  │ 10     │ -      │ HashIndexJoin     │ solutionSet=solutionSet3                                                                                          │ -        │ 33       │ 10962     │ 332.18  │ 32        ║
+║    │        │        │                   │ joinType=minus                                                                                                    │          │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 10 │ 11     │ -      │ HashIndexBuild    │ solutionSet=solutionSet2                                                                                          │ -        │ 10962    │ 40        │ 0.00    │ 52        ║
+║    │        │        │                   │ joinVars=[?party]                                                                                                 │          │          │           │         │           ║
+║    │        │        │                   │ sourceType=pipeline                                                                                               │          │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 11 │ 12     │ -      │ PipelineJoin      │ pattern=distinct(?party, wdt:P361, ?partOf)                                                                       │ -        │ 40       │ 6         │ 0.15    │ 69        ║
+║    │        │        │                   │ joinType=join                                                                                                     │          │          │           │         │           ║
+║    │        │        │                   │ joinProjectionVars=[?party, ?partOf]                                                                              │          │          │           │         │           ║
+║    │        │        │                   │ patternEstimate=13031654                                                                                          │          │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 12 │ 13     │ -      │ HashIndexJoin     │ solutionSet=solutionSet2                                                                                          │ -        │ 6        │ 10866     │ 1811.00 │ 27        ║
+║    │        │        │                   │ joinType=minus                                                                                                    │          │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 13 │ 14     │ -      │ HashIndexBuild    │ solutionSet=solutionSet1                                                                                          │ -        │ 10866    │ 9883      │ 0.91    │ 47        ║
+║    │        │        │                   │ joinVars=[?posheld]                                                                                               │          │          │           │         │           ║
+║    │        │        │                   │ sourceType=pipeline                                                                                               │          │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 14 │ 15     │ -      │ PipelineJoin      │ pattern=distinct(?posheld, pq:P582, ?endTime)                                                                     │ -        │ 9883     │ 9783      │ 0.99    │ 471       ║
+║    │        │        │                   │ joinType=join                                                                                                     │          │          │           │         │           ║
+║    │        │        │                   │ joinProjectionVars=[?posheld, ?endTime]                                                                           │          │          │           │         │           ║
+║    │        │        │                   │ patternEstimate=6197272                                                                                           │          │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 15 │ 16     │ -      │ HashIndexJoin     │ solutionSet=solutionSet1                                                                                          │ -        │ 9783     │ 100       │ 0.01    │ 91        ║
+║    │        │        │                   │ joinType=minus                                                                                                    │          │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 16 │ 17     │ -      │ PipelineJoin      │ pattern=distinct(?senator, wdt:P18, ?image)                                                                       │ -        │ 100      │ 102       │ 1.02    │ 58        ║
+║    │        │        │                   │ joinType=optional                                                                                                 │          │          │           │         │           ║
+║    │        │        │                   │ joinProjectionVars=[?senator, ?image]                                                                             │          │          │           │         │           ║
+║    │        │        │                   │ patternEstimate=6873696                                                                                           │          │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 17 │ 18     │ -      │ Aggregate         │ groupBy=[?senator, ?senatorLabel, ?districtLabel, ?partyLabel, ?assumedOffice]                                    │ -        │ 102      │ 100       │ 0.98    │ 2         ║
+║    │        │        │                   │ aggregates=[?senator, ?senatorLabel, ?districtLabel, ?partyLabel, ?assumedOffice, BIND(SAMPLE(?image) AS ?image)] │          │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 18 │ 19     │ -      │ TermResolution    │ vars=[?senatorLabel]                                                                                              │ id2value │ 100      │ 100       │ 1.00    │ 2         ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 19 │ 20     │ -      │ Sort              │ sortOrder=[ASC(?senatorLabel)]                                                                                    │ -        │ 100      │ 100       │ 1.00    │ 1         ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 20 │ 21     │ -      │ Projection        │ vars=[?senator, ?senatorLabel, ?districtLabel, ?partyLabel, ?assumedOffice, ?image]                               │ retain   │ 100      │ 100       │ 1.00    │ 0         ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 21 │ -      │ -      │ TermResolution    │ vars=[?senator, ?senatorLabel, ?districtLabel, ?partyLabel, ?assumedOffice, ?image]                               │ id2value │ 100      │ 100       │ 1.00    │ 261       ║
+╚════╧════════╧════════╧═══════════════════╧═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╧══════════╧══════════╧═══════════╧═════════╧═══════════╝
+

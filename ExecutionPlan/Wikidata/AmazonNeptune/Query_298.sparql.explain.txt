@@ -1,0 +1,90 @@
+Query:
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+select ?translator ?translatorLabel ?work ?workLabel ?author ?authorLabel {  
+    ?work wdt:P655 ?translator;        
+          wdt:P50 ?author.    
+
+    ?author wdt:P2533 ?wid;          
+            wdt:P21 wd:Q6581072;          
+            wdt:P569 ?birth;            
+
+    filter (?birth > "1800-01-01"^^xsd:dateTime && ?birth < "1900-01-01"^^xsd:dateTime)
+
+    #SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en,nl,fr". }
+}
+
+╔════╤════════╤════════╤════════════════════╤══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╤══════════╤══════════╤═══════════╤═════════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name               │ Arguments                                                                                                        │ Mode     │ Units In │ Units Out │ Ratio   │ Time (ms) ║
+╠════╪════════╪════════╪════════════════════╪══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╪══════════╪══════════╪═══════════╪═════════╪═══════════╣
+║ 0  │ 1      │ -      │ SolutionInjection  │ solutions=[{}]                                                                                                   │ -        │ 0        │ 1         │ 0.00    │ 0         ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 1  │ 2      │ -      │ PipelineJoin       │ pattern=distinct(?author, wdt:P2533, ?wid)                                                                       │ -        │ 1        │ 4047      │ 4047.00 │ 197       ║
+║    │        │        │                    │ joinType=join                                                                                                    │          │          │           │         │           ║
+║    │        │        │                    │ joinProjectionVars=[?author, ?wid]                                                                               │          │          │           │         │           ║
+║    │        │        │                    │ patternEstimate=7294                                                                                             │          │          │           │         │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 2  │ 3      │ -      │ PipelineJoin       │ pattern=distinct(?author, wdt:P21, wd:Q6581072)                                                                  │ -        │ 4047     │ 3709      │ 0.92    │ 5093      ║
+║    │        │        │                    │ joinType=join                                                                                                    │          │          │           │         │           ║
+║    │        │        │                    │ joinProjectionVars=[?author]                                                                                     │          │          │           │         │           ║
+║    │        │        │                    │ patternEstimate=5205106                                                                                          │          │          │           │         │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 3  │ 4      │ -      │ PipelineJoin       │ pattern=distinct(?author, wdt:P569, ?birth)                                                                      │ -        │ 3709     │ 0         │ 0.00    │ 1077      ║
+║    │        │        │                    │ joinType=join                                                                                                    │          │          │           │         │           ║
+║    │        │        │                    │ joinProjectionVars=[?author, ?birth]                                                                             │          │          │           │         │           ║
+║    │        │        │                    │ constraints=[((?birth > "1800-01-01"^^xsd:dateTime) && (?birth < "1900-01-01"^^xsd:dateTime))]                   │          │          │           │         │           ║
+║    │        │        │                    │ patternEstimate=6233900                                                                                          │          │          │           │         │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 4  │ 5      │ 6      │ ConditionalRouting │ condition=needsMaterialization(((?birth > "1800-01-01"^^xsd:dateTime) && (?birth < "1900-01-01"^^xsd:dateTime))) │ -        │ 0        │ 0         │ 0.00    │ 0         ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 5  │ 6      │ -      │ TermResolution     │ vars=[?birth]                                                                                                    │ id2value │ 0        │ 0         │ 0.00    │ 0         ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 6  │ 7      │ -      │ Filter             │ condition=((?birth > "1800-01-01"^^xsd:dateTime) && (?birth < "1900-01-01"^^xsd:dateTime))                       │ -        │ 0        │ 0         │ 0.00    │ 0         ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 7  │ 8      │ -      │ PipelineJoin       │ pattern=distinct(?work, wdt:P50, ?author)                                                                        │ -        │ 0        │ 0         │ 0.00    │ 0         ║
+║    │        │        │                    │ joinType=join                                                                                                    │          │          │           │         │           ║
+║    │        │        │                    │ joinProjectionVars=[?work, ?author]                                                                              │          │          │           │         │           ║
+║    │        │        │                    │ patternEstimate=26658920                                                                                         │          │          │           │         │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 8  │ 9      │ -      │ PipelineJoin       │ pattern=distinct(?work, wdt:P655, ?translator)                                                                   │ -        │ 0        │ 0         │ 0.00    │ 0         ║
+║    │        │        │                    │ joinType=join                                                                                                    │          │          │           │         │           ║
+║    │        │        │                    │ joinProjectionVars=[?work, ?translator]                                                                          │          │          │           │         │           ║
+║    │        │        │                    │ patternEstimate=27996                                                                                            │          │          │           │         │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 9  │ 10     │ -      │ Projection         │ vars=[?translator, ?translatorLabel, ?work, ?workLabel, ?author, ?authorLabel]                                   │ retain   │ 0        │ 0         │ 0.00    │ 0         ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 10 │ -      │ -      │ TermResolution     │ vars=[?translator, ?translatorLabel, ?work, ?workLabel, ?author, ?authorLabel]                                   │ id2value │ 0        │ 0         │ 0.00    │ 0         ║
+╚════╧════════╧════════╧════════════════════╧══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╧══════════╧══════════╧═══════════╧═════════╧═══════════╝
+

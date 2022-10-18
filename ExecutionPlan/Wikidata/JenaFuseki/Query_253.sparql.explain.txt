@@ -1,0 +1,321 @@
+12:37:25 INFO  exec            :: QUERY
+  PREFIX  schema: <http://schema.org/>
+  PREFIX  pq:   <http://www.wikidata.org/prop/qualifier/>
+  PREFIX  bd:   <http://www.bigdata.com/rdf#>
+  PREFIX  pr:   <http://www.wikidata.org/prop/reference/>
+  PREFIX  ps:   <http://www.wikidata.org/prop/statement/>
+  PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
+  PREFIX  geof: <http://www.opengis.net/def/geosparql/function/>
+  PREFIX  wdt:  <http://www.wikidata.org/prop/direct/>
+  PREFIX  wds:  <http://www.wikidata.org/entity/statement/>
+  PREFIX  wdv:  <http://www.wikidata.org/value/>
+  PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>
+  PREFIX  skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX  psn:  <http://www.wikidata.org/prop/statement/value-normalized/>
+  PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX  pqn:  <http://www.wikidata.org/prop/qualifier/value-normalized/>
+  PREFIX  wd:   <http://www.wikidata.org/entity/>
+  PREFIX  geo:  <http://www.opengis.net/ont/geosparql#>
+  PREFIX  psv:  <http://www.wikidata.org/prop/statement/value/>
+  PREFIX  dct:  <http://purl.org/dc/terms/>
+  PREFIX  pqv:  <http://www.wikidata.org/prop/qualifier/value/>
+  PREFIX  ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+  PREFIX  wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+  PREFIX  wdref: <http://www.wikidata.org/reference/>
+  PREFIX  prov: <http://www.w3.org/ns/prov#>
+  PREFIX  cc:   <http://creativecommons.org/ns#>
+  PREFIX  wikibase: <http://wikiba.se/ontology#>
+  PREFIX  prn:  <http://www.wikidata.org/prop/reference/value-normalized/>
+  PREFIX  p:    <http://www.wikidata.org/prop/>
+  PREFIX  wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+  PREFIX  prv:  <http://www.wikidata.org/prop/reference/value/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  hint: <http://www.bigdata.com/queryHints#>
+  PREFIX  wdno: <http://www.wikidata.org/prop/novalue/>
+  
+  SELECT  ?link ?linkLabel ?picture ?age
+  WHERE
+    { ?link  wdt:P31  wd:Q5 ;
+             p:P39    _:b0 .
+      _:b0   ps:P39   wd:Q19546 ;
+             pq:P580  ?startTime
+      OPTIONAL
+        { ?link  wdt:P569  ?dateOfBirth }
+      OPTIONAL
+        { ?link  wdt:P18  ?picture }
+      OPTIONAL
+        { ?link  wdt:P570  ?dateOfDeath }
+      BIND(( year(?dateOfDeath) - year(?dateOfBirth) ) AS ?age)
+    }
+  ORDER BY DESC(?startTime)
+12:37:25 INFO  exec            :: ALGEBRA
+  (project (?link ?linkLabel ?picture ?age)
+    (order ((desc ?startTime))
+      (extend ((?age (- (year ?dateOfDeath) (year ?dateOfBirth))))
+        (conditional
+          (conditional
+            (conditional
+              (quadpattern
+                (quad <urn:x-arq:DefaultGraphNode> ?link <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q5>)
+                (quad <urn:x-arq:DefaultGraphNode> ?link <http://www.wikidata.org/prop/P39> ??0)
+                (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.wikidata.org/prop/statement/P39> <http://www.wikidata.org/entity/Q19546>)
+                (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.wikidata.org/prop/qualifier/P580> ?startTime)
+              )
+              (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?link <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth)))
+            (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?link <http://www.wikidata.org/prop/direct/P18> ?picture)))
+          (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?link <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))))))
+12:37:25 INFO  exec            :: TDB2
+  (project (?link ?linkLabel ?picture ?age)
+    (order ((desc ?startTime))
+      (extend ((?age (- (year ?dateOfDeath) (year ?dateOfBirth))))
+        (conditional
+          (conditional
+            (conditional
+              (quadpattern
+                (quad <urn:x-arq:DefaultGraphNode> ?link <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q5>)
+                (quad <urn:x-arq:DefaultGraphNode> ?link <http://www.wikidata.org/prop/P39> ??0)
+                (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.wikidata.org/prop/statement/P39> <http://www.wikidata.org/entity/Q19546>)
+                (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.wikidata.org/prop/qualifier/P580> ?startTime)
+              )
+              (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?link <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth)))
+            (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?link <http://www.wikidata.org/prop/direct/P18> ?picture)))
+          (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?link <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))))))
+12:37:25 INFO  exec            :: Execute
+  ?link <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q5>
+  ?link <http://www.wikidata.org/prop/P39> ??0
+  ??0 <http://www.wikidata.org/prop/statement/P39> <http://www.wikidata.org/entity/Q19546>
+  ??0 <http://www.wikidata.org/prop/qualifier/P580> ?startTime
+12:37:25 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q989> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:37:25 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q989> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:37:25 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q989> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:25 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q989> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:25 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q989> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:25 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q989> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:26 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q160922> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:37:26 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q160922> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:37:26 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q160922> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:26 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q160922> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:26 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q160922> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:26 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q160922> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:26 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q199533> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:37:26 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q199533> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:37:26 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q199533> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:26 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q199533> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:26 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q199533> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:26 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q199533> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:26 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q227978> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:37:26 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q227978> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:37:26 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q227978> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:26 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q227978> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:26 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q227978> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:26 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q227978> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:26 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q227978> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:37:26 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q227978> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:37:26 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q227978> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:26 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q227978> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:26 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q227978> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:26 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q227978> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:27 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q43720> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:37:27 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q43720> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:37:27 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q43720> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:27 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q43720> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:27 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q43720> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:27 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q43720> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:27 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q133350> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:37:27 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q133350> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:37:27 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q133350> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:27 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q133350> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:27 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q133350> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:27 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q133350> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:27 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q37278> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:37:27 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q37278> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:37:27 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q37278> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:27 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q37278> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:27 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q37278> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:27 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q37278> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:28 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q132113> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:37:28 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q132113> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:37:28 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q132113> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:28 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q132113> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:28 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q132113> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:28 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q132113> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:28 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q155971> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:37:28 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q155971> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:37:28 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q155971> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:28 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q155971> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:28 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q155971> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:28 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q155971> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:35 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q160514> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:37:35 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q160514> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:37:35 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q160514> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:35 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q160514> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:35 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q160514> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:35 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q160514> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:36 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q227724> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:37:36 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q227724> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:37:36 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q227724> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:36 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q227724> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:36 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q227724> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:36 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q227724> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:36 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q227724> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:37:36 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q227724> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:37:36 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q227724> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:36 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q227724> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:36 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q227724> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:36 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q227724> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:45 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q101430> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:37:45 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q101430> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:37:45 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q101430> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:45 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q101430> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:45 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q101430> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:45 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q101430> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:46 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q172432> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:37:46 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q172432> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:37:46 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q172432> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:46 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q172432> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:46 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q172432> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:46 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q172432> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:53 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:37:53 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:37:53 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:53 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:53 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:53 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:53 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:53 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:53 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:53 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:53 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:53 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:53 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:53 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:53 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:37:53 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:37:53 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:53 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:53 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:53 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:53 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:53 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:53 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:53 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:53 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:53 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:53 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:53 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q169594> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:37:58 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q134682> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:37:58 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q134682> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:37:58 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q134682> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:37:58 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q134682> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:37:58 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q134682> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:37:58 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q134682> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:38:00 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q161740> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:38:00 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q161740> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:38:00 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q161740> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:38:00 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q161740> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:38:00 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q161740> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:38:00 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q161740> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:38:13 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q103300> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:38:13 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q103300> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:38:13 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q103300> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:38:13 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q103300> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:38:13 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q103300> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:38:13 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q103300> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:38:17 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q46090> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:38:17 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q46090> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:38:17 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q46090> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:38:17 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q46090> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:38:17 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q46090> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:38:17 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q46090> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:38:22 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q170395> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:38:22 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q170395> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:38:22 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q170395> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:38:22 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q170395> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:38:22 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q170395> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:38:22 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q170395> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:38:24 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q80028> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth))
+12:38:24 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q80028> <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth
+12:38:24 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q80028> <http://www.wikidata.org/prop/direct/P18> ?picture))
+12:38:24 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q80028> <http://www.wikidata.org/prop/direct/P18> ?picture
+12:38:24 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q80028> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:38:24 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q80028> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath
+12:38:24 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q80028> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath))
+12:38:24 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q80028> <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath

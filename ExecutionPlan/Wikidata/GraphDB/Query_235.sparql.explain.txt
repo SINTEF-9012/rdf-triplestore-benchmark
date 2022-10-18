@@ -1,0 +1,26 @@
+plan
+"PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT (COUNT(?statement) AS ?statements)
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?_anon_d353158e_a900_47bd_ab74_f08a60ebc887 pr:P248 ?_anon_d214eede_23c1_4787_8d8d_5e11e68bd497 . # 	Collection size: 8.0058748E7	Predicate collection size: 8.0058748E7	Unique subjects: 7.9445545E7	Unique objects: 322637.0	Current complexity: 8.0058748E7
+    ?_anon_d214eede_23c1_4787_8d8d_5e11e68bd497 wdt:P356 ?doi . # 	Collection size: 2.7160717E7	Predicate collection size: 2.7160717E7	Unique subjects: 2.7156808E7	Unique objects: 2.7127917E7	Current complexity: 8.00702718008065E7
+    ?statement prov:wasDerivedFrom ?_anon_d353158e_a900_47bd_ab74_f08a60ebc887 . # 	Collection size: 1.052141545E9	Predicate collection size: 1.052141545E9	Unique subjects: 1.036775669E9	Unique objects: 9.4473134E7	Current complexity: 8.917377450511007E8
+    ?entry ?p ?statement . # 	Collection size: 1.6143385121E10	Predicate collection size: 1.6143385121E10	Unique subjects: 9.755125685E9	Unique objects: 4.63666434E9	Current complexity: 3.1047461687278466E9
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 3.1047461687278466E9
+  
+}
+GROUP BY 
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

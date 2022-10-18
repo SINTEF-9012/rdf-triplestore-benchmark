@@ -1,0 +1,233 @@
+14:47:08 INFO  exec            :: QUERY
+  PREFIX  schema: <http://schema.org/>
+  PREFIX  pq:   <http://www.wikidata.org/prop/qualifier/>
+  PREFIX  bd:   <http://www.bigdata.com/rdf#>
+  PREFIX  pr:   <http://www.wikidata.org/prop/reference/>
+  PREFIX  ps:   <http://www.wikidata.org/prop/statement/>
+  PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
+  PREFIX  geof: <http://www.opengis.net/def/geosparql/function/>
+  PREFIX  wdt:  <http://www.wikidata.org/prop/direct/>
+  PREFIX  wds:  <http://www.wikidata.org/entity/statement/>
+  PREFIX  wdv:  <http://www.wikidata.org/value/>
+  PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>
+  PREFIX  skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX  psn:  <http://www.wikidata.org/prop/statement/value-normalized/>
+  PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX  pqn:  <http://www.wikidata.org/prop/qualifier/value-normalized/>
+  PREFIX  wd:   <http://www.wikidata.org/entity/>
+  PREFIX  geo:  <http://www.opengis.net/ont/geosparql#>
+  PREFIX  psv:  <http://www.wikidata.org/prop/statement/value/>
+  PREFIX  dct:  <http://purl.org/dc/terms/>
+  PREFIX  pqv:  <http://www.wikidata.org/prop/qualifier/value/>
+  PREFIX  ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+  PREFIX  wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+  PREFIX  wdref: <http://www.wikidata.org/reference/>
+  PREFIX  prov: <http://www.w3.org/ns/prov#>
+  PREFIX  cc:   <http://creativecommons.org/ns#>
+  PREFIX  wikibase: <http://wikiba.se/ontology#>
+  PREFIX  prn:  <http://www.wikidata.org/prop/reference/value-normalized/>
+  PREFIX  p:    <http://www.wikidata.org/prop/>
+  PREFIX  wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+  PREFIX  prv:  <http://www.wikidata.org/prop/reference/value/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  hint: <http://www.bigdata.com/queryHints#>
+  PREFIX  wdno: <http://www.wikidata.org/prop/novalue/>
+  
+  SELECT  ?doctor ?doctorLabel ?ordinal ?performer ?performerLabel
+  WHERE
+    { ?doctor  wdt:P31  wd:Q47543030
+      OPTIONAL
+        { ?doctor  wdt:P1545  ?ordinal }
+      OPTIONAL
+        { ?doctor p:P175/ps:P175 ?performer }
+    }
+  ORDER BY ASC(xsd:integer(?ordinal))
+14:47:08 INFO  exec            :: ALGEBRA
+  (project (?doctor ?doctorLabel ?ordinal ?performer ?performerLabel)
+    (order ((asc (<http://www.w3.org/2001/XMLSchema#integer> ?ordinal)))
+      (conditional
+        (conditional
+          (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?doctor <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q47543030>))
+          (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?doctor <http://www.wikidata.org/prop/direct/P1545> ?ordinal)))
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?doctor <http://www.wikidata.org/prop/P175> ??P0)
+          (quad <urn:x-arq:DefaultGraphNode> ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer)
+        ))))
+14:47:08 INFO  exec            :: TDB2
+  (project (?doctor ?doctorLabel ?ordinal ?performer ?performerLabel)
+    (order ((asc (<http://www.w3.org/2001/XMLSchema#integer> ?ordinal)))
+      (conditional
+        (conditional
+          (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?doctor <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q47543030>))
+          (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?doctor <http://www.wikidata.org/prop/direct/P1545> ?ordinal)))
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?doctor <http://www.wikidata.org/prop/P175> ??P0)
+          (quad <urn:x-arq:DefaultGraphNode> ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer)
+        ))))
+14:47:08 INFO  exec            :: Execute ::   ?doctor <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q47543030>
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q945808> <http://www.wikidata.org/prop/direct/P1545> ?ordinal))
+14:47:08 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q945808> <http://www.wikidata.org/prop/direct/P1545> ?ordinal
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q945808> <http://www.wikidata.org/prop/P175> ??P0)
+    (quad <urn:x-arq:DefaultGraphNode> ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer)
+  )
+14:47:08 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q945808> <http://www.wikidata.org/prop/P175> ??P0
+  ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2063885> <http://www.wikidata.org/prop/direct/P1545> ?ordinal))
+14:47:08 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q2063885> <http://www.wikidata.org/prop/direct/P1545> ?ordinal
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2063885> <http://www.wikidata.org/prop/P175> ??P0)
+    (quad <urn:x-arq:DefaultGraphNode> ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer)
+  )
+14:47:08 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q2063885> <http://www.wikidata.org/prop/P175> ??P0
+  ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q97367411> <http://www.wikidata.org/prop/direct/P1545> ?ordinal))
+14:47:08 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q97367411> <http://www.wikidata.org/prop/direct/P1545> ?ordinal
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q97367411> <http://www.wikidata.org/prop/P175> ??P0)
+    (quad <urn:x-arq:DefaultGraphNode> ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer)
+  )
+14:47:08 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q97367411> <http://www.wikidata.org/prop/P175> ??P0
+  ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2560380> <http://www.wikidata.org/prop/direct/P1545> ?ordinal))
+14:47:08 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q2560380> <http://www.wikidata.org/prop/direct/P1545> ?ordinal
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2560380> <http://www.wikidata.org/prop/P175> ??P0)
+    (quad <urn:x-arq:DefaultGraphNode> ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer)
+  )
+14:47:08 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q2560380> <http://www.wikidata.org/prop/P175> ??P0
+  ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q33085422> <http://www.wikidata.org/prop/direct/P1545> ?ordinal))
+14:47:08 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q33085422> <http://www.wikidata.org/prop/direct/P1545> ?ordinal
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q33085422> <http://www.wikidata.org/prop/P175> ??P0)
+    (quad <urn:x-arq:DefaultGraphNode> ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer)
+  )
+14:47:08 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q33085422> <http://www.wikidata.org/prop/P175> ??P0
+  ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2580478> <http://www.wikidata.org/prop/direct/P1545> ?ordinal))
+14:47:08 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q2580478> <http://www.wikidata.org/prop/direct/P1545> ?ordinal
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2580478> <http://www.wikidata.org/prop/P175> ??P0)
+    (quad <urn:x-arq:DefaultGraphNode> ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer)
+  )
+14:47:08 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q2580478> <http://www.wikidata.org/prop/P175> ??P0
+  ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2509701> <http://www.wikidata.org/prop/direct/P1545> ?ordinal))
+14:47:08 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q2509701> <http://www.wikidata.org/prop/direct/P1545> ?ordinal
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2509701> <http://www.wikidata.org/prop/P175> ??P0)
+    (quad <urn:x-arq:DefaultGraphNode> ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer)
+  )
+14:47:08 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q2509701> <http://www.wikidata.org/prop/P175> ??P0
+  ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2667397> <http://www.wikidata.org/prop/direct/P1545> ?ordinal))
+14:47:08 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q2667397> <http://www.wikidata.org/prop/direct/P1545> ?ordinal
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2667397> <http://www.wikidata.org/prop/P175> ??P0)
+    (quad <urn:x-arq:DefaultGraphNode> ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer)
+  )
+14:47:08 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q2667397> <http://www.wikidata.org/prop/P175> ??P0
+  ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2662491> <http://www.wikidata.org/prop/direct/P1545> ?ordinal))
+14:47:08 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q2662491> <http://www.wikidata.org/prop/direct/P1545> ?ordinal
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2662491> <http://www.wikidata.org/prop/P175> ??P0)
+    (quad <urn:x-arq:DefaultGraphNode> ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer)
+  )
+14:47:08 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q2662491> <http://www.wikidata.org/prop/P175> ??P0
+  ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2989412> <http://www.wikidata.org/prop/direct/P1545> ?ordinal))
+14:47:08 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q2989412> <http://www.wikidata.org/prop/direct/P1545> ?ordinal
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2989412> <http://www.wikidata.org/prop/P175> ??P0)
+    (quad <urn:x-arq:DefaultGraphNode> ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer)
+  )
+14:47:08 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q2989412> <http://www.wikidata.org/prop/P175> ??P0
+  ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q15156468> <http://www.wikidata.org/prop/direct/P1545> ?ordinal))
+14:47:08 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q15156468> <http://www.wikidata.org/prop/direct/P1545> ?ordinal
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q15156468> <http://www.wikidata.org/prop/P175> ??P0)
+    (quad <urn:x-arq:DefaultGraphNode> ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer)
+  )
+14:47:08 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q15156468> <http://www.wikidata.org/prop/P175> ??P0
+  ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2656347> <http://www.wikidata.org/prop/direct/P1545> ?ordinal))
+14:47:08 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q2656347> <http://www.wikidata.org/prop/direct/P1545> ?ordinal
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2656347> <http://www.wikidata.org/prop/P175> ??P0)
+    (quad <urn:x-arq:DefaultGraphNode> ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer)
+  )
+14:47:08 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q2656347> <http://www.wikidata.org/prop/P175> ??P0
+  ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2662867> <http://www.wikidata.org/prop/direct/P1545> ?ordinal))
+14:47:08 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q2662867> <http://www.wikidata.org/prop/direct/P1545> ?ordinal
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2662867> <http://www.wikidata.org/prop/P175> ??P0)
+    (quad <urn:x-arq:DefaultGraphNode> ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer)
+  )
+14:47:08 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q2662867> <http://www.wikidata.org/prop/P175> ??P0
+  ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q14460218> <http://www.wikidata.org/prop/direct/P1545> ?ordinal))
+14:47:08 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q14460218> <http://www.wikidata.org/prop/direct/P1545> ?ordinal
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q14460218> <http://www.wikidata.org/prop/P175> ??P0)
+    (quad <urn:x-arq:DefaultGraphNode> ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer)
+  )
+14:47:08 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q14460218> <http://www.wikidata.org/prop/P175> ??P0
+  ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2560858> <http://www.wikidata.org/prop/direct/P1545> ?ordinal))
+14:47:08 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q2560858> <http://www.wikidata.org/prop/direct/P1545> ?ordinal
+14:47:08 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2560858> <http://www.wikidata.org/prop/P175> ??P0)
+    (quad <urn:x-arq:DefaultGraphNode> ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer)
+  )
+14:47:08 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q2560858> <http://www.wikidata.org/prop/P175> ??P0
+  ??P0 <http://www.wikidata.org/prop/statement/P175> ?performer
+Time: 0.241 sec

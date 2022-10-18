@@ -1,0 +1,25 @@
+plan
+"PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT (COUNT(?work) AS ?count) ?subject ?subjectLabel
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?work wdt:P921 ?subject . # 	Collection size: 1.8730235E7	Predicate collection size: 1.8730235E7	Unique subjects: 1.3182003E7	Unique objects: 850291.0	Current complexity: 1.8730235E7
+    ?work wdt:P31 wd:Q13442814 . # 	Collection size: 3.7412809E7	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 1.8730235E7
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 1.8730235E7
+  
+}
+GROUP BY ?subject ?subjectLabel
+ORDER BY DESC(?count)
+LIMIT 200
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

@@ -1,0 +1,81 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT DISTINCT ?item ?itemLabel_ol ?official_language ?itemLabel_en WHERE {
+  ?item wdt:P30 wd:Q15 ;
+        wdt:P37 ?officiallanguage ;
+        wdt:P31 wd:Q6256 .
+  ?officiallanguage wdt:P424 ?langcode .
+  ?item rdfs:label ?itemLabel_ol . FILTER(lang(?itemLabel_ol)=?langcode)
+  ?item rdfs:label ?itemLabel_en . FILTER(lang(?itemLabel_en)='en')
+  ?officiallanguage rdfs:label ?official_language . FILTER(lang(?official_language)='en')
+}
+ORDER BY ?item ?itemLabel_lol ?official_language
+
+The Query Plan:
+
+Profiling results:
+Query executed in 1316850 ms and returned 97 result(s)
+Total used memory: 4.4M
+Pre-execution time: 153 ms (0.0%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Distinct [#1], memory: 224K (5.0%), results: 97, wall time: 0 ms (0.0%)
+`─ Projection(?item, ?itemLabel_ol, ?official_language, ?itemLabel_en) [#1], results: 97, wall time: 0 ms (0.0%)
+   `─ OrderBy(ASC(?item), ASC(?itemLabel_lol), ASC(?official_language)) [#1], memory: 256K (5.7%), results: 97, wall time: 14 ms (0.0%)
+      `─ Filter(Lang(?itemLabel_ol) = ?langcode) [#1], results: 97, wall time: 295 ms (0.0%)
+         `─ Filter("en" = Lang(?itemLabel_en)) [#1], results: 25K, wall time: 2432 ms (0.2%)
+            `─ Filter("en" = Lang(?official_language)) [#1], results: 6.5M, wall time: 436843 ms (33.2%)
+               `─ DirectHashJoin(?item) [#1], results: 1362.5M, wall time: 379918 ms (28.9%)
+                  +─ MergeJoin(?officiallanguage) [#1], results: 5.4M, wall time: 1501 ms (0.1%)
+                  │  +─ MergeJoin(?officiallanguage) [#1], results: 3.3K (with gaps), wall time: 5 ms (0.0%)
+                  │  │  +─ Scan[PSOC](?officiallanguage, rdfs:label, ?official_language) [#586.7M], results: 3.4K (with gaps), wall time: 61 ms (0.0%)
+                  │  │  `─ Scan[PSOC](?officiallanguage, <http://www.wikidata.org/prop/direct/P424>, ?langcode) [#1], results: 67 (with gaps), wall time: 3 ms (0.0%)
+                  │  `─ Sort(?officiallanguage) [#1], memory: 1.7M (39.3%), results: 25K (with gaps), wall time: 38 ms (0.0%)
+                  │     `─ NaryJoin(?item) [#1], results: 28K, wall time: 11 ms (0.0%)
+                  │        +─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P31>, <http://www.wikidata.org/entity/Q6256>) [#622], results: 106 (with gaps), wall time: 0 ms (0.0%)
+                  │        +─ Scan[PSOC](?item, rdfs:label, ?itemLabel_en) [#586.7M], results: 13K (with gaps), wall time: 31 ms (0.0%)
+                  │        +─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P30>, <http://www.wikidata.org/entity/Q15>) [#13K], results: 79 (with gaps), wall time: 2 ms (0.0%)
+                  │        `─ Scan[PSOC](?item, <http://www.wikidata.org/prop/direct/P37>, ?officiallanguage) [#1], results: 164 (with gaps), wall time: 7 ms (0.0%)
+                  `─ Scan[PSOC](?item, rdfs:label, ?itemLabel_ol) [#586.7M], results: 1367.8M (with gaps), wall time: 495535 ms (37.6%)
+

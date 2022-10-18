@@ -1,0 +1,87 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+# Ten largest islands in the world
+# Inspired by this infographic: https://redd.it/a6423t
+
+#defaultView:ImageGrid
+SELECT DISTINCT ?island ?islandLabel ?islandImage WHERE {
+  # Instances of island (or of subclasses of island)
+  ?island (wdt:P31/wdt:P279*) wd:Q23442.
+  # Optionally with an image
+  OPTIONAL { ?island wdt:P18 ?islandImage. }
+  # Get the area of the island
+  # Use the psn: prefix to normalize the values to a common unit of area
+  ?island p:P2046/psn:P2046/wikibase:quantityAmount ?islandArea.
+  # Use the label service to automatically fill ?islandLabel
+  #SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+ORDER BY DESC(?islandArea)
+LIMIT 10
+
+The Query Plan:
+
+Profiling results:
+Query executed in 57329 ms and returned 10 result(s)
+Total used memory: 8.5G
+Pre-execution time: 16 ms (0.0%)
+Post-processing time: 3 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Slice(offset=0, limit=10) [#10], results: 10, wall time: 0 ms (0.0%)
+`─ Distinct [#101.9M], memory: 224K (0.0%), results: 10, wall time: 0 ms (0.0%)
+   `─ Projection(?island, ?islandLabel, ?islandImage) [#101.9M], results: 11, wall time: 0 ms (0.0%)
+      `─ OrderBy(DESC(?islandArea)) [#101.9M], memory: 3.7M (0.0%), results: 11, wall time: 186 ms (0.3%)
+         `─ HashJoin(?cmmdhctm) [#101.9M], memory: 3.8G (44.7%), results: 18K, wall time: 27445 ms (47.9%)
+            +─ HashJoinOuter(?island) [#101.9M], memory: 413M (4.7%), results: 18K, wall time: 2151 ms (3.8%)
+            │  +─ HashJoin(?jrjdufap) [#101.9M], memory: 288K (0.0%), results: 17K, wall time: 292 ms (0.5%)
+            │  │  +─ MergeJoin(?dljpdepm) [#419K], results: 798K, wall time: 261 ms (0.5%)
+            │  │  │  +─ Scan[PSOC](?dljpdepm, <http://www.wikidata.org/prop/statement/value-normalized/P2046>, ?cmmdhctm) [#663K], results: 662K (with gaps), wall time: 288 ms (0.5%)
+            │  │  │  `─ Sort(?dljpdepm) [#419K], memory: 43M (0.5%), results: 798K (with gaps), wall time: 932 ms (1.6%)
+            │  │  │     `─ MergeJoin(?island) [#419K], results: 798K, wall time: 404 ms (0.7%)
+            │  │  │        +─ Scan[PSOC](?island, <http://www.wikidata.org/prop/direct/P31>, ?jrjdufap) [#97.7M], results: 1.0M (with gaps), wall time: 4077 ms (7.1%)
+            │  │  │        `─ Scan[PSOC](?island, <http://www.wikidata.org/prop/P2046>, ?dljpdepm) [#663K], results: 663K (with gaps), wall time: 270 ms (0.5%)
+            │  │  `─ PropertyPath(?jrjdufap -> <http://www.wikidata.org/entity/Q23442>, minLength=0, reversed) [#15K], results: 58, wall time: 0 ms (0.0%)
+            │  │     `─ Scan[POSC](?jrjdufap, <http://www.wikidata.org/prop/direct/P279>, <http://www.wikidata.org/entity/Q23442>) [#17]
+            │  `─ Scan[POSC](?island, <http://www.wikidata.org/prop/direct/P18>, ?islandImage) [#4.1M], results: 4.1M, wall time: 1480 ms (2.6%)
+            `─ Scan[PSOC](?cmmdhctm, <http://wikiba.se/ontology#quantityAmount>, ?islandArea) [#52.8M], results: 52.8M, wall time: 19506 ms (34.0%)
+

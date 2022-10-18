@@ -1,0 +1,65 @@
+plan
+"PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT DISTINCT ?actor ?actorLabel ?characterLabel ?movie1Label ?movie2Label
+{
+  {
+    {
+      
+      { # ----- Begin optimization group 1 -----
+        
+        ?_anon_16658876_43db_4770_99e0_5d03a9d66eae pq:P453 ?character . # 	Collection size: 75344.0	Predicate collection size: 75344.0	Unique subjects: 73708.0	Unique objects: 28306.0	Current complexity: 75344.0
+        ?_anon_16658876_43db_4770_99e0_5d03a9d66eae ps:P161 ?actor . # 	Collection size: 1369147.0	Predicate collection size: 1369147.0	Unique subjects: 1369147.0	Unique objects: 191933.0	Current complexity: 75344.0
+        ?movie1 p:P161 ?_anon_16658876_43db_4770_99e0_5d03a9d66eae . # 	Collection size: 1370103.0	Predicate collection size: 1370103.0	Unique subjects: 221000.0	Unique objects: 1370103.0	Current complexity: 75344.0
+        ?movie1 wdt:P577 ?movie1Publication . # 	Collection size: 3.9845019E7	Predicate collection size: 3.9845019E7	Unique subjects: 3.9735932E7	Unique objects: 55311.0	Current complexity: 75550.84178058286
+        ?_anon_7f7506d1_bf07_4e6f_b1da_092e9414fd8c pq:P453 ?character . # 	Collection size: 75344.0	Predicate collection size: 75344.0	Unique subjects: 73708.0	Unique objects: 28306.0	Current complexity: 201098.79965789005
+        ?_anon_7f7506d1_bf07_4e6f_b1da_092e9414fd8c ps:P161 ?actor . # 	Collection size: 1369147.0	Predicate collection size: 1369147.0	Unique subjects: 1369147.0	Unique objects: 191933.0	Current complexity: 201098.79965789005
+        ?movie2 p:P161 ?_anon_7f7506d1_bf07_4e6f_b1da_092e9414fd8c . # 	Collection size: 1370103.0	Predicate collection size: 1370103.0	Unique subjects: 221000.0	Unique objects: 1370103.0	Current complexity: 201098.79965789005
+        ?movie2 wdt:P577 ?movie2Publication . # 	Collection size: 3.9845019E7	Predicate collection size: 3.9845019E7	Unique subjects: 3.9735932E7	Unique objects: 55311.0	Current complexity: 201650.875918698
+        
+      } # ----- End optimization group 1 -----
+      # ESTIMATED NUMBER OF ITERATIONS: 201650.875918698
+      
+    }
+    MINUS
+    {
+      
+      { # ----- Begin optimization group 2 -----
+        
+        ArbitraryLengthPath ( min=0, from _anon_ce20118e_9851_4adf_8ca1_a611d8ed9fe8, to __const_24d60d1c_uri) over {
+	 [ _anon_ce20118e_9851_4adf_8ca1_a611d8ed9fe8 http://www.wikidata.org/prop/direct/P279 http://www.wikidata.org/entity/Q24856 ]
+	 }  # Collection size: 500.0
+        ?movie1 wdt:P31 ?_anon_ce20118e_9851_4adf_8ca1_a611d8ed9fe8 . # 	Collection size: 9.768112E7	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 4.884056E10
+        
+      } # ----- End optimization group 2 -----
+      # ESTIMATED NUMBER OF ITERATIONS: 4.884056E10
+      
+    }
+  }
+  MINUS
+  {
+    
+    { # ----- Begin optimization group 3 -----
+      
+      ArbitraryLengthPath ( min=0, from _anon_d22705ed_d9e9_4812_9380_556a88c01c47, to __const_24d60d1c_uri) over {
+	 [ _anon_d22705ed_d9e9_4812_9380_556a88c01c47 http://www.wikidata.org/prop/direct/P279 http://www.wikidata.org/entity/Q24856 ]
+	 }  # Collection size: 500.0
+      ?movie2 wdt:P31 ?_anon_d22705ed_d9e9_4812_9380_556a88c01c47 . # 	Collection size: 9.768112E7	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 4.884056E10
+      
+    } # ----- End optimization group 3 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 4.884056E10
+    
+  }
+  FILTER (?character != wd:Q18086706)
+  FILTER ((?movie1Publication + ""P40Y""^^<http://www.w3.org/2001/XMLSchema#duration>) < ?movie2Publication)
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

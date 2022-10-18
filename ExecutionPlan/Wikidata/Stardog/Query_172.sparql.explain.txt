@@ -1,0 +1,105 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+# variants that are associated with renal cell carcinoma
+SELECT DISTINCT ?civic_id ?item ?itemLabel
+WHERE
+{
+  VALUES ?property {
+                      wdt:P3356 # positive diagnostic predictor
+                      wdt:P3357 # negative diagnostic predictor
+                      wdt:P3358 # positive prognostic predicator
+                      wdt:P3359 # negative prognostic predictor
+                     }
+    ?item wdt:P3329 ?civic_id .
+    {?item  ?property wd:Q1164529.} # wd:Q1164529 = renal cell carcinoma
+    UNION
+    {?item p:P3354 ?o . # positive therapeutic predictor
+     ?o pq:P2175 wd:Q1164529 .}
+    UNION
+    {?item p:P3354 ?o . # negative therapeutic predictor
+     ?o pq:P2175 wd:Q1164529 .}
+     
+  #SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en" }
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 5 ms and returned 10 result(s)
+Total used memory: 961K
+Pre-execution time: 1 ms (20.0%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Distinct [#24], memory: 224K (23.3%), results: 10, wall time: 0 ms (0.0%)
+`─ Projection(?civic_id, ?item, ?itemLabel) [#24], results: 67, wall time: 0 ms (0.0%)
+   `─ NestedLoopJoin(_) [#24], results: 67, wall time: 0 ms (0.0%)
+      +─ MergeJoin(?item) [#6], results: 19, wall time: 2 ms (40.0%)
+      │  +─ Scan[PSOC](?item, <http://www.wikidata.org/prop/direct/P3329>, ?civic_id) [#1], results: 19 (with gaps), wall time: 0 ms (0.0%)
+      │  `─ Sort(?item) [#6], memory: 256K (26.7%), results: 19 (with gaps), wall time: 0 ms (0.0%)
+      │     `─ Union [#6], results: 19, wall time: 1 ms (20.0%)
+      │        +─ Union [#4], results: 3, wall time: 0 ms (0.0%)
+      │        │  +─ Union [#3], results: 2, wall time: 0 ms (0.0%)
+      │        │  │  +─ Union [#2], results: 1, wall time: 0 ms (0.0%)
+      │        │  │  │  +─ Bind(<http://www.wikidata.org/prop/direct/P3356> AS ?property) sortedBy=?property [#1], results: 1, wall time: 0 ms (0.0%)
+      │        │  │  │  │  `─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P3356>, <http://www.wikidata.org/entity/Q1164529>) [#1], results: 1, wall time: 0 ms (0.0%)
+      │        │  │  │  `─ Bind(<http://www.wikidata.org/prop/direct/P3357> AS ?property) sortedBy=?property [#1], results: 0, wall time: 0 ms (0.0%)
+      │        │  │  │     `─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P3357>, <http://www.wikidata.org/entity/Q1164529>) [#1], results: 0, wall time: 0 ms (0.0%)
+      │        │  │  `─ Bind(<http://www.wikidata.org/prop/direct/P3358> AS ?property) sortedBy=?property [#1], results: 1, wall time: 0 ms (0.0%)
+      │        │  │     `─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P3358>, <http://www.wikidata.org/entity/Q1164529>) [#1], results: 1, wall time: 0 ms (0.0%)
+      │        │  `─ Bind(<http://www.wikidata.org/prop/direct/P3359> AS ?property) sortedBy=?property [#1], results: 1, wall time: 0 ms (0.0%)
+      │        │     `─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P3359>, <http://www.wikidata.org/entity/Q1164529>) [#1], results: 1, wall time: 0 ms (0.0%)
+      │        `─ Union [#2], results: 16, wall time: 0 ms (0.0%)
+      │           +─ MergeJoin(?o) [#1], results: 8, wall time: 1 ms (20.0%)
+      │           │  +─ Scan[POSC](?o, <http://www.wikidata.org/prop/qualifier/P2175>, <http://www.wikidata.org/entity/Q1164529>) [#1], results: 10 (with gaps), wall time: 0 ms (0.0%)
+      │           │  `─ Scan[POSC](?item, <http://www.wikidata.org/prop/P3354>, ?o) [#1], results: 17 (with gaps), wall time: 0 ms (0.0%)
+      │           `─ MergeJoin(?o) [#1], results: 8, wall time: 0 ms (0.0%)
+      │              +─ Scan[POSC](?o, <http://www.wikidata.org/prop/qualifier/P2175>, <http://www.wikidata.org/entity/Q1164529>) [#1], results: 10 (with gaps), wall time: 0 ms (0.0%)
+      │              `─ Scan[POSC](?item, <http://www.wikidata.org/prop/P3354>, ?o) [#1], results: 17 (with gaps), wall time: 0 ms (0.0%)
+      `─ VALUES (?property) {
+         +─ ( <http://www.wikidata.org/prop/direct/P3356> )
+         +─ ( <http://www.wikidata.org/prop/direct/P3357> )
+         +─ ( <http://www.wikidata.org/prop/direct/P3358> )
+         `─ ( <http://www.wikidata.org/prop/direct/P3359> )
+         }, results: 76, wall time: 0 ms (0.0%)
+

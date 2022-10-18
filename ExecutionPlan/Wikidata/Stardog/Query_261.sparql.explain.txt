@@ -1,0 +1,92 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT ?h ?hLabel ?location (CONCAT("injured: ",str(?injured)) as ?injuredl) (concat("dead: ",str(?dead)) as ?deadl) ?date ?image
+WHERE
+{
+        ?h wdt:P31 ?attack. 
+    values (?attack) {
+      (wd:Q18493502)
+      (wd:Q217327)
+     
+     
+    }
+    optional {    ?h wdt:P1339 ?injured . }
+    optional {    ?h wdt:P1120 ?dead. }
+    optional {    ?h wdt:P276?/wdt:P625 ?location }
+    optional {    ?h wdt:P585 ?date }
+    optional {    ?h wdt:P18 ?image }
+  #SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en" }
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 872416 ms and hit an error: IllegalStateException: Cannot use a closed connection
+Pre-execution time: 971 ms (0.1%)
+Post-processing time: 40 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Projection(?h, ?hLabel, ?location, ?injuredl, ?deadl, ?date, ?image) [#831], results: 92, wall time: 0 ms (0.0%)
+`─ Bind(CONCAT("injured: ", Str(?injured)) AS ?injuredl) (CONCAT("dead: ", Str(?dead)) AS ?deadl) sortedBy=?h [#831], results: 92, wall time: 6 ms (0.0%)
+   `─ MergeJoinOuter(?h) [#831], results: 92, wall time: 2 ms (0.0%)
+      +─ MergeJoinOuter(?h) [#831], results: 71, wall time: 2 ms (0.0%)
+      │  +─ BindJoinOuter(?h) [#831], results: 71, wall time: 871325 ms (99.9%)
+      │  │  +─ MergeJoinOuter(?h) [#4], results: 40, wall time: 1 ms (0.0%)
+      │  │  │  +─ MergeJoinOuter(?h) [#4], results: 40, wall time: 2 ms (0.0%)
+      │  │  │  │  +─ Union [#4], results: 40, wall time: 0 ms (0.0%)
+      │  │  │  │  │  +─ Bind(<http://www.wikidata.org/entity/Q18493502> AS ?attack) sortedBy=?h [#3], results: 20, wall time: 1 ms (0.0%)
+      │  │  │  │  │  │  `─ Scan[POSC](?h, <http://www.wikidata.org/prop/direct/P31>, <http://www.wikidata.org/entity/Q18493502>) [#3], results: 20, wall time: 1 ms (0.0%)
+      │  │  │  │  │  `─ Bind(<http://www.wikidata.org/entity/Q217327> AS ?attack) sortedBy=?h [#1], results: 21, wall time: 1 ms (0.0%)
+      │  │  │  │  │     `─ Scan[POSC](?h, <http://www.wikidata.org/prop/direct/P31>, <http://www.wikidata.org/entity/Q217327>) [#1], results: 21, wall time: 0 ms (0.0%)
+      │  │  │  │  `─ Scan[PSOC](?h, <http://www.wikidata.org/prop/direct/P1339>, ?injured) [#1], results: 68 (with gaps), wall time: 5 ms (0.0%)
+      │  │  │  `─ Scan[PSOC](?h, <http://www.wikidata.org/prop/direct/P1120>, ?dead) [#1], results: 70 (with gaps), wall time: 5 ms (0.0%)
+      │  │  `─ MergeJoin(?xnqaqart) [#11.2M]
+      │  │     +─ PropertyPath(?h -> ?xnqaqart, minLength=0, maxLength=1, sortedBy=?xnqaqart, reversed) [#11.1M]
+      │  │     │  +─ Distinct [#8.8M]
+      │  │     │  │  `─ Projection(?xnqaqart) [#8.8M]
+      │  │     │  │     `─ Scan[PSOC](?xnqaqart, <http://www.wikidata.org/prop/direct/P625>, ?location) [#8.8M]
+      │  │     │  `─ Scan[POSC](?h, <http://www.wikidata.org/prop/direct/P276>, ?xnqaqart) [#2.4M]
+      │  │     `─ Scan[PSOC](?xnqaqart, <http://www.wikidata.org/prop/direct/P625>, ?location) [#8.8M]
+      │  `─ Scan[PSOC](?h, <http://www.wikidata.org/prop/direct/P585>, ?date) [#829K], results: 77 (with gaps), wall time: 15 ms (0.0%)
+      `─ Scan[PSOC](?h, <http://www.wikidata.org/prop/direct/P18>, ?image) [#4.1M], results: 62 (with gaps), wall time: 30 ms (0.0%)
+

@@ -1,0 +1,84 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT ?item ?itemLabel ?count
+WHERE
+{
+  {
+    SELECT ?item (COUNT(DISTINCT ?country) AS ?count) WHERE {
+      ?item wdt:P31/wdt:P279* wd:Q41176 .
+      ?item wdt:P17 ?country .
+      FILTER NOT EXISTS { ?country wdt:P576 ?end }
+    }
+    GROUP BY ?item
+  }
+  FILTER ( ?count > 1 )
+  #SERVICE wikibase:label { bd:serviceParam wikibase:language "en" . }
+}
+ORDER BY DESC(?count) ?itemL
+
+The Query Plan:
+
+Profiling results:
+Query executed in 40407 ms and returned 2519 result(s)
+Total used memory: 56M
+Pre-execution time: 16 ms (0.0%)
+Post-processing time: 199 ms (0.5%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Projection(?item, ?itemLabel, ?count) [#8.9K], results: 2.5K, wall time: 0 ms (0.0%)
+`─ OrderBy(DESC(?count), ASC(?itemL)) [#8.9K], memory: 641K (1.1%), results: 2.5K, wall time: 12 ms (0.0%)
+   `─ Projection(?item, ?count) [#8.9K], results: 2.5K, wall time: 1 ms (0.0%)
+      `─ Filter("1"^^xsd:integer < ?count) [#8.9K], results: 2.5K, wall time: 448 ms (1.1%)
+         `─ Group(by=[?item] aggregates=[(COUNT(DISTINCT ?country) AS ?count)]) [#940K], results: 2.2M, wall time: 5004 ms (12.4%)
+            `─ Projection(?item, ?rzccbgde, ?country) [#940K], results: 2.3M, wall time: 362 ms (0.9%)
+               `─ Filter(!(Bound(?count))) [#940K], results: 2.3M, wall time: 548 ms (1.4%)
+                  `─ HashJoinOuter(?country) [#1.9M], memory: 26M (47.2%), results: 2.3M, wall time: 1386 ms (3.4%)
+                     +─ HashJoin(?rzccbgde) [#1.9M], memory: 993K (1.7%), results: 2.3M, wall time: 7880 ms (19.5%)
+                     │  +─ MergeJoin(?item) [#14.7M], results: 15.1M, wall time: 7215 ms (17.9%)
+                     │  │  +─ Scan[PSOC](?item, <http://www.wikidata.org/prop/direct/P31>, ?rzccbgde) [#97.7M], results: 19.4M (with gaps), wall time: 12435 ms (30.8%)
+                     │  │  `─ Scan[PSOC](?item, <http://www.wikidata.org/prop/direct/P17>, ?country) [#14.3M], results: 14.2M (with gaps), wall time: 4757 ms (11.8%)
+                     │  `─ PropertyPath(?rzccbgde -> <http://www.wikidata.org/entity/Q41176>, minLength=0, reversed) [#419], results: 7.0K, wall time: 25 ms (0.1%)
+                     │     `─ Scan[POSC](?rzccbgde, <http://www.wikidata.org/prop/direct/P279>, <http://www.wikidata.org/entity/Q41176>) [#418]
+                     `─ Bind("true"^^xsd:boolean AS ?count) sortedBy=?count [#230K], results: 230K, wall time: 52 ms (0.1%)
+                        `─ Scan[PSOC](?country, <http://www.wikidata.org/prop/direct/P576>, ?end) [#230K], results: 230K, wall time: 64 ms (0.2%)
+

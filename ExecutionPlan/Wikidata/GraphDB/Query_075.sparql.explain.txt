@@ -1,0 +1,48 @@
+plan
+"PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?doctor ?doctorLabel ?ordinal ?performer ?performerLabel
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?doctor wdt:P31 wd:Q47543030 . # 	Collection size: 15.0	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 15.0
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 15.0
+  
+  OPTIONAL
+  {
+    
+    { # ----- Begin optimization group 2 -----
+      
+      ?doctor wdt:P1545 ?ordinal . # 	Collection size: 197823.0	Predicate collection size: 197823.0	Unique subjects: 196287.0	Unique objects: 5534.0	Current complexity: 1.007825276253649
+      
+    } # ----- End optimization group 2 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 1.007825276253649
+    
+  }
+  OPTIONAL
+  {
+    
+    { # ----- Begin optimization group 3 -----
+      
+      ?doctor p:P175 ?_anon_219414c8_d9c5_4ed5_9879_e1e9fe3e712f . # 	Collection size: 481939.0	Predicate collection size: 481939.0	Unique subjects: 443333.0	Unique objects: 481939.0	Current complexity: 1.0870812684821567
+      ?_anon_219414c8_d9c5_4ed5_9879_e1e9fe3e712f ps:P175 ?performer . # 	Collection size: 481919.0	Predicate collection size: 481919.0	Unique subjects: 481919.0	Unique objects: 82163.0	Current complexity: 1.0870812684821567
+      
+    } # ----- End optimization group 3 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 1.0870812684821567
+    
+  }
+}
+ORDER BY ASC(xsd:integer(?ordinal))
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

@@ -1,0 +1,89 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+#Illustrates optional fields, instances of subclasses, language fallback on label service, date to year conversion
+#title: Horses on Wikidata
+SELECT DISTINCT ?horse ?horseLabel ?mother ?father (year(?birthdate) as ?birthyear) (year(?deathdate) as ?deathyear) ?genderLabel
+WHERE
+{
+  ?horse wdt:P31/wdt:P279* wd:Q726 .     # Instance et sous-classes de Q726-Cheval
+   
+  OPTIONAL{?horse wdt:P25 ?mother .}       # P25  : Mère
+  OPTIONAL{?horse wdt:P22 ?father .}       # P22  : Père
+  OPTIONAL{?horse wdt:P569 ?birthdate .} # P569 : Date de naissance
+  OPTIONAL{?horse wdt:P570 ?deathdate .}     # P570 : Date de décès
+  OPTIONAL{?horse wdt:P21 ?gender .}       # P21  : Sexe
+ 
+  #SERVICE wikibase:label { #BabelRainbow
+#    bd:serviceParam wikibase:language "[AUTO_LANGUAGE],fr,ar,be,bg,bn,ca,cs,da,de,el,en,es,et,fa,fi,he,hi,hu,hy,id,it,ja,jv,ko,nb,nl,eo,pa,pl,pt,ro,ru,sh,sk,sr,sv,sw,te,th,tr,uk,yue,vec,vi,zh"
+#  }
+}
+ORDER BY ?horse
+
+The Query Plan:
+
+Profiling results:
+Query executed in 26061 ms and returned 13600 result(s)
+Total used memory: 2.4G
+Pre-execution time: 18 ms (0.1%)
+Post-processing time: 11 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+OrderBy(ASC(?horse)) [#4.8M], memory: 2.7M (0.1%), results: 14K, wall time: 2628 ms (10.1%)
+`─ Distinct [#4.8M], memory: 1.6M (0.1%), results: 14K, wall time: 30 ms (0.1%)
+   `─ Projection(?horse, ?horseLabel, ?mother, ?father, ?birthyear, ?deathyear, ?genderLabel) [#4.8M], results: 14K, wall time: 6 ms (0.0%)
+      `─ Bind(YEAR(?birthdate) AS ?birthyear) (YEAR(?deathdate) AS ?deathyear) [#4.8M], results: 14K, wall time: 51 ms (0.2%)
+         `─ HashJoinOuter(?horse) [#4.8M], memory: 480M (19.6%), results: 14K, wall time: 3837 ms (14.7%)
+            +─ HashJoinOuter(?horse) [#4.8M], memory: 211M (8.6%), results: 14K, wall time: 1108 ms (4.3%)
+            │  +─ HashJoinOuter(?horse) [#4.8M], memory: 417M (17.0%), results: 14K, wall time: 2274 ms (8.7%)
+            │  │  +─ HashJoinOuter(?horse) [#4.8M], memory: 65M (2.7%), results: 14K, wall time: 338 ms (1.3%)
+            │  │  │  +─ HashJoinOuter(?horse) [#4.8M], memory: 47M (1.9%), results: 14K, wall time: 212 ms (0.8%)
+            │  │  │  │  +─ DirectHashJoin(?oogjnbne) [#4.8M], results: 14K, wall time: 12 ms (0.0%)
+            │  │  │  │  │  +─ PropertyPath(?oogjnbne -> <http://www.wikidata.org/entity/Q726>, minLength=0, reversed) [#23], results: 440, wall time: 2 ms (0.0%)
+            │  │  │  │  │  │  `─ Scan[POSC](?oogjnbne, <http://www.wikidata.org/prop/direct/P279>, <http://www.wikidata.org/entity/Q726>) [#22]
+            │  │  │  │  │  `─ Scan[POSC](?horse, <http://www.wikidata.org/prop/direct/P31>, ?oogjnbne) [#97.7M], results: 14K (with gaps), wall time: 41 ms (0.2%)
+            │  │  │  │  `─ Scan[POSC](?horse, <http://www.wikidata.org/prop/direct/P25>, ?mother) [#561K], results: 561K, wall time: 187 ms (0.7%)
+            │  │  │  `─ Scan[POSC](?horse, <http://www.wikidata.org/prop/direct/P22>, ?father) [#897K], results: 897K, wall time: 309 ms (1.2%)
+            │  │  `─ Scan[POSC](?horse, <http://www.wikidata.org/prop/direct/P569>, ?birthdate) [#5.3M], results: 5.3M, wall time: 1873 ms (7.2%)
+            │  `─ Scan[POSC](?horse, <http://www.wikidata.org/prop/direct/P570>, ?deathdate) [#2.7M], results: 2.7M, wall time: 1403 ms (5.4%)
+            `─ Scan[PSC](?horse, <http://www.wikidata.org/prop/direct/P21>, _) [#6.4M], results: 7.5M, wall time: 11715 ms (45.0%)
+

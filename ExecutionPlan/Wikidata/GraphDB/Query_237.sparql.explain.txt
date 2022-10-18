@@ -1,0 +1,45 @@
+plan
+"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?English ?language ?label
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?disease wdt:P699 ""DOID:399"" . # 	Collection size: 1.0	Predicate collection size: 12981.0	Unique subjects: 12820.0	Unique objects: 12966.0	Current complexity: 1.0
+    ?disease rdfs:label ?label . # 	Collection size: 5.86690314E8	Predicate collection size: 5.86690314E8	Unique subjects: 9.4931813E7	Unique objects: 5.4875668E8	Current complexity: 6.180123348113029
+    BIND (LANG(?label) AS ?languageCode) # Should be after ?label
+    ?wdLanguage wdt:P424 ?languageCode . # 	Collection size: 1881.0	Predicate collection size: 1881.0	Unique subjects: 1874.0	Unique objects: 693.0	Current complexity: 16.774620516306793
+    FILTER (EXISTS {
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+      
+      { # ----- Begin optimization group 2 -----
+      
+      ArbitraryLengthPath ( min=1, from _anon_df4ee5ab_fc3e_4edb_b6ec_0add3592ca49, to __const_d7c5e230_uri) over {
+      [ _anon_df4ee5ab_fc3e_4edb_b6ec_0add3592ca49 http://www.wikidata.org/prop/direct/P279 http://www.wikidata.org/entity/Q17376908 ]
+      }  # Collection size: 500.0
+      ArbitraryLengthPath ( min=0, from wdLanguage, to _anon_df4ee5ab_fc3e_4edb_b6ec_0add3592ca49) over {
+      [ wdLanguage http://www.wikidata.org/prop/direct/P31 _anon_df4ee5ab_fc3e_4edb_b6ec_0add3592ca49 ]
+      }  # Collection size: 3.029014414E9
+      
+      } # ----- End optimization group 2 -----
+      # ESTIMATED NUMBER OF ITERATIONS: 1.514507207E12    
+    })
+    ?disease rdfs:label ?English . # 	Collection size: 5.86690314E8	Predicate collection size: 5.86690314E8	Unique subjects: 9.4931813E7	Unique objects: 5.4875668E8	Current complexity: 103.66922390856345
+    FILTER (LANG(?English) = ""en"")
+    ?wdLanguage rdfs:label ?language . # 	Collection size: 5.86690314E8	Predicate collection size: 5.86690314E8	Unique subjects: 9.4931813E7	Unique objects: 5.4875668E8	Current complexity: 640.6885911580705
+    FILTER (LANG(?language) = ""en"")
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 640.6885911580705
+  
+}
+ORDER BY ASC(?language)
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

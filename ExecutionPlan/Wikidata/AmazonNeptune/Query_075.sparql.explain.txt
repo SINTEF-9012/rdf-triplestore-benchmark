@@ -1,0 +1,86 @@
+Query:
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+#added 2017-07-16, updated 2020-07-08
+SELECT ?doctor ?doctorLabel ?ordinal ?performer ?performerLabel
+WHERE {
+  ?doctor wdt:P31 wd:Q47543030 .
+  OPTIONAL { ?doctor wdt:P1545 ?ordinal }
+  OPTIONAL { ?doctor p:P175 / ps:P175 ?performer }
+  #SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en" }
+}
+ORDER BY ASC(xsd:integer(?ordinal) )
+
+╔════╤════════╤════════╤═══════════════════╤═════════════════════════════════════════════════════════════════════╤══════════╤══════════╤═══════════╤═══════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name              │ Arguments                                                           │ Mode     │ Units In │ Units Out │ Ratio │ Time (ms) ║
+╠════╪════════╪════════╪═══════════════════╪═════════════════════════════════════════════════════════════════════╪══════════╪══════════╪═══════════╪═══════╪═══════════╣
+║ 0  │ 1      │ -      │ SolutionInjection │ solutions=[{}]                                                      │ -        │ 0        │ 1         │ 0.00  │ 0         ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 1  │ 2      │ -      │ PipelineJoin      │ pattern=distinct(?doctor, wdt:P31, wd:Q47543030)                    │ -        │ 1        │ 15        │ 15.00 │ 0         ║
+║    │        │        │                   │ joinType=join                                                       │          │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?doctor]                                        │          │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=15                                                  │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 2  │ 3      │ -      │ PipelineJoin      │ pattern=distinct(?doctor, wdt:P1545, ?ordinal)                      │ -        │ 15       │ 15        │ 1.00  │ 53        ║
+║    │        │        │                   │ joinType=optional                                                   │          │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?doctor, ?ordinal]                              │          │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=424040                                              │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 3  │ 4      │ -      │ HashIndexBuild    │ solutionSet=solutionSet1                                            │ -        │ 15       │ 15        │ 1.00  │ 2         ║
+║    │        │        │                   │ joinVars=[?doctor]                                                  │          │          │           │       │           ║
+║    │        │        │                   │ sourceType=pipeline                                                 │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 4  │ 5      │ -      │ PipelineJoin      │ pattern=distinct(?doctor, p:P175, ?_internalVar2)                   │ -        │ 15       │ 17        │ 1.13  │ 5         ║
+║    │        │        │                   │ joinType=join                                                       │          │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?doctor, ?_internalVar2]                        │          │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=865724                                              │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 5  │ 6      │ -      │ PipelineJoin      │ pattern=distinct(?_internalVar2, ps:P175, ?performer)               │ -        │ 17       │ 17        │ 1.00  │ 60        ║
+║    │        │        │                   │ joinType=join                                                       │          │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?_internalVar2, ?performer]                     │          │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=1300630                                             │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 6  │ 7      │ -      │ HashIndexJoin     │ solutionSet=solutionSet1                                            │ -        │ 17       │ 17        │ 1.00  │ 3         ║
+║    │        │        │                   │ joinType=optional                                                   │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 7  │ 8      │ -      │ TermResolution    │ vars=[?ordinal]                                                     │ id2value │ 17       │ 17        │ 1.00  │ 12        ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 8  │ 9      │ -      │ Sort              │ sortOrder=[ASC(BIND(xsd:integer(?ordinal) AS ?_internalVar1))]      │ -        │ 17       │ 17        │ 1.00  │ 24        ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 9  │ 10     │ -      │ Projection        │ vars=[?doctor, ?doctorLabel, ?ordinal, ?performer, ?performerLabel] │ retain   │ 17       │ 17        │ 1.00  │ 0         ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 10 │ -      │ -      │ TermResolution    │ vars=[?doctor, ?doctorLabel, ?ordinal, ?performer, ?performerLabel] │ id2value │ 17       │ 17        │ 1.00  │ 71        ║
+╚════╧════════╧════════╧═══════════════════╧═════════════════════════════════════════════════════════════════════╧══════════╧══════════╧═══════════╧═══════╧═══════════╝
+

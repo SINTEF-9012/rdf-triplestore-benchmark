@@ -1,0 +1,84 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT ?item ?label ?coord ?place
+WHERE
+{
+  VALUES ?type {wd:Q571 wd:Q7725634}  # book or literary work
+  ?item wdt:P31 ?type .
+  ?item wdt:P577 ?date FILTER (?date < "1830-01-01T00:00:00Z"^^xsd:dateTime) .
+  ?item rdfs:label ?label filter (lang(?label) = "en")
+
+  OPTIONAL {
+    ?item (wdt:P291|wdt:P840) ?place .  # publication or narration place is ?place
+    ?place wdt:P625 ?coord
+  }
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 32866 ms and returned 2765 result(s)
+Total used memory: 73M
+Pre-execution time: 71 ms (0.2%)
+Post-processing time: 355 ms (1.1%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Projection(?item, ?label, ?coord, ?place) [#100], results: 2.8K, wall time: 3 ms (0.0%)
+`─ HashJoinOuter(?item) [#100], memory: 36M (50.0%), results: 2.8K, wall time: 197 ms (0.6%)
+   +─ Filter("en" = Lang(?label)) [#1], results: 2.7K, wall time: 1786 ms (5.4%)
+   │  `─ MergeJoin(?item) [#2.2K], results: 21K, wall time: 26 ms (0.1%)
+   │     +─ Union [#197K], results: 15K (with gaps), wall time: 9 ms (0.0%)
+   │     │  +─ Bind(<http://www.wikidata.org/entity/Q571> AS ?type) sortedBy=?item [#25K], results: 4.0K (with gaps), wall time: 3 ms (0.0%)
+   │     │  │  `─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P31>, <http://www.wikidata.org/entity/Q571>) [#25K], results: 4.0K (with gaps), wall time: 16 ms (0.0%)
+   │     │  `─ Bind(<http://www.wikidata.org/entity/Q7725634> AS ?type) sortedBy=?item [#172K], results: 15K (with gaps), wall time: 10 ms (0.0%)
+   │     │     `─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P31>, <http://www.wikidata.org/entity/Q7725634>) [#172K], results: 15K (with gaps), wall time: 42 ms (0.1%)
+   │     `─ MergeJoin(?item) [#823K], results: 31K (with gaps), wall time: 45 ms (0.1%)
+   │        +─ Scan[PSOC](?item, rdfs:label, ?label) [#586.7M], results: 42K (with gaps), wall time: 903 ms (2.7%)
+   │        `─ Filter("1830-01-01T00:00:00Z"^^xsd:dateTime > ?date) [#398K], results: 13K (with gaps), wall time: 18573 ms (56.5%)
+   │           `─ Scan[PSOC](?item, <http://www.wikidata.org/prop/direct/P577>, ?date) [#39.8M], results: 31.9M (with gaps), wall time: 10536 ms (32.1%)
+   `─ MergeJoin(?place) [#331K], results: 331K, wall time: 83 ms (0.3%)
+      +─ Union [#340K], results: 331K (with gaps), wall time: 42 ms (0.1%)
+      │  +─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P840>, ?place) [#84K], results: 77K (with gaps), wall time: 29 ms (0.1%)
+      │  `─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P291>, ?place) [#256K], results: 254K (with gaps), wall time: 87 ms (0.3%)
+      `─ Scan[PSOC](?place, <http://www.wikidata.org/prop/direct/P625>, ?coord) [#8.8M], results: 33K (with gaps), wall time: 46 ms (0.1%)
+

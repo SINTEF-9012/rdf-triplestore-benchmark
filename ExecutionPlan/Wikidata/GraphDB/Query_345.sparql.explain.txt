@@ -1,0 +1,38 @@
+plan
+"PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?item ?itemLabel ?reference ?referenceType
+{
+  {
+    
+    { # ----- Begin optimization group 1 -----
+      
+      ?item wdt:P921 wd:Q202864 . # 	Collection size: 6458.0	Predicate collection size: 1.8730235E7	Unique subjects: 1.3182003E7	Unique objects: 850291.0	Current complexity: 6458.0
+      ?item wdt:P31 wd:Q13442814 . # 	Collection size: 3.7412809E7	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 6458.0
+      ?reference ?referenceType ?item . # 	Collection size: 1.6143385121E10	Predicate collection size: 1.6143385121E10	Unique subjects: 9.755125685E9	Unique objects: 4.63666434E9	Current complexity: 22484.694484358122
+      
+    } # ----- End optimization group 1 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 22484.694484358122
+    
+  }
+  UNION
+  {
+    
+    { # ----- Begin optimization group 2 -----
+      
+      ?item wdt:P921 wd:Q8071861 . # 	Collection size: 160.0	Predicate collection size: 1.8730235E7	Unique subjects: 1.3182003E7	Unique objects: 850291.0	Current complexity: 160.0
+      ?item wdt:P31 wd:Q13442814 . # 	Collection size: 3.7412809E7	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 160.0
+      ?reference ?referenceType ?item . # 	Collection size: 1.6143385121E10	Predicate collection size: 1.6143385121E10	Unique subjects: 9.755125685E9	Unique objects: 4.63666434E9	Current complexity: 557.0689249763549
+      
+    } # ----- End optimization group 2 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 557.0689249763549
+    
+  }
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

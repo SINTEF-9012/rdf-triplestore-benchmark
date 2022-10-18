@@ -1,0 +1,79 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+select ?p ?pLabel (count (*) as ?count) {
+  ?s ?pd ?o .
+  ?p wikibase:directClaim ?pd .
+  ?s wdt:P31/wdt:P279* wd:Q729 .
+  ?o wdt:P31/wdt:P279* wd:Q43501 .
+  #SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+} group by ?p ?pLabel order by desc(?count)
+
+The Query Plan:
+
+Profiling results:
+Query executed in 1697538 ms and returned 20 result(s)
+Total used memory: 69G
+Pre-execution time: 396 ms (0.0%)
+Post-processing time: 6 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+OrderBy(DESC(?count)) [#207], memory: 256K (0.0%), results: 20, wall time: 0 ms (0.0%)
+`─ Projection(?p, ?pLabel, ?count) [#207], results: 20, wall time: 0 ms (0.0%)
+   `─ Group(by=[?p, ?pLabel] aggregates=[(COUNT(*) AS ?count)]) [#623], memory: 352K (0.0%), results: 20, wall time: 2 ms (0.0%)
+      `─ MergeJoin(?pd) [#623], results: 996, wall time: 3 ms (0.0%)
+         +─ Scan[POSC](?p, <http://wikiba.se/ontology#directClaim>, ?pd) [#1], results: 40 (with gaps), wall time: 3 ms (0.0%)
+         `─ Sort(?pd) [#623], memory: 288K (0.0%), results: 996 (with gaps), wall time: 2 ms (0.0%)
+            `─ HashJoin(?bbyjlszp) [#623], memory: 288K (0.0%), results: 996, wall time: 47450 ms (2.8%)
+               +─ MergeJoin(?o) [#953], results: 130.4M, wall time: 28924 ms (1.7%)
+               │  +─ Scan[PSOC](?o, <http://www.wikidata.org/prop/direct/P31>, ?bbyjlszp) [#97.7M], results: 13.3M (with gaps), wall time: 22650 ms (1.3%)
+               │  `─ Sort(?o) [#5.6K], memory: 34G (49.4%), results: 78.0M (with gaps), wall time: 711439 ms (41.9%)
+               │     `─ MergeJoin(?s) [#5.6K], results: 568.6M, wall time: 106856 ms (6.3%)
+               │        +─ Scan[SPO](?s, ?pd, ?o) [#16388.1M], results: 576.6M (with gaps), wall time: 763906 ms (45.0%)
+               │        `─ Sort(?s) [#613], memory: 432M (0.6%), results: 9.4M (with gaps), wall time: 9374 ms (0.6%)
+               │           `─ DirectHashJoin(?urixjtve) [#613], results: 9.4M, wall time: 2276 ms (0.1%)
+               │              +─ PropertyPath(?urixjtve -> <http://www.wikidata.org/entity/Q729>, minLength=0, reversed) [#26K], results: 19K, wall time: 80 ms (0.0%)
+               │              │  `─ Scan[POSC](?urixjtve, <http://www.wikidata.org/prop/direct/P279>, <http://www.wikidata.org/entity/Q729>) [#43]
+               │              `─ Scan[POSC](?s, <http://www.wikidata.org/prop/direct/P31>, ?urixjtve) [#97.7M], results: 9.4M (with gaps), wall time: 4074 ms (0.2%)
+               `─ PropertyPath(?bbyjlszp -> <http://www.wikidata.org/entity/Q43501>, minLength=0, reversed) [#62], results: 16, wall time: 0 ms (0.0%)
+                  `─ Scan[POSC](?bbyjlszp, <http://www.wikidata.org/prop/direct/P279>, <http://www.wikidata.org/entity/Q43501>) [#61]
+

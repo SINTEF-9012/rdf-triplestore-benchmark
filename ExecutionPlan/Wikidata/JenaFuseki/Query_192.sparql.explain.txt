@@ -1,0 +1,167 @@
+12:44:26 INFO  exec            :: QUERY
+  PREFIX  schema: <http://schema.org/>
+  PREFIX  pq:   <http://www.wikidata.org/prop/qualifier/>
+  PREFIX  bd:   <http://www.bigdata.com/rdf#>
+  PREFIX  pr:   <http://www.wikidata.org/prop/reference/>
+  PREFIX  ps:   <http://www.wikidata.org/prop/statement/>
+  PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
+  PREFIX  geof: <http://www.opengis.net/def/geosparql/function/>
+  PREFIX  wdt:  <http://www.wikidata.org/prop/direct/>
+  PREFIX  wds:  <http://www.wikidata.org/entity/statement/>
+  PREFIX  wdv:  <http://www.wikidata.org/value/>
+  PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>
+  PREFIX  skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX  psn:  <http://www.wikidata.org/prop/statement/value-normalized/>
+  PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX  pqn:  <http://www.wikidata.org/prop/qualifier/value-normalized/>
+  PREFIX  wd:   <http://www.wikidata.org/entity/>
+  PREFIX  geo:  <http://www.opengis.net/ont/geosparql#>
+  PREFIX  psv:  <http://www.wikidata.org/prop/statement/value/>
+  PREFIX  dct:  <http://purl.org/dc/terms/>
+  PREFIX  pqv:  <http://www.wikidata.org/prop/qualifier/value/>
+  PREFIX  ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+  PREFIX  wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+  PREFIX  wdref: <http://www.wikidata.org/reference/>
+  PREFIX  prov: <http://www.w3.org/ns/prov#>
+  PREFIX  cc:   <http://creativecommons.org/ns#>
+  PREFIX  wikibase: <http://wikiba.se/ontology#>
+  PREFIX  prn:  <http://www.wikidata.org/prop/reference/value-normalized/>
+  PREFIX  p:    <http://www.wikidata.org/prop/>
+  PREFIX  wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+  PREFIX  prv:  <http://www.wikidata.org/prop/reference/value/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  hint: <http://www.bigdata.com/queryHints#>
+  PREFIX  wdno: <http://www.wikidata.org/prop/novalue/>
+  
+  SELECT  *
+  WHERE
+    { { SELECT  ?cell_line ?cell_line_name
+        WHERE
+          { ?cell_line  wdt:P31   wd:Q21014462 ;
+                      rdfs:label  ?cell_line_name
+            FILTER ( lang(?cell_line_name) = "en" )
+            FILTER regex(str(?cell_line_name), "^[\\w\\-\\.]+\\.[A-z]+$")
+          }
+      }
+      ?tld wdt:P31/(wdt:P279)* wd:Q14296 .
+      ?tld  rdfs:label  ?tld_name
+      FILTER ( lang(?tld_name) = "en" )
+      FILTER regex(str(?cell_line_name), concat(replace(?tld_name, "\\.", "\\\\."), "$"), "i")
+      BIND(uri(concat("http://", ?cell_line_name)) AS ?url)
+    }
+12:44:26 INFO  exec            :: ALGEBRA
+  (filter (regex (str ?cell_line_name) (concat (replace ?tld_name "\\." "\\\\.") "$") "i")
+    (extend ((?url (uri (concat "http://" ?cell_line_name))))
+      (sequence
+        (project (?cell_line ?cell_line_name)
+          (filter (exprlist (= (lang ?cell_line_name) "en") (regex (str ?cell_line_name) "^[\\w\\-\\.]+\\.[A-z]+$"))
+            (quadpattern
+              (quad <urn:x-arq:DefaultGraphNode> ?cell_line <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q21014462>)
+              (quad <urn:x-arq:DefaultGraphNode> ?cell_line <http://www.w3.org/2000/01/rdf-schema#label> ?cell_line_name)
+            )))
+        (sequence
+          (graph <urn:x-arq:DefaultGraphNode>(path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>))
+          (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?tld <http://www.wikidata.org/prop/direct/P31> ??P0))
+          (filter (= (lang ?tld_name) "en")
+            (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?tld <http://www.w3.org/2000/01/rdf-schema#label> ?tld_name)))))))
+12:44:26 INFO  exec            :: TDB2
+  (filter (regex (str ?cell_line_name) (concat (replace ?tld_name "\\." "\\\\.") "$") "i")
+    (extend ((?url (uri (concat "http://" ?cell_line_name))))
+      (sequence
+        (project (?cell_line ?cell_line_name)
+          (filter (exprlist (= (lang ?cell_line_name) "en") (regex (str ?cell_line_name) "^[\\w\\-\\.]+\\.[A-z]+$"))
+            (quadpattern
+              (quad <urn:x-arq:DefaultGraphNode> ?cell_line <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q21014462>)
+              (quad <urn:x-arq:DefaultGraphNode> ?cell_line <http://www.w3.org/2000/01/rdf-schema#label> ?cell_line_name)
+            )))
+        (sequence
+          (graph <urn:x-arq:DefaultGraphNode>(path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>))
+          (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?tld <http://www.wikidata.org/prop/direct/P31> ??P0))
+          (filter (= (lang ?tld_name) "en")
+            (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?tld <http://www.w3.org/2000/01/rdf-schema#label> ?tld_name)))))))
+12:44:26 INFO  exec            :: Execute
+  ?cell_line <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q21014462>
+  ?cell_line rdfs:label ?cell_line_name
+12:44:26 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:44:26 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:44:26 INFO  exec            :: Execute ::   ?tld <http://www.wikidata.org/prop/direct/P31> ??P0
+12:44:26 INFO  exec            :: Execute ::   ?tld rdfs:label ?tld_name
+12:44:48 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:44:48 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:44:49 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:44:49 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:44:49 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:44:49 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:44:51 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:44:51 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:44:52 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:44:52 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:44:52 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:44:52 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:44:54 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:44:54 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:44:55 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:44:55 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:44:57 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:44:57 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:44:58 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:44:58 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:44:59 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:44:59 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:44:59 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:44:59 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:45:03 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:45:03 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:45:03 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:45:03 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:45:05 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:45:05 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:45:05 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:45:05 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:45:07 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:45:07 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:45:10 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:45:10 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:45:12 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:45:12 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:45:12 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:45:12 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:45:14 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:45:14 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:45:19 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:45:19 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:45:20 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:45:20 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:45:21 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:45:21 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:45:23 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:45:23 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296
+12:45:23 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q14296>)
+12:45:23 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q14296

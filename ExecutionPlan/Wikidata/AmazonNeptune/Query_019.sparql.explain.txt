@@ -1,0 +1,79 @@
+Query:
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+#Returns a list of Wikidata items for a given list of Wikipedia article names
+#List of Wikipedia article names (lemma) is like "WIKIPEDIA ARTICLE NAME"@LANGUAGE CODE with de for German, en for English, etc.
+#Language version and project is defined in schema:isPartOF with de.wikipedia.org for German Wikipedia, es.wikivoyage for Spanish Wikivoyage, etc.
+
+SELECT ?lemma ?item WHERE {
+  VALUES ?lemma {
+    "Wikipedia"@de
+    "Wikidata"@de
+    "Berlin"@de
+    "Technische Universität Berlin"@de
+  }
+  ?sitelink schema:about ?item;
+    schema:isPartOf <https://de.wikipedia.org/>;
+    schema:name ?lemma.
+}
+
+╔════╤════════╤════════╤═══════════════════╤═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╤══════════╤══════════╤═══════════╤═══════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name              │ Arguments                                                                                                                     │ Mode     │ Units In │ Units Out │ Ratio │ Time (ms) ║
+╠════╪════════╪════════╪═══════════════════╪═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╪══════════╪══════════╪═══════════╪═══════╪═══════════╣
+║ 0  │ 1      │ -      │ SolutionInjection │ solutions=[{}]                                                                                                                │ -        │ 0        │ 1         │ 0.00  │ 0         ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 1  │ 2      │ -      │ PipelineJoin      │ pattern=distinct(?sitelink, schema:name, ?lemma)                                                                              │ -        │ 1        │ 62        │ 62.00 │ 1         ║
+║    │        │        │                   │ inlineFilters=[                                                                                                               │          │          │           │       │           ║
+║    │        │        │                   │ ?lemma IN ("Berlin"^^rdf:langString, "Technische Universität Berlin"^^rdf:langString, "Wikidata"^^rdf:langString... (1 more)) │          │          │           │       │           ║
+║    │        │        │                   │ ]                                                                                                                             │          │          │           │       │           ║
+║    │        │        │                   │ joinType=join                                                                                                                 │          │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?sitelink, ?lemma]                                                                                        │          │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=62                                                                                                            │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 2  │ 3      │ -      │ PipelineJoin      │ pattern=distinct(?sitelink, schema:isPartOf, <https://de.wikipedia.org/>)                                                     │ -        │ 62       │ 4         │ 0.06  │ 217       ║
+║    │        │        │                   │ joinType=join                                                                                                                 │          │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?sitelink]                                                                                                │          │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=7889448                                                                                                       │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 3  │ 4      │ -      │ PipelineJoin      │ pattern=distinct(?sitelink, schema:about, ?item)                                                                              │ -        │ 4        │ 4         │ 1.00  │ 1         ║
+║    │        │        │                   │ joinType=join                                                                                                                 │          │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?sitelink, ?item]                                                                                         │          │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=244456274                                                                                                     │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 4  │ 5      │ -      │ Projection        │ vars=[?lemma, ?item]                                                                                                          │ retain   │ 4        │ 4         │ 1.00  │ 0         ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 5  │ -      │ -      │ TermResolution    │ vars=[?lemma, ?item]                                                                                                          │ id2value │ 4        │ 4         │ 1.00  │ 10        ║
+╚════╧════════╧════════╧═══════════════════╧═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╧══════════╧══════════╧═══════════╧═══════╧═══════════╝
+

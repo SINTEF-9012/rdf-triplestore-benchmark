@@ -1,0 +1,117 @@
+Query:
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+# Make a list of the most used authority control properties for people for painters
+SELECT ?propertyLabel ?propertyDescription ?count WHERE {
+  {
+    select ?propertyclaim (COUNT(*) AS ?count) where {
+      ?item wdt:P106 wd:Q1028181 .
+      ?item wdt:P31 wd:Q5 .
+      ?item ?propertyclaim [] .
+    } group by ?propertyclaim
+  }
+  ?property wikibase:propertyType wikibase:ExternalId .
+  ?property wdt:P31 wd:Q19595382 .
+  ?property wikibase:claim ?propertyclaim .
+  #SERVICE wikibase:label {            # ... include the labels
+#    bd:serviceParam wikibase:language "en" .
+#  }
+} ORDER BY DESC (?count)
+LIMIT 100
+
+╔════╤════════╤════════╤═══════════════════╤═════════════════════════════════════════════════════════════════════════╤══════════╤══════════╤═══════════╤════════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name              │ Arguments                                                               │ Mode     │ Units In │ Units Out │ Ratio  │ Time (ms) ║
+╠════╪════════╪════════╪═══════════════════╪═════════════════════════════════════════════════════════════════════════╪══════════╪══════════╪═══════════╪════════╪═══════════╣
+║ 0  │ 1      │ -      │ SolutionInjection │ solutions=[{}]                                                          │ -        │ 0        │ 1         │ 0.00   │ 0         ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 1  │ 2      │ -      │ NamedSubquery     │ subQuery=subQuery1                                                      │ -        │ 1        │ 1         │ 1.00   │ 18267     ║
+║    │        │        │                   │ solutionSet=solutionSet1                                                │          │          │           │        │           ║
+║    │        │        │                   │ joinVars=[?propertyclaim]                                               │          │          │           │        │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 2  │ 3      │ -      │ PipelineJoin      │ pattern=distinct(?property, wdt:P31, wd:Q19595382)                      │ -        │ 1        │ 982       │ 982.00 │ 2         ║
+║    │        │        │                   │ joinType=join                                                           │          │          │           │        │           ║
+║    │        │        │                   │ joinProjectionVars=[?property]                                          │          │          │           │        │           ║
+║    │        │        │                   │ patternEstimate=982                                                     │          │          │           │        │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 3  │ 4      │ -      │ PipelineJoin      │ pattern=distinct(?property, wikibase:propertyType, wikibase:ExternalId) │ -        │ 982      │ 978       │ 1.00   │ 1099      ║
+║    │        │        │                   │ joinType=join                                                           │          │          │           │        │           ║
+║    │        │        │                   │ joinProjectionVars=[?property]                                          │          │          │           │        │           ║
+║    │        │        │                   │ patternEstimate=12354                                                   │          │          │           │        │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 4  │ 5      │ -      │ PipelineJoin      │ pattern=distinct(?property, wikibase:claim, ?propertyclaim)             │ -        │ 978      │ 978       │ 1.00   │ 32        ║
+║    │        │        │                   │ joinType=join                                                           │          │          │           │        │           ║
+║    │        │        │                   │ joinProjectionVars=[?property, ?propertyclaim]                          │          │          │           │        │           ║
+║    │        │        │                   │ patternEstimate=18260                                                   │          │          │           │        │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 5  │ 6      │ -      │ HashIndexJoin     │ solutionSet=solutionSet1                                                │ -        │ 978      │ 656       │ 0.67   │ 2         ║
+║    │        │        │                   │ joinType=join                                                           │          │          │           │        │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 6  │ 7      │ -      │ TermResolution    │ vars=[?count]                                                           │ id2value │ 656      │ 656       │ 1.00   │ 1         ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 7  │ 8      │ -      │ Sort              │ sortOrder=[DESC(?count)]                                                │ -        │ 656      │ 656       │ 1.00   │ 5         ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 8  │ 9      │ -      │ Projection        │ vars=[?propertyLabel, ?propertyDescription, ?count]                     │ retain   │ 656      │ 656       │ 1.00   │ 0         ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 9  │ -      │ -      │ Slice             │ limit=100                                                               │ -        │ 100      │ 100       │ 1.00   │ 2         ║
+╚════╧════════╧════════╧═══════════════════╧═════════════════════════════════════════════════════════════════════════╧══════════╧══════════╧═══════════╧════════╧═══════════╝
+
+
+subQuery1
+╔════╤════════╤════════╤══════════════╤════════════════════════════════════════════════════════════╤════════╤══════════╤═══════════╤═══════════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name         │ Arguments                                                  │ Mode   │ Units In │ Units Out │ Ratio     │ Time (ms) ║
+╠════╪════════╪════════╪══════════════╪════════════════════════════════════════════════════════════╪════════╪══════════╪═══════════╪═══════════╪═══════════╣
+║ 0  │ 1      │ -      │ Distinct     │ vars=[?propertyclaim, ?count]                              │ -      │ 1        │ 1         │ 1.00      │ 0         ║
+╟────┼────────┼────────┼──────────────┼────────────────────────────────────────────────────────────┼────────┼──────────┼───────────┼───────────┼───────────╢
+║ 1  │ 2      │ -      │ PipelineJoin │ pattern=distinct(?item, wdt:P106, wd:Q1028181)             │ -      │ 1        │ 177940    │ 177940.00 │ 13031     ║
+║    │        │        │              │ joinType=join                                              │        │          │           │           │           ║
+║    │        │        │              │ joinProjectionVars=[?item]                                 │        │          │           │           │           ║
+║    │        │        │              │ patternEstimate=437286                                     │        │          │           │           │           ║
+╟────┼────────┼────────┼──────────────┼────────────────────────────────────────────────────────────┼────────┼──────────┼───────────┼───────────┼───────────╢
+║ 2  │ 3      │ -      │ PipelineJoin │ pattern=distinct(?item, wdt:P31, wd:Q5)                    │ -      │ 177940   │ 177856    │ 1.00      │ 275525    ║
+║    │        │        │              │ joinType=join                                              │        │          │           │           │           ║
+║    │        │        │              │ joinProjectionVars=[?item]                                 │        │          │           │           │           ║
+║    │        │        │              │ patternEstimate=28612002                                   │        │          │           │           │           ║
+╟────┼────────┼────────┼──────────────┼────────────────────────────────────────────────────────────┼────────┼──────────┼───────────┼───────────┼───────────╢
+║ 3  │ 4      │ -      │ PipelineJoin │ pattern=distinct(?item, ?propertyclaim, ?_internalVar1)    │ -      │ 177856   │ 18694563  │ 105.11    │ 309039    ║
+║    │        │        │              │ joinType=join                                              │        │          │           │           │           ║
+║    │        │        │              │ joinProjectionVars=[?item, ?propertyclaim, ?_internalVar1] │        │          │           │           │           ║
+║    │        │        │              │ patternEstimate=7069356752                                 │        │          │           │           │           ║
+╟────┼────────┼────────┼──────────────┼────────────────────────────────────────────────────────────┼────────┼──────────┼───────────┼───────────┼───────────╢
+║ 4  │ 5      │ -      │ Aggregate    │ groupBy=[?propertyclaim]                                   │ -      │ 18694563 │ 4335      │ 0.00      │ 9798      ║
+║    │        │        │              │ aggregates=[?propertyclaim, BIND(COUNT(?*) AS ?count)]     │        │          │           │           │           ║
+╟────┼────────┼────────┼──────────────┼────────────────────────────────────────────────────────────┼────────┼──────────┼───────────┼───────────┼───────────╢
+║ 5  │ -      │ -      │ Projection   │ vars=[?propertyclaim, ?count]                              │ retain │ 4335     │ 4335      │ 1.00      │ 0         ║
+╚════╧════════╧════════╧══════════════╧════════════════════════════════════════════════════════════╧════════╧══════════╧═══════════╧═══════════╧═══════════╝
+

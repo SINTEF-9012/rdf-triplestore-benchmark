@@ -1,0 +1,60 @@
+Explaining Query:
+
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX foaf:    <http://xmlns.com/foaf/0.1/>
+PREFIX dc:      <http://purl.org/dc/elements/1.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+SELECT ?yr ?name ?document
+WHERE {
+  ?class rdfs:subClassOf foaf:Document .
+  ?document rdf:type ?class .
+  ?document dcterms:issued ?yr .
+  ?document dc:creator ?author .
+  ?author foaf:name ?name .
+  OPTIONAL {
+    ?class2 rdfs:subClassOf foaf:Document .
+    ?document2 rdf:type ?class2 .
+    ?document2 dcterms:issued ?yr2 .
+    ?document2 dc:creator ?author2 .
+    FILTER (?author=?author2 && ?yr2<?yr)
+  } FILTER (!bound(?author2))
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 292493 ms and returned 12879202 result(s)
+Total used memory: 6.1G
+Pre-execution time: 30 ms (0.0%)
+Post-processing time: 60012 ms (20.5%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Projection(?yr, ?name, ?document) [#16.6M], results: 12.9M, wall time: 2255 ms (0.8%)
+`─ Filter(!(Bound(?author2))) [#16.6M], results: 12.9M, wall time: 3471 ms (1.2%)
+   `─ HashJoinOuter(?author)(?yr2 < ?yr) [#33.2M], memory: 2.1G (33.9%), results: 27.5M, wall time: 111839 ms (38.2%)
+      +─ MergeJoin(?author) [#10.2M], results: 23.3M, wall time: 9768 ms (3.3%)
+      │  +─ Scan[PSOC](?author, <http://xmlns.com/foaf/0.1/name>, ?name) [#12.6M], results: 10.8M (with gaps), wall time: 7279 ms (2.5%)
+      │  `─ HashJoin(?document) [#10.2M], memory: 1.0G (16.1%), results: 23.3M (with gaps), wall time: 34103 ms (11.7%)
+      │     +─ Scan[POSC](?document, <http://purl.org/dc/elements/1.1/creator>, ?author) [#28.6M], results: 28.6M, wall time: 11910 ms (4.1%)
+      │     `─ BindJoin(?class) [#3.4M], results: 7.9M, wall time: 18458 ms (6.3%)
+      │        +─ Scan[POSC](?class, rdfs:subClassOf, <http://xmlns.com/foaf/0.1/Document>) [#1], results: 9, wall time: 0 ms (0.0%)
+      │        `─ MergeJoin(?document) [#7.9M]
+      │           +─ Scan[PSOC](?document, rdf:type, ?class) [#22.4M]
+      │           `─ Scan[PSOC](?document, <http://purl.org/dc/terms/issued>, ?yr) [#7.9M]
+      `─ Bind(?author AS ?author2) sortedBy=?class2 [#10.2M], results: 23.3M, wall time: 5751 ms (2.0%)
+         `─ BindJoin(?class2) [#10.2M], results: 23.3M, wall time: 24514 ms (8.4%)
+            +─ Scan[POSC](?class2, rdfs:subClassOf, <http://xmlns.com/foaf/0.1/Document>) [#1], results: 9, wall time: 0 ms (0.0%)
+            `─ MergeJoin(?document2) [#23.3M]
+               +─ Scan[PSOC](?document2, <http://purl.org/dc/elements/1.1/creator>, ?author) [#28.6M]
+               `─ MergeJoin(?document2) [#7.9M]
+                  +─ Scan[PSOC](?document2, <http://purl.org/dc/terms/issued>, ?yr2) [#7.9M]
+                  `─ Scan[PSOC](?document2, rdf:type, ?class2) [#22.4M]
+

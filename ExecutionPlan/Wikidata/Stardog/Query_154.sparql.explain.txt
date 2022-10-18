@@ -1,0 +1,88 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT DISTINCT ?item ?title ?seats ?jurisdiction (YEAR(?inception) AS ?start) (YEAR(?dissolution) AS ?end)
+WHERE
+{
+  ?item wdt:P31/wdt:P279* wd:Q1752346 .
+  OPTIONAL { ?item wdt:P1342 ?seats . }
+  OPTIONAL {
+    ?item wdt:P1001 ?j .
+    ?j rdfs:label ?jurisdiction filter (lang(?jurisdiction) = "en") .
+  }
+  OPTIONAL { ?item wdt:P571 ?inception . }
+  OPTIONAL { ?item wdt:P576 ?dissolution . }
+  OPTIONAL { ?item rdfs:label ?title filter (lang(?title) = "en") . }
+}
+ORDER BY DESC(?seats) ?title
+
+The Query Plan:
+
+Profiling results:
+Query executed in 116161 ms and returned 31037 result(s)
+Total used memory: 18G
+Pre-execution time: 1 ms (0.0%)
+Post-processing time: 43 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+OrderBy(DESC(?seats), ASC(?title)) [#3], memory: 5.3M (0.0%), results: 31K, wall time: 214 ms (0.2%)
+`─ Distinct [#3], memory: 3.0M (0.0%), results: 31K, wall time: 34 ms (0.0%)
+   `─ Projection(?item, ?title, ?seats, ?jurisdiction, ?start, ?end) [#3], results: 32K, wall time: 7 ms (0.0%)
+      `─ Bind(YEAR(?inception) AS ?start) (YEAR(?dissolution) AS ?end) sortedBy=?item [#3], results: 32K, wall time: 27 ms (0.0%)
+         `─ MergeJoinOuter(?item)("en" = Lang(?title)) [#3], results: 32K, wall time: 137 ms (0.1%)
+            +─ MergeJoinOuter(?item) [#1], results: 32K, wall time: 11 ms (0.0%)
+            │  +─ MergeJoinOuter(?item) [#1], results: 32K, wall time: 13 ms (0.0%)
+            │  │  +─ HashJoinOuter(?item)("en" = Lang(?jurisdiction)) [#1], memory: 9.0G (49.9%), results: 32K, wall time: 85748 ms (73.8%)
+            │  │  │  +─ MergeJoinOuter(?item) [#1], results: 32K, wall time: 10 ms (0.0%)
+            │  │  │  │  +─ Sort(?item) [#1], memory: 1.7M (0.0%), results: 32K, wall time: 35 ms (0.0%)
+            │  │  │  │  │  `─ DirectHashJoin(?vjeyugfw) [#1], results: 32K, wall time: 8 ms (0.0%)
+            │  │  │  │  │     +─ PropertyPath(?vjeyugfw -> <http://www.wikidata.org/entity/Q1752346>, minLength=0, reversed) [#122], results: 709, wall time: 5 ms (0.0%)
+            │  │  │  │  │     │  `─ Scan[POSC](?vjeyugfw, <http://www.wikidata.org/prop/direct/P279>, <http://www.wikidata.org/entity/Q1752346>) [#121]
+            │  │  │  │  │     `─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P31>, ?vjeyugfw) [#97.7M], results: 32K (with gaps), wall time: 57 ms (0.0%)
+            │  │  │  │  `─ Scan[PSOC](?item, <http://www.wikidata.org/prop/direct/P1342>, ?seats) [#1], results: 7.0K (with gaps), wall time: 8 ms (0.0%)
+            │  │  │  `─ MergeJoin(?j) [#195.1M], results: 195.1M, wall time: 26638 ms (22.9%)
+            │  │  │     +─ Scan[PSOC](?j, rdfs:label, ?jurisdiction) [#586.7M], results: 5.5M (with gaps), wall time: 2197 ms (1.9%)
+            │  │  │     `─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P1001>, ?j) [#901K], results: 901K (with gaps), wall time: 428 ms (0.4%)
+            │  │  `─ Scan[PSOC](?item, <http://www.wikidata.org/prop/direct/P571>, ?inception) [#2.4M], results: 25K (with gaps), wall time: 237 ms (0.2%)
+            │  `─ Scan[PSOC](?item, <http://www.wikidata.org/prop/direct/P576>, ?dissolution) [#230K], results: 13K (with gaps), wall time: 47 ms (0.0%)
+            `─ Scan[PSOC](?item, rdfs:label, ?title) [#586.7M], results: 117K (with gaps), wall time: 226 ms (0.2%)
+

@@ -1,0 +1,36 @@
+plan
+"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT DISTINCT ?item ?itemLabel ?_PubMed_ID
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?item wdt:P31 wd:Q13442814 . # 	Collection size: 3.7412809E7	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 3.7412809E7
+    ?item rdfs:label ?itemLabel . # 	Collection size: 5.86690314E8	Predicate collection size: 5.86690314E8	Unique subjects: 9.4931813E7	Unique objects: 5.4875668E8	Current complexity: 2.3121577441939327E8
+    FILTER (contains(lower-case(?itemLabel), ""zika""))
+    FILTER (LANG(?itemLabel) = ""en"")
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 2.3121577441939327E8
+  
+  OPTIONAL
+  {
+    
+    { # ----- Begin optimization group 2 -----
+      
+      ?item wdt:P698 ?_PubMed_ID . # 	Collection size: 3.1946329E7	Predicate collection size: 3.1946329E7	Unique subjects: 3.1944138E7	Unique objects: 3.1941564E7	Current complexity: 1.0000685884840592
+      
+    } # ----- End optimization group 2 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 1.0000685884840592
+    
+  }
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

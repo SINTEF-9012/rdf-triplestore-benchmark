@@ -1,0 +1,70 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT (COUNT (?statement) as ?statements)
+WHERE
+{
+  ?entry ?p ?statement .
+  ?statement prov:wasDerivedFrom/
+       <http://www.wikidata.org/prop/reference/P248>/
+       wdt:P356 ?doi .
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 1135464 ms and returned 1 result(s)
+Total used memory: 8.6G
+Pre-execution time: 7 ms (0.0%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Projection(?statements) [#1], results: 1, wall time: 0 ms (0.0%)
+`─ Group(aggregates=[(COUNT(*) AS ?statements)]) [#25.1M], results: 1, wall time: 3784 ms (0.3%)
+   `─ MergeJoin(?statement) [#25.1M], results: 32.6M, wall time: 23539 ms (2.1%)
+      +─ Scan[OSP](?entry, ?p, ?statement) [#16388.1M], results: 51.2M (with gaps), wall time: 256833 ms (22.6%)
+      `─ HashJoin(?obcetvjq) [#25.5M], memory: 262M (3.0%), results: 32.6M (with gaps), wall time: 424010 ms (37.3%)
+         +─ Scan[PSOC](?statement, <http://www.w3.org/ns/prov#wasDerivedFrom>, ?obcetvjq) [#1052.1M], results: 1052.1M, wall time: 350349 ms (30.9%)
+         `─ HashJoin(?apinrqhd) [#2.1M], memory: 4.1G (47.0%), results: 2.1M, wall time: 45600 ms (4.0%)
+            +─ Scan[PSOC](?apinrqhd, <http://www.wikidata.org/prop/direct/P356>, ?doi) [#27.2M], results: 27.2M, wall time: 8597 ms (0.8%)
+            `─ Scan[POSC](?obcetvjq, <http://www.wikidata.org/prop/reference/P248>, ?apinrqhd) [#80.1M], results: 80.1M, wall time: 22734 ms (2.0%)
+

@@ -1,0 +1,79 @@
+12:48:26 INFO  exec            :: QUERY
+  PREFIX  schema: <http://schema.org/>
+  PREFIX  pq:   <http://www.wikidata.org/prop/qualifier/>
+  PREFIX  bd:   <http://www.bigdata.com/rdf#>
+  PREFIX  pr:   <http://www.wikidata.org/prop/reference/>
+  PREFIX  ps:   <http://www.wikidata.org/prop/statement/>
+  PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
+  PREFIX  geof: <http://www.opengis.net/def/geosparql/function/>
+  PREFIX  wdt:  <http://www.wikidata.org/prop/direct/>
+  PREFIX  wds:  <http://www.wikidata.org/entity/statement/>
+  PREFIX  wdv:  <http://www.wikidata.org/value/>
+  PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>
+  PREFIX  skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX  psn:  <http://www.wikidata.org/prop/statement/value-normalized/>
+  PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX  pqn:  <http://www.wikidata.org/prop/qualifier/value-normalized/>
+  PREFIX  wd:   <http://www.wikidata.org/entity/>
+  PREFIX  geo:  <http://www.opengis.net/ont/geosparql#>
+  PREFIX  psv:  <http://www.wikidata.org/prop/statement/value/>
+  PREFIX  dct:  <http://purl.org/dc/terms/>
+  PREFIX  pqv:  <http://www.wikidata.org/prop/qualifier/value/>
+  PREFIX  ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+  PREFIX  wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+  PREFIX  wdref: <http://www.wikidata.org/reference/>
+  PREFIX  prov: <http://www.w3.org/ns/prov#>
+  PREFIX  cc:   <http://creativecommons.org/ns#>
+  PREFIX  wikibase: <http://wikiba.se/ontology#>
+  PREFIX  prn:  <http://www.wikidata.org/prop/reference/value-normalized/>
+  PREFIX  p:    <http://www.wikidata.org/prop/>
+  PREFIX  wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+  PREFIX  prv:  <http://www.wikidata.org/prop/reference/value/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  hint: <http://www.bigdata.com/queryHints#>
+  PREFIX  wdno: <http://www.wikidata.org/prop/novalue/>
+  
+  SELECT  ?item ?itemLabel ?coord ?elev ?picture
+  WHERE
+    { ?item (p:P2044/psn:P2044)/wikibase:quantityAmount ?elev .
+      ?item  wdt:P625  ?coord ;
+             wdt:P17   wd:Q38 ;
+             wdt:P18   ?picture
+      FILTER ( ?elev > 4000 )
+    }
+12:48:26 INFO  exec            :: ALGEBRA
+  (project (?item ?itemLabel ?coord ?elev ?picture)
+    (sequence
+      (filter (> ?elev 4000)
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/P2044> ??P1)
+          (quad <urn:x-arq:DefaultGraphNode> ??P1 <http://www.wikidata.org/prop/statement/value-normalized/P2044> ??P0)
+          (quad <urn:x-arq:DefaultGraphNode> ??P0 <http://wikiba.se/ontology#quantityAmount> ?elev)
+        ))
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P625> ?coord)
+        (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P17> <http://www.wikidata.org/entity/Q38>)
+        (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P18> ?picture)
+      )))
+12:48:26 INFO  exec            :: TDB2
+  (project (?item ?itemLabel ?coord ?elev ?picture)
+    (sequence
+      (filter (> ?elev 4000)
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/P2044> ??P1)
+          (quad <urn:x-arq:DefaultGraphNode> ??P1 <http://www.wikidata.org/prop/statement/value-normalized/P2044> ??P0)
+          (quad <urn:x-arq:DefaultGraphNode> ??P0 <http://wikiba.se/ontology#quantityAmount> ?elev)
+        ))
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P625> ?coord)
+        (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P17> <http://www.wikidata.org/entity/Q38>)
+        (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P18> ?picture)
+      )))
+12:48:26 INFO  exec            :: Execute
+  ?item <http://www.wikidata.org/prop/P2044> ??P1
+  ??P1 <http://www.wikidata.org/prop/statement/value-normalized/P2044> ??P0
+  ??P0 <http://wikiba.se/ontology#quantityAmount> ?elev
+12:48:26 INFO  exec            :: Execute
+  ?item <http://www.wikidata.org/prop/direct/P17> <http://www.wikidata.org/entity/Q38>
+  ?item <http://www.wikidata.org/prop/direct/P625> ?coord
+  ?item <http://www.wikidata.org/prop/direct/P18> ?picture

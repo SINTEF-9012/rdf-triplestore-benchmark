@@ -1,0 +1,148 @@
+Query:
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT DISTINCT ?pathway ?pathwayLabel ?pwpart ?pwpartLabel ?variant ?variantLabel ?disease?diseaseLabel WHERE {
+
+   VALUES ?predictor {p:P3354 p:P3355 p:P3356 p:P3357 p:P3358 p:P3359}
+   VALUES ?predictorQualifier {pq:P2175}
+   VALUES ?wpID {"WP2828"}
+  
+   ?pathway wdt:P2410 ?wpID ; # Pathways has a Wikipathways identifier
+          wdt:P527 ?pwpart . # which contains pathways parts
+  
+   ?disease wdt:P279+ wd:Q504775 .  # The disease is a subclass of urinary bladder cancer 
+                                    # based on annotations in the Disease ontology
+   ?variant wdt:P3329 ?civicID ; # a variant known in CIViC 
+             ?predictor ?node ; # has a predicting relation with diseases
+                                   # labeled as being a subclass of urinary bladder cancer
+             wdt:P3433 ?pwpart .  # variant is biological variant of
+   
+   {?node ?predictorStatement ?drug_label ;
+              ?predictorQualifier ?disease .}
+   UNION 
+   {
+      ?node ?predictorStatement ?disease  .
+   }
+   #SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}
+
+╔════╤════════╤════════╤═══════════════════╤═════════════════════════════════════════════════════════════════════════════════════════════════════════╤═══════════╤══════════╤═══════════╤═══════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name              │ Arguments                                                                                               │ Mode      │ Units In │ Units Out │ Ratio │ Time (ms) ║
+╠════╪════════╪════════╪═══════════════════╪═════════════════════════════════════════════════════════════════════════════════════════════════════════╪═══════════╪══════════╪═══════════╪═══════╪═══════════╣
+║ 0  │ 1      │ -      │ SolutionInjection │ solutions=[{ ?predictorQualifier -> pq:P2175, ?wpID -> "WP2828"^^xsd:string }]                          │ -         │ 0        │ 1         │ 0.00  │ 0         ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 1  │ 2      │ -      │ PipelineJoin      │ pattern=distinct(?pathway, wdt:P2410, ?wpID ["WP2828"^^xsd:string])                                     │ -         │ 1        │ 1         │ 1.00  │ 14        ║
+║    │        │        │                   │ joinType=join                                                                                           │           │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?pathway, ?wpID]                                                                    │           │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=1                                                                                       │           │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 2  │ 3      │ -      │ PipelineJoin      │ pattern=distinct(?pathway, wdt:P527, ?pwpart)                                                           │ -         │ 1        │ 40        │ 40.00 │ 8         ║
+║    │        │        │                   │ joinType=join                                                                                           │           │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?pathway, ?pwpart]                                                                  │           │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=4002632                                                                                 │           │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 3  │ 4      │ -      │ PipelineJoin      │ pattern=distinct(?variant, wdt:P3433, ?pwpart)                                                          │ -         │ 40       │ 472       │ 11.80 │ 69        ║
+║    │        │        │                   │ joinType=join                                                                                           │           │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?variant, ?pwpart]                                                                  │           │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=3840                                                                                    │           │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 4  │ 5      │ -      │ PipelineJoin      │ pattern=distinct(?variant, wdt:P3329, ?civicID)                                                         │ -         │ 472      │ 463       │ 0.98  │ 2707      ║
+║    │        │        │                   │ joinType=join                                                                                           │           │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?variant, ?civicID]                                                                 │           │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=1945                                                                                    │           │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 5  │ 6      │ -      │ PipelineJoin      │ pattern=distinct(?variant, ?predictor, ?node)                                                           │ -         │ 463      │ 830       │ 1.79  │ 130       ║
+║    │        │        │                   │ inlineFilters=[                                                                                         │           │          │           │       │           ║
+║    │        │        │                   │ ?predictor IN (p:P3354, p:P3355, p:P3356... (3 more))                                                   │           │          │           │       │           ║
+║    │        │        │                   │ ]                                                                                                       │           │          │           │       │           ║
+║    │        │        │                   │ joinType=join                                                                                           │           │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?variant, ?predictor, ?node]                                                        │           │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=2811                                                                                    │           │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 6  │ 7      │ 10     │ Copy              │ -                                                                                                       │ duplicate │ 830      │ 1660      │ 2.00  │ 2         ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 7  │ 8      │ -      │ Copy              │ -                                                                                                       │ forward   │ 830      │ 830       │ 1.00  │ 2         ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 8  │ 9      │ -      │ PipelineJoin      │ pattern=distinct(?node, ?predictorQualifier [pq:P2175], ?disease)                                       │ -         │ 830      │ 709       │ 0.85  │ 812       ║
+║    │        │        │                   │ joinType=join                                                                                           │           │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?node, ?predictorQualifier, ?disease]                                               │           │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=5232                                                                                    │           │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 9  │ 12     │ -      │ PipelineJoin      │ pattern=distinct(?node, ?predictorStatement, ?drug_label)                                               │ -         │ 709      │ 5824      │ 8.21  │ 83        ║
+║    │        │        │                   │ joinType=join                                                                                           │           │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?node, ?predictorStatement, ?drug_label]                                            │           │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=10508296240                                                                             │           │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 10 │ 11     │ -      │ Copy              │ -                                                                                                       │ forward   │ 830      │ 830       │ 1.00  │ 6         ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 11 │ 12     │ -      │ PipelineJoin      │ pattern=distinct(?node, ?predictorStatement, ?disease)                                                  │ -         │ 830      │ 6701      │ 8.07  │ 824       ║
+║    │        │        │                   │ joinType=join                                                                                           │           │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?node, ?predictorStatement, ?disease]                                               │           │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=7215876192                                                                              │           │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 12 │ 13     │ -      │ Copy              │ -                                                                                                       │ forward   │ 12525    │ 12525     │ 1.00  │ 20        ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 13 │ 14     │ -      │ HashIndexBuild    │ solutionSet=solutionSet1                                                                                │ -         │ 12525    │ 1113      │ 0.09  │ 251       ║
+║    │        │        │                   │ joinVars=[?disease]                                                                                     │           │          │           │       │           ║
+║    │        │        │                   │ sourceType=pipeline                                                                                     │           │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 14 │ 15     │ -      │ PropertyPath      │ iterationTemplate=subQuery1                                                                             │ -         │ 1113     │ 79023     │ 71.00 │ 604       ║
+║    │        │        │                   │ leftTerm=?disease                                                                                       │           │          │           │       │           ║
+║    │        │        │                   │ rightTerm=wd:Q504775                                                                                    │           │          │           │       │           ║
+║    │        │        │                   │ lowerBound=1                                                                                            │           │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 15 │ 16     │ -      │ Distinct          │ vars=[?disease]                                                                                         │ -         │ 79023    │ 60        │ 0.00  │ 146       ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 16 │ 17     │ -      │ HashIndexJoin     │ solutionSet=solutionSet1                                                                                │ -         │ 60       │ 46        │ 0.77  │ 7         ║
+║    │        │        │                   │ joinType=join                                                                                           │           │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 17 │ 18     │ -      │ Distinct          │ vars=[?pathway, ?pathwayLabel, ?pwpart, ?pwpartLabel, ?variant, ?variantLabel, ?disease, ?diseaseLabel] │ -         │ 46       │ 4         │ 0.09  │ 2         ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 18 │ 19     │ -      │ Projection        │ vars=[?pathway, ?pathwayLabel, ?pwpart, ?pwpartLabel, ?variant, ?variantLabel, ?disease, ?diseaseLabel] │ retain    │ 4        │ 4         │ 1.00  │ 0         ║
+╟────┼────────┼────────┼───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼───────┼───────────╢
+║ 19 │ -      │ -      │ TermResolution    │ vars=[?pathway, ?pathwayLabel, ?pwpart, ?pwpartLabel, ?variant, ?variantLabel, ?disease, ?diseaseLabel] │ id2value  │ 4        │ 4         │ 1.00  │ 47        ║
+╚════╧════════╧════════╧═══════════════════╧═════════════════════════════════════════════════════════════════════════════════════════════════════════╧═══════════╧══════════╧═══════════╧═══════╧═══════════╝
+
+
+subQuery1
+╔════╤════════╤════════╤══════════════╤════════════════════════════════════════════════════════════╤══════╤══════════╤═══════════╤═══════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name         │ Arguments                                                  │ Mode │ Units In │ Units Out │ Ratio │ Time (ms) ║
+╠════╪════════╪════════╪══════════════╪════════════════════════════════════════════════════════════╪══════╪══════════╪═══════════╪═══════╪═══════════╣
+║ 0  │ -      │ -      │ PipelineJoin │ pattern=distinct(?_internalVar1, wdt:P279, ?_internalVar2) │ -    │ 73458    │ 79023     │ 1.08  │ 407       ║
+║    │        │        │              │ joinType=join                                              │      │          │           │       │           ║
+║    │        │        │              │ joinProjectionVars=[?_internalVar1, ?_internalVar2]        │      │          │           │       │           ║
+║    │        │        │              │ patternEstimate=34                                         │      │          │           │       │           ║
+╚════╧════════╧════════╧══════════════╧════════════════════════════════════════════════════════════╧══════╧══════════╧═══════════╧═══════╧═══════════╝
+

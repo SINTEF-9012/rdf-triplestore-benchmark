@@ -1,0 +1,37 @@
+plan
+"PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+
+SELECT DISTINCT ?item ?name ?coord ?lat ?lon
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    hint:Query hint:optimizer ""None"" . # 	Collection size: 0.0	Predicate collection size: 0.0	Unique subjects: 0.0	Unique objects: 0.0	Current complexity: 0.0
+    ?item wdt:P31 ?_anon_698202f9_8b08_4a14_8991_2bcdf011fcb8 . # 	Collection size: 9.768112E7	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 0.0
+    ?item wdt:P625 ?coord . # 	Collection size: 8827101.0	Predicate collection size: 8827101.0	Unique subjects: 8669631.0	Unique objects: 8596918.0	Current complexity: 0.0
+    ?item p:P625 ?coordinate . # 	Collection size: 8840672.0	Predicate collection size: 8840672.0	Unique subjects: 8670689.0	Unique objects: 8840672.0	Current complexity: 0.0
+    ?coordinate psv:P625 ?coordinate_node . # 	Collection size: 8837731.0	Predicate collection size: 8837731.0	Unique subjects: 8837731.0	Unique objects: 8635657.0	Current complexity: 0.0
+    ?coordinate_node wikibase:geoLatitude ?lat . # 	Collection size: 8807345.0	Predicate collection size: 8807345.0	Unique subjects: 8807345.0	Unique objects: 4804826.0	Current complexity: 0.0
+    ?coordinate_node wikibase:geoLongitude ?lon . # 	Collection size: 8807345.0	Predicate collection size: 8807345.0	Unique subjects: 8807345.0	Unique objects: 5651559.0	Current complexity: 0.0
+    ArbitraryLengthPath ( min=0, from _anon_698202f9_8b08_4a14_8991_2bcdf011fcb8, to __const_24e3a460_uri) over {
+	 [ _anon_698202f9_8b08_4a14_8991_2bcdf011fcb8 http://www.wikidata.org/prop/direct/P279 http://www.wikidata.org/entity/Q33506 ]
+	 }  # Collection size: 1000.0
+    ArbitraryLengthPath ( min=0, from item, to __const_c7614a17_uri) over {
+	 [ item http://www.wikidata.org/prop/direct/P131 http://www.wikidata.org/entity/Q1492 ]
+	 }  # Collection size: 1000.0
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 0.0
+  
+}
+ORDER BY ASC(?name)
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

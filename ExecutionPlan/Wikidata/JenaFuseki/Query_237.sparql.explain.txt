@@ -1,0 +1,97 @@
+13:42:40 INFO  exec            :: QUERY
+  PREFIX  schema: <http://schema.org/>
+  PREFIX  pq:   <http://www.wikidata.org/prop/qualifier/>
+  PREFIX  bd:   <http://www.bigdata.com/rdf#>
+  PREFIX  pr:   <http://www.wikidata.org/prop/reference/>
+  PREFIX  ps:   <http://www.wikidata.org/prop/statement/>
+  PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
+  PREFIX  geof: <http://www.opengis.net/def/geosparql/function/>
+  PREFIX  wdt:  <http://www.wikidata.org/prop/direct/>
+  PREFIX  wds:  <http://www.wikidata.org/entity/statement/>
+  PREFIX  wdv:  <http://www.wikidata.org/value/>
+  PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>
+  PREFIX  skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX  psn:  <http://www.wikidata.org/prop/statement/value-normalized/>
+  PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX  pqn:  <http://www.wikidata.org/prop/qualifier/value-normalized/>
+  PREFIX  wd:   <http://www.wikidata.org/entity/>
+  PREFIX  geo:  <http://www.opengis.net/ont/geosparql#>
+  PREFIX  psv:  <http://www.wikidata.org/prop/statement/value/>
+  PREFIX  dct:  <http://purl.org/dc/terms/>
+  PREFIX  pqv:  <http://www.wikidata.org/prop/qualifier/value/>
+  PREFIX  ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+  PREFIX  wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+  PREFIX  wdref: <http://www.wikidata.org/reference/>
+  PREFIX  prov: <http://www.w3.org/ns/prov#>
+  PREFIX  cc:   <http://creativecommons.org/ns#>
+  PREFIX  wikibase: <http://wikiba.se/ontology#>
+  PREFIX  prn:  <http://www.wikidata.org/prop/reference/value-normalized/>
+  PREFIX  p:    <http://www.wikidata.org/prop/>
+  PREFIX  wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+  PREFIX  prv:  <http://www.wikidata.org/prop/reference/value/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  hint: <http://www.bigdata.com/queryHints#>
+  PREFIX  wdno: <http://www.wikidata.org/prop/novalue/>
+  
+  SELECT  ?English ?language ?label
+  WHERE
+    { ?disease  wdt:P699    "DOID:399" ;
+                rdfs:label  ?English ;
+                rdfs:label  ?label
+      BIND(lang(?label) AS ?languageCode)
+      ?wdLanguage  wdt:P424  ?languageCode ;
+                rdfs:label  ?language
+      FILTER EXISTS { ?wdLanguage (wdt:P31)?/(wdt:P279)+ wd:Q17376908 }
+      FILTER ( lang(?English) = "en" )
+      FILTER ( lang(?language) = "en" )
+    }
+  ORDER BY ?language
+13:42:40 INFO  exec            :: ALGEBRA
+  (project (?English ?language ?label)
+    (order (?language)
+      (filter (exists
+                 (sequence
+                   (graph <urn:x-arq:DefaultGraphNode>(path ??P0 (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q17376908>))
+                   (graph <urn:x-arq:DefaultGraphNode>(path ?wdLanguage (path? <http://www.wikidata.org/prop/direct/P31>) ??P0))))
+        (sequence
+          (extend ((?languageCode (lang ?label)))
+            (sequence
+              (filter (= (lang ?English) "en")
+                (quadpattern
+                  (quad <urn:x-arq:DefaultGraphNode> ?disease <http://www.wikidata.org/prop/direct/P699> "DOID:399")
+                  (quad <urn:x-arq:DefaultGraphNode> ?disease <http://www.w3.org/2000/01/rdf-schema#label> ?English)
+                ))
+              (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?disease <http://www.w3.org/2000/01/rdf-schema#label> ?label))))
+          (filter (= (lang ?language) "en")
+            (quadpattern
+              (quad <urn:x-arq:DefaultGraphNode> ?wdLanguage <http://www.wikidata.org/prop/direct/P424> ?languageCode)
+              (quad <urn:x-arq:DefaultGraphNode> ?wdLanguage <http://www.w3.org/2000/01/rdf-schema#label> ?language)
+            ))))))
+13:42:40 INFO  exec            :: TDB2
+  (project (?English ?language ?label)
+    (order (?language)
+      (filter (exists
+                 (sequence
+                   (graph <urn:x-arq:DefaultGraphNode>(path ??P0 (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q17376908>))
+                   (graph <urn:x-arq:DefaultGraphNode>(path ?wdLanguage (path? <http://www.wikidata.org/prop/direct/P31>) ??P0))))
+        (sequence
+          (extend ((?languageCode (lang ?label)))
+            (sequence
+              (filter (= (lang ?English) "en")
+                (quadpattern
+                  (quad <urn:x-arq:DefaultGraphNode> ?disease <http://www.wikidata.org/prop/direct/P699> "DOID:399")
+                  (quad <urn:x-arq:DefaultGraphNode> ?disease <http://www.w3.org/2000/01/rdf-schema#label> ?English)
+                ))
+              (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?disease <http://www.w3.org/2000/01/rdf-schema#label> ?label))))
+          (filter (= (lang ?language) "en")
+            (quadpattern
+              (quad <urn:x-arq:DefaultGraphNode> ?wdLanguage <http://www.wikidata.org/prop/direct/P424> ?languageCode)
+              (quad <urn:x-arq:DefaultGraphNode> ?wdLanguage <http://www.w3.org/2000/01/rdf-schema#label> ?language)
+            ))))))
+13:42:40 INFO  exec            :: Execute
+  ?disease <http://www.wikidata.org/prop/direct/P699> "DOID:399"
+  ?disease rdfs:label ?English
+13:42:41 INFO  exec            :: Execute ::   ?disease rdfs:label ?label
+13:42:41 INFO  exec            :: Execute
+  ?wdLanguage <http://www.wikidata.org/prop/direct/P424> ?languageCode
+  ?wdLanguage rdfs:label ?language

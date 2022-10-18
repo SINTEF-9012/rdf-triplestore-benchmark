@@ -1,0 +1,43 @@
+Explaining Query:
+
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
+PREFIX bench: <http://localhost/vocabulary/bench/>
+PREFIX dc:    <http://purl.org/dc/elements/1.1/>
+
+SELECT DISTINCT ?person ?name
+WHERE {
+  ?article rdf:type bench:Article .
+  ?article dc:creator ?person .
+  ?inproc rdf:type bench:Inproceedings .
+  ?inproc dc:creator ?person .
+  ?person foaf:name ?name
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 78726 ms and returned 2372868 result(s)
+Total used memory: 2.6G
+Pre-execution time: 16 ms (0.0%)
+Post-processing time: 8794 ms (11.2%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Distinct [#30.5M], memory: 201M (7.6%), results: 2.4M, wall time: 3870 ms (4.9%)
+`─ Projection(?person, ?name) [#30.5M], results: 7.4M, wall time: 1040 ms (1.3%)
+   `─ HashJoin(?person) [#30.5M], memory: 584M (22.0%), results: 7.4M, wall time: 19570 ms (24.9%)
+      +─ MergeJoin(?inproc) [#23.2M], results: 23.2M, wall time: 6036 ms (7.7%)
+      │  +─ Scan[POSC](?inproc, rdf:type, <http://localhost/vocabulary/bench/Inproceedings>) [#7.7M], results: 7.7M (with gaps), wall time: 10852 ms (13.8%)
+      │  `─ Scan[PSOC](?inproc, <http://purl.org/dc/elements/1.1/creator>, ?person) [#28.6M], results: 23.3M (with gaps), wall time: 6984 ms (8.9%)
+      `─ HashJoin(?person) [#5.3M], memory: 543M (20.5%), results: 5.3M, wall time: 12025 ms (15.3%)
+         +─ Scan[POSC](?person, <http://xmlns.com/foaf/0.1/name>, ?name) [#12.6M], results: 12.6M, wall time: 3434 ms (4.4%)
+         `─ MergeJoin(?article) [#5.3M], results: 5.3M, wall time: 1323 ms (1.7%)
+            +─ Scan[POSC](?article, rdf:type, <http://localhost/vocabulary/bench/Article>) [#1.9M], results: 1.9M (with gaps), wall time: 2438 ms (3.1%)
+            `─ Scan[PSOC](?article, <http://purl.org/dc/elements/1.1/creator>, ?person) [#28.6M], results: 5.3M (with gaps), wall time: 1741 ms (2.2%)
+

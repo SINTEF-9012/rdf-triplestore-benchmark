@@ -1,0 +1,72 @@
+Explaining Query:
+
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#> 
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX dc:   <http://purl.org/dc/elements/1.1/>
+
+ASK {
+  ?erdoes rdf:type foaf:Person .
+  ?erdoes foaf:name "Paul Erdoes"^^xsd:string .
+  {
+    ?document dc:creator ?erdoes .
+    ?document dc:creator ?author .
+    ?document2 dc:creator ?author .
+    ?document2 dc:creator ?author2 .
+    ?author2 foaf:name ?name .
+    FILTER (?author!=?erdoes &&
+            ?document2!=?document &&
+            ?author2!=?erdoes &&
+            ?author2!=?author)
+  } UNION {
+    ?document dc:creator ?erdoes .
+    ?document dc:creator ?author .
+    ?author foaf:name ?name .
+    FILTER (?author!=?erdoes)
+  }
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 106 ms and returned 1 result(s)
+Pre-execution time: 99 ms (93.4%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Slice(offset=0, limit=1) [#1], results: 1, wall time: 0 ms (0.0%)
+`─ MergeJoin(?erdoes) [#3.3K], results: 1, wall time: 0 ms (0.0%)
+   +─ Union [#30K], results: 1, wall time: 1 ms (0.9%)
+   │  +─ DirectHashJoin(?author2) [#29K], results: 1, wall time: 0 ms (0.0%)
+   │  │  +─ Filter(?author2 != ?author) [#7.2K], results: 1, wall time: 0 ms (0.0%)
+   │  │  │  `─ Filter(?author2 != ?erdoes) [#14K], results: 29, wall time: 0 ms (0.0%)
+   │  │  │     `─ DirectHashJoin(?document2) [#29K], results: 31, wall time: 1 ms (0.9%)
+   │  │  │        +─ Filter(?document2 != ?document) [#4.8K], results: 28, wall time: 0 ms (0.0%)
+   │  │  │        │  `─ DirectHashJoin(?author) [#9.7K], results: 70, wall time: 1 ms (0.9%)
+   │  │  │        │     +─ Filter(?author != ?erdoes) [#1.4K], results: 43, wall time: 1 ms (0.9%)
+   │  │  │        │     │  `─ DirectHashJoin(?document) [#2.7K], results: 85, wall time: 1 ms (0.9%)
+   │  │  │        │     │     +─ MergeJoin(?erdoes) [#918], results: 42, wall time: 1 ms (0.9%)
+   │  │  │        │     │     │  +─ Scan[POSC](?erdoes, <http://xmlns.com/foaf/0.1/name>, "Paul Erdoes") [#44], results: 1, wall time: 0 ms (0.0%)
+   │  │  │        │     │     │  `─ Scan[POSC](?document, <http://purl.org/dc/elements/1.1/creator>, ?erdoes) [#28.6M], results: 42 (with gaps), wall time: 0 ms (0.0%)
+   │  │  │        │     │     `─ Scan[PSOC](?document, <http://purl.org/dc/elements/1.1/creator>, ?author) [#28.6M], results: 126 (with gaps), wall time: 0 ms (0.0%)
+   │  │  │        │     `─ Scan[POSC](?document2, <http://purl.org/dc/elements/1.1/creator>, ?author) [#28.6M], results: 113 (with gaps), wall time: 0 ms (0.0%)
+   │  │  │        `─ Scan[PSOC](?document2, <http://purl.org/dc/elements/1.1/creator>, ?author2) [#28.6M], results: 59 (with gaps), wall time: 0 ms (0.0%)
+   │  │  `─ Scan[PSOC](?author2, <http://xmlns.com/foaf/0.1/name>, ?name) [#12.6M], results: 2 (with gaps), wall time: 0 ms (0.0%)
+   │  `─ DirectHashJoin(?author) [#1.4K], results: 1, wall time: 0 ms (0.0%)
+   │     +─ Filter(?author != ?erdoes) [#1.4K], results: 1, wall time: 0 ms (0.0%)
+   │     │  `─ DirectHashJoin(?document) [#2.7K], results: 2, wall time: 0 ms (0.0%)
+   │     │     +─ MergeJoin(?erdoes) [#918], results: 1, wall time: 0 ms (0.0%)
+   │     │     │  +─ Scan[POSC](?erdoes, <http://xmlns.com/foaf/0.1/name>, "Paul Erdoes") [#44], results: 1, wall time: 0 ms (0.0%)
+   │     │     │  `─ Scan[POSC](?document, <http://purl.org/dc/elements/1.1/creator>, ?erdoes) [#28.6M], results: 1 (with gaps), wall time: 0 ms (0.0%)
+   │     │     `─ Scan[PSOC](?document, <http://purl.org/dc/elements/1.1/creator>, ?author) [#28.6M], results: 2, wall time: 0 ms (0.0%)
+   │     `─ Scan[PSOC](?author, <http://xmlns.com/foaf/0.1/name>, ?name) [#12.6M], results: 2 (with gaps), wall time: 0 ms (0.0%)
+   `─ MergeJoin(?erdoes) [#44], results: 1 (with gaps), wall time: 1 ms (0.9%)
+      +─ Scan[POSC](?erdoes, <http://xmlns.com/foaf/0.1/name>, "Paul Erdoes") [#44], results: 1, wall time: 0 ms (0.0%)
+      `─ Scan[POSC](?erdoes, rdf:type, <http://xmlns.com/foaf/0.1/Person>) [#12.6M], results: 1 (with gaps), wall time: 0 ms (0.0%)
+

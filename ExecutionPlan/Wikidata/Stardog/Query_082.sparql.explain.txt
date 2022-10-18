@@ -1,0 +1,98 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+#Largest cities per country
+SELECT DISTINCT ?city ?cityLabel ?population ?country ?countryLabel ?loc WHERE {
+  {
+    SELECT (MAX(?population) AS ?population) ?country WHERE {
+      ?city wdt:P31/wdt:P279* wd:Q515 .
+      ?city wdt:P1082 ?population .
+      ?city wdt:P17 ?country .
+    }
+    GROUP BY ?country
+    ORDER BY DESC(?population)
+  }
+  ?city wdt:P31/wdt:P279* wd:Q515 .
+  ?city wdt:P1082 ?population .
+  ?city wdt:P17 ?country .
+  ?city wdt:P625 ?loc .
+  #SERVICE wikibase:label {
+#    bd:serviceParam wikibase:language "en" .
+#  }
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 30204 ms and returned 0 result(s)
+Total used memory: 1.5G
+Pre-execution time: 53 ms (0.2%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Distinct [#1], memory: 192K (0.0%), results: 0, wall time: 0 ms (0.0%)
+`─ Projection(?city, ?cityLabel, ?population, ?country, ?countryLabel, ?loc) [#1], results: 0, wall time: 0 ms (0.0%)
+   `─ HashJoin(?ncigeuho) [#1], results: 0, wall time: 0 ms (0.0%)
+      +─ PropertyPath(?ncigeuho -> <http://www.wikidata.org/entity/Q515>, minLength=0, reversed) [#48K], results: 1, wall time: 0 ms (0.0%)
+      │  `─ Scan[POSC](?ncigeuho, <http://www.wikidata.org/prop/direct/P279>, <http://www.wikidata.org/entity/Q515>) [#38]
+      `─ MergeJoin(?city) [#1], results: 0, wall time: 192 ms (0.6%)
+         +─ MergeJoin(?city) [#316K], results: 671K (with gaps), wall time: 274 ms (0.9%)
+         │  +─ Scan[PSOC](?city, <http://www.wikidata.org/prop/direct/P1082>, ?population) [#707K], results: 570K (with gaps), wall time: 175 ms (0.6%)
+         │  `─ MergeJoin(?city) [#9.1M], results: 773K (with gaps), wall time: 385 ms (1.3%)
+         │     +─ Scan[PSOC](?city, <http://www.wikidata.org/prop/direct/P625>, ?loc) [#8.8M], results: 704K (with gaps), wall time: 547 ms (1.8%)
+         │     `─ Scan[PSOC](?city, <http://www.wikidata.org/prop/direct/P31>, ?ncigeuho) [#97.7M], results: 1.0M (with gaps), wall time: 988 ms (3.3%)
+         `─ Sort(?city) [#1], memory: 759M (49.8%), results: 716K (with gaps), wall time: 14137 ms (46.8%)
+            `─ DirectHashJoin(?country) [#1], results: 14.2M, wall time: 4068 ms (13.5%)
+               +─ OrderBy(DESC(?population)) [#1], memory: 256K (0.0%), results: 285, wall time: 7 ms (0.0%)
+               │  `─ Projection(?population, ?country) [#1], results: 285, wall time: 0 ms (0.0%)
+               │     `─ Group(by=[?country] aggregates=[(MAX(?population) AS ?population)]) [#1.3K], memory: 352K (0.0%), results: 285, wall time: 36 ms (0.1%)
+               │        `─ MergeJoin(?city) [#1.3K], results: 31K, wall time: 19 ms (0.1%)
+               │           +─ MergeJoin(?city) [#372K], results: 48K (with gaps), wall time: 29 ms (0.1%)
+               │           │  +─ Scan[PSOC](?city, <http://www.wikidata.org/prop/direct/P17>, ?country) [#14.3M], results: 64K (with gaps), wall time: 187 ms (0.6%)
+               │           │  `─ Scan[PSOC](?city, <http://www.wikidata.org/prop/direct/P1082>, ?population) [#707K], results: 48K (with gaps), wall time: 94 ms (0.3%)
+               │           `─ Sort(?city) [#1.3K], memory: 2.0M (0.1%), results: 33K (with gaps), wall time: 38 ms (0.1%)
+               │              `─ DirectHashJoin(?esyjiwvm) [#1.3K], results: 38K, wall time: 9 ms (0.0%)
+               │                 +─ PropertyPath(?esyjiwvm -> <http://www.wikidata.org/entity/Q515>, minLength=0, reversed) [#48K], results: 247, wall time: 2 ms (0.0%)
+               │                 │  `─ Scan[POSC](?esyjiwvm, <http://www.wikidata.org/prop/direct/P279>, <http://www.wikidata.org/entity/Q515>) [#38]
+               │                 `─ Scan[POSC](?city, <http://www.wikidata.org/prop/direct/P31>, ?esyjiwvm) [#97.7M], results: 39K (with gaps), wall time: 27 ms (0.1%)
+               `─ Scan[POSC](?city, <http://www.wikidata.org/prop/direct/P17>, ?country) [#14.3M], results: 14.2M (with gaps), wall time: 8933 ms (29.6%)
+

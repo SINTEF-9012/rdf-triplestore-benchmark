@@ -1,0 +1,60 @@
+plan
+"PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?state ?stateLabel ?companies ?population ?companiesPerM
+{
+  {
+    SELECT ?state (COUNT(*) AS ?companies)
+    {
+      {
+        SELECT DISTINCT ?company ?state
+        {
+          
+          { # ----- Begin optimization group 1 -----
+            
+            ArbitraryLengthPath ( min=0, from _anon_57633418_865e_467a_8ecb_a1cfcecdbfb5, to __const_b7de52d6_uri) over {
+	 [ _anon_57633418_865e_467a_8ecb_a1cfcecdbfb5 http://www.wikidata.org/prop/direct/P279 http://www.wikidata.org/entity/Q4830453 ]
+	 }  # Collection size: 500.0
+            ?company wdt:P31 ?_anon_57633418_865e_467a_8ecb_a1cfcecdbfb5 . # 	Collection size: 9.768112E7	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 4.884056E10
+            FILTER (!(EXISTS {
+            PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+              
+              { # ----- Begin optimization group 2 -----
+              
+              ?company wdt:P576 ?date . # 	Collection size: 229927.0	Predicate collection size: 229927.0	Unique subjects: 228829.0	Unique objects: 22549.0	Current complexity: 229927.0
+              
+              } # ----- End optimization group 2 -----
+              # ESTIMATED NUMBER OF ITERATIONS: 229927.0            
+            }))
+            ?company wdt:P159 ?_anon_83b6154e_06d1_4739_822e_a11e4abe2410 . # 	Collection size: 410677.0	Predicate collection size: 410677.0	Unique subjects: 404911.0	Unique objects: 74763.0	Current complexity: 4.9536057699395676E10
+            ArbitraryLengthPath ( min=0, from _anon_83b6154e_06d1_4739_822e_a11e4abe2410, to state) over {
+	 [ _anon_83b6154e_06d1_4739_822e_a11e4abe2410 http://www.wikidata.org/prop/direct/P131 state ]
+	 }  # Collection size: 500.0
+            ?state wdt:P31 wd:Q1221156 . # 	Collection size: 16.0	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 3.962884615951654E14
+            
+          } # ----- End optimization group 1 -----
+          # ESTIMATED NUMBER OF ITERATIONS: 3.962884615951654E14
+          
+        }
+      }
+    }
+    GROUP BY ?state
+  }
+  
+  { # ----- Begin optimization group 4 -----
+    
+    ?state wdt:P1082 ?population . # 	Collection size: 707068.0	Predicate collection size: 707068.0	Unique subjects: 591421.0	Unique objects: 70108.0	Current complexity: 707068.0
+    
+  } # ----- End optimization group 4 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 707068.0
+  
+  BIND (((?companies / ?population) * 1000000) AS ?companiesPerM)
+}
+ORDER BY DESC(?companiesPerM)
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

@@ -1,0 +1,30 @@
+plan
+"PREFIX schema: <http://schema.org/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+
+SELECT DISTINCT ?item ?wikisourceSitelink ?wikisourceLanguage
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?_anon_f260ed65_cc98_4a7c_987e_a269bfafc0e9 wikibase:wikiGroup ""wikisource"" . # 	Collection size: 74.0	Predicate collection size: 875.0	Unique subjects: 875.0	Unique objects: 17.0	Current complexity: 74.0
+    ?wikisourceSitelink schema:isPartOf ?_anon_f260ed65_cc98_4a7c_987e_a269bfafc0e9 . # 	Collection size: 8.0348075E7	Predicate collection size: 8.0348075E7	Unique subjects: 8.0348075E7	Unique objects: 875.0	Current complexity: 6795151.485714286
+    ?wikisourceSitelink schema:inLanguage ?wikisourceLanguage . # 	Collection size: 8.0348075E7	Predicate collection size: 8.0348075E7	Unique subjects: 8.0348075E7	Unique objects: 326.0	Current complexity: 6795151.485714286
+    ?wikisourceSitelink schema:about ?item . # 	Collection size: 1.79121248E8	Predicate collection size: 1.79121248E8	Unique subjects: 1.79116782E8	Unique objects: 9.8768707E7	Current complexity: 6795320.912309584
+    ?paper wdt:P50 ?item . # 	Collection size: 2.1638522E7	Predicate collection size: 2.1638522E7	Unique subjects: 1.1001069E7	Unique objects: 1951873.0	Current complexity: 7.533312928559953E7
+    ?paper wdt:P31 wd:Q13442814 . # 	Collection size: 3.7412809E7	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 7.533312928559953E7
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 7.533312928559953E7
+  
+}
+ORDER BY ASC(?wikisourceLanguage)
+LIMIT 300
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

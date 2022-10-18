@@ -1,0 +1,31 @@
+Explaining Query:
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?ee
+WHERE {
+  ?publication rdfs:seeAlso ?ee
+}
+ORDER BY ?ee
+LIMIT 10
+OFFSET 50
+
+The Query Plan:
+
+Profiling results:
+Query executed in 345212 ms and returned 10 result(s)
+Pre-execution time: 117 ms (0.0%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Slice(offset=50, limit=10) [#10], results: 10, wall time: 0 ms (0.0%)
+`─ OrderBy(ASC(?ee), offset=50, limit=10) [#6.3M], results: 60, wall time: 336344 ms (97.4%)
+   `─ Projection(?ee) [#6.3M], results: 6.3M, wall time: 2763 ms (0.8%)
+      `─ Scan[POSC](?publication, rdfs:seeAlso, ?ee) [#6.3M], results: 6.3M, wall time: 5987 ms (1.7%)
+

@@ -1,0 +1,39 @@
+plan
+"PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?street ?streetLabel
+{
+  {
+    
+    { # ----- Begin optimization group 1 -----
+      
+      ArbitraryLengthPath ( min=0, from _anon_5a7b5dc2_2bc9_40ff_8173_8808c7ab1631, to __const_251ea9da_uri) over {
+	 [ _anon_5a7b5dc2_2bc9_40ff_8173_8808c7ab1631 http://www.wikidata.org/prop/direct/P279 http://www.wikidata.org/entity/Q79007 ]
+	 }  # Collection size: 500.0
+      ?street wdt:P31 ?_anon_5a7b5dc2_2bc9_40ff_8173_8808c7ab1631 . # 	Collection size: 9.768112E7	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 4.884056E10
+      ?street wdt:P17 wd:Q142 . # 	Collection size: 674641.0	Predicate collection size: 1.4294192E7	Unique subjects: 1.4082865E7	Unique objects: 3230.0	Current complexity: 4.884056E10
+      
+    } # ----- End optimization group 1 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 4.884056E10
+    
+  }
+  MINUS
+  {
+    
+    { # ----- Begin optimization group 2 -----
+      
+      ?street wdt:P131 ?_anon_1 . # 	Collection size: 1.0797926E7	Predicate collection size: 1.0797926E7	Unique subjects: 1.0250781E7	Unique objects: 363560.0	Current complexity: 1.0797926E7
+      
+    } # ----- End optimization group 2 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 1.0797926E7
+    
+  }
+}
+ORDER BY ASC(?streetLabel)
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

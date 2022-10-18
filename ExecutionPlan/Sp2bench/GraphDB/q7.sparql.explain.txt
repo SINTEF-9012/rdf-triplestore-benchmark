@@ -1,0 +1,58 @@
+plan
+"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+SELECT DISTINCT ?title
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?class rdfs:subClassOf foaf:Document . # 	Collection size: 9.0	Predicate collection size: 18.0	Unique subjects: 17.0	Unique objects: 8.0	Current complexity: 9.0
+    ?doc rdf:type ?class . # 	Collection size: 2.2414735E7	Predicate collection size: 2.2414735E7	Unique subjects: 2.2414726E7	Unique objects: 19.0	Current complexity: 1.0617506052631577E7
+    ?doc dc:title ?title . # 	Collection size: 9768483.0	Predicate collection size: 9768483.0	Unique subjects: 9768483.0	Unique objects: 9768483.0	Current complexity: 1.0617506052631577E7
+    ?bag2 ?member2 ?doc . # 	Collection size: 1.25000246E8	Predicate collection size: 1.25000246E8	Unique subjects: 1.0583023E8	Unique objects: 6.0077553E7	Current complexity: 2.2091293706410382E7
+    ?doc2 dcterms:references ?bag2 . # 	Collection size: 88221.0	Predicate collection size: 88221.0	Unique subjects: 88221.0	Unique objects: 88221.0	Current complexity: 2.2091293706410382E7
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 2.2091293706410382E7
+  
+  OPTIONAL
+  {
+    
+    { # ----- Begin optimization group 2 -----
+      
+      ?bag3 ?member3 ?doc . # 	Collection size: 1.25000246E8	Predicate collection size: 1.25000246E8	Unique subjects: 1.0583023E8	Unique objects: 6.0077553E7	Current complexity: 2.0806480916424808
+      ?doc3 dcterms:references ?bag3 . # 	Collection size: 88221.0	Predicate collection size: 88221.0	Unique subjects: 88221.0	Unique objects: 88221.0	Current complexity: 2.0806480916424808
+      ?doc3 rdf:type ?class3 . # 	Collection size: 2.2414735E7	Predicate collection size: 2.2414735E7	Unique subjects: 2.2414726E7	Unique objects: 19.0	Current complexity: 2.080648927067943
+      ?class3 rdfs:subClassOf foaf:Document . # 	Collection size: 9.0	Predicate collection size: 18.0	Unique subjects: 17.0	Unique objects: 8.0	Current complexity: 2.080648927067943
+      
+    } # ----- End optimization group 2 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 2.080648927067943
+    
+    OPTIONAL
+    {
+      
+      { # ----- Begin optimization group 3 -----
+        
+        ?bag4 ?member4 ?doc3 . # 	Collection size: 1.25000246E8	Predicate collection size: 1.25000246E8	Unique subjects: 1.0583023E8	Unique objects: 6.0077553E7	Current complexity: 2.0806480916424808
+        ?doc4 dcterms:references ?bag4 . # 	Collection size: 88221.0	Predicate collection size: 88221.0	Unique subjects: 88221.0	Unique objects: 88221.0	Current complexity: 2.0806480916424808
+        ?doc4 rdf:type ?class4 . # 	Collection size: 2.2414735E7	Predicate collection size: 2.2414735E7	Unique subjects: 2.2414726E7	Unique objects: 19.0	Current complexity: 2.080648927067943
+        ?class4 rdfs:subClassOf foaf:Document . # 	Collection size: 9.0	Predicate collection size: 18.0	Unique subjects: 17.0	Unique objects: 8.0	Current complexity: 2.080648927067943
+        
+      } # ----- End optimization group 3 -----
+      # ESTIMATED NUMBER OF ITERATIONS: 2.080648927067943
+      
+    }
+    FILTER (!(BOUND(?doc4)))
+  }
+  FILTER (!(BOUND(?doc3)))
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

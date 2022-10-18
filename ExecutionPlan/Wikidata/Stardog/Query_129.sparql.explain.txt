@@ -1,0 +1,103 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+# German states, ordered by the number of company headquarters per million inhabitants
+# Replace wd:Q1221156 (state of Germany) by anything else you care about, e.g., wd:Q6256 (country)
+# Nested queries for correctness (don't count companies twice) and performance (aggregate before adding more data)
+# Limits: states without population missing; company data in Wikidata is always incomplete
+# Note: This query shows some not-so-easy nesting of DISTINCT (don't count any company twice) and aggregate, in combination with arithmetic output evaluation functions. It is a hard query that may time out if modified.
+SELECT
+  ?state ?stateLabel
+  ?companies
+  ?population
+  (?companies/?population*1000000 AS ?companiesPerM)
+WHERE
+{
+  { SELECT ?state (count(*) as ?companies) WHERE {
+    {SELECT DISTINCT ?company ?state WHERE {
+      ?state wdt:P31 wd:Q1221156 .
+      ?company wdt:P31/wdt:P279* wd:Q4830453 .
+      ?company wdt:P159/wdt:P131* ?state .
+      FILTER NOT EXISTS{ ?company wdt:P576 ?date } # don't count dissolved companies
+    } }
+  } GROUP BY ?state  }
+    ?state wdt:P1082 ?population
+  #SERVICE wikibase:label { bd:serviceParam wikibase:language "de" }
+}
+ORDER BY DESC(?companiesPerM)
+
+The Query Plan:
+
+Profiling results:
+Query executed in 8562 ms and returned 16 result(s)
+Total used memory: 124M
+Pre-execution time: 140 ms (1.6%)
+Post-processing time: 1 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+OrderBy(DESC(?companiesPerM)) [#1], memory: 256K (0.2%), results: 16, wall time: 16 ms (0.2%)
+`─ Projection(?state, ?stateLabel, ?companies, ?population, ?companiesPerM) [#1], results: 16, wall time: 0 ms (0.0%)
+   `─ Bind(((?companies / ?population) * "1000000"^^xsd:integer) AS ?companiesPerM) sortedBy=?state [#1], results: 16, wall time: 98 ms (1.1%)
+      `─ MergeJoin(?state) [#1], results: 16, wall time: 0 ms (0.0%)
+         +─ Scan[PSOC](?state, <http://www.wikidata.org/prop/direct/P1082>, ?population) [#707K], results: 20 (with gaps), wall time: 5 ms (0.1%)
+         `─ Sort(?state) [#4], memory: 256K (0.2%), results: 16 (with gaps), wall time: 40 ms (0.5%)
+            `─ Projection(?state, ?companies) [#4], results: 16, wall time: 0 ms (0.0%)
+               `─ Group(by=[?state] aggregates=[(COUNT(*) AS ?companies)]) [#129], results: 16, wall time: 26 ms (0.3%)
+                  `─ Distinct [#129], memory: 1.1M (0.9%), results: 16K, wall time: 42 ms (0.5%)
+                     `─ Projection(?company, ?state) [#129], results: 19K, wall time: 6 ms (0.1%)
+                        `─ Projection(?state, ?nvgfchsm, ?company, ?embcsdsh) [#129], results: 19K, wall time: 6 ms (0.1%)
+                           `─ Filter(!(Bound(?companies))) [#129], results: 19K, wall time: 15 ms (0.2%)
+                              `─ HashJoinOuter(?company) [#259], memory: 18M (14.9%), results: 22K, wall time: 131 ms (1.5%)
+                                 +─ HashJoin(?embcsdsh) [#259], memory: 513K (0.4%), results: 22K, wall time: 74 ms (0.9%)
+                                 │  +─ DirectHashJoin(?company) [#2.4K], results: 42K, wall time: 46 ms (0.5%)
+                                 │  │  +─ HashJoin(?nvgfchsm) [#4.8K], memory: 41M (33.4%), results: 35K, wall time: 941 ms (11.0%)
+                                 │  │  │  +─ MergeJoin(?state) [#29K], results: 799K, wall time: 203 ms (2.4%)
+                                 │  │  │  │  +─ Scan[POSC](?state, <http://www.wikidata.org/prop/direct/P31>, <http://www.wikidata.org/entity/Q1221156>) [#918], results: 16 (with gaps), wall time: 0 ms (0.0%)
+                                 │  │  │  │  `─ PropertyPath(?nvgfchsm -> ?state, minLength=0, sortedBy=?state, reversed) [#3761.3M], results: 799K (with gaps), wall time: 2844 ms (33.2%)
+                                 │  │  │  │     `─ Scan[POSC](?nvgfchsm, <http://www.wikidata.org/prop/direct/P131>, ?state) [#10.8M]
+                                 │  │  │  `─ Scan[POSC](?company, <http://www.wikidata.org/prop/direct/P159>, ?nvgfchsm) [#411K], results: 411K, wall time: 190 ms (2.2%)
+                                 │  │  `─ Scan[PSOC](?company, <http://www.wikidata.org/prop/direct/P31>, ?embcsdsh) [#97.7M], results: 78K (with gaps), wall time: 3521 ms (41.1%)
+                                 │  `─ PropertyPath(?embcsdsh -> <http://www.wikidata.org/entity/Q4830453>, minLength=0, reversed) [#306], results: 2.6K, wall time: 21 ms (0.2%)
+                                 │     `─ Scan[POSC](?embcsdsh, <http://www.wikidata.org/prop/direct/P279>, <http://www.wikidata.org/entity/Q4830453>) [#305]
+                                 `─ Bind("true"^^xsd:boolean AS ?companies) sortedBy=?companies [#230K], results: 230K, wall time: 71 ms (0.8%)
+                                    `─ Scan[PSOC](?company, <http://www.wikidata.org/prop/direct/P576>, ?date) [#230K], results: 230K, wall time: 118 ms (1.4%)
+

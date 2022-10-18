@@ -1,0 +1,81 @@
+plan
+"PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?senator ?senatorLabel ?districtLabel ?partyLabel ?assumedOffice (SAMPLE(?image) AS ?image)
+{
+  {
+    {
+      {
+        
+        { # ----- Begin optimization group 1 -----
+          
+          ?posheld ps:P39 wd:Q4416090 . # 	Collection size: 9937.0	Predicate collection size: 1364600.0	Unique subjects: 1364600.0	Unique objects: 112650.0	Current complexity: 9937.0
+          ?senator p:P39 ?posheld . # 	Collection size: 1364613.0	Predicate collection size: 1364613.0	Unique subjects: 696780.0	Unique objects: 1364613.0	Current complexity: 9937.0
+          ?posheld pq:P580 ?assumedOffice . # 	Collection size: 6667071.0	Predicate collection size: 6667071.0	Unique subjects: 6661809.0	Unique objects: 134663.0	Current complexity: 9944.848993268944
+          ?posheld pq:P768 ?district . # 	Collection size: 347097.0	Predicate collection size: 347097.0	Unique subjects: 346111.0	Unique objects: 23916.0	Current complexity: 9973.179849865133
+          ?senator p:P102 ?partystatement . # 	Collection size: 468762.0	Predicate collection size: 468762.0	Unique subjects: 423040.0	Unique objects: 468762.0	Current complexity: 11051.077280593987
+          ?partystatement ps:P102 ?party . # 	Collection size: 467073.0	Predicate collection size: 467073.0	Unique subjects: 467073.0	Unique objects: 10139.0	Current complexity: 11051.077280593987
+          
+        } # ----- End optimization group 1 -----
+        # ESTIMATED NUMBER OF ITERATIONS: 11051.077280593987
+        
+      }
+      MINUS
+      {
+        
+        { # ----- Begin optimization group 2 -----
+          
+          ?partystatement pq:P582 ?partyEnd . # 	Collection size: 3466703.0	Predicate collection size: 3466703.0	Unique subjects: 3463361.0	Unique objects: 144875.0	Current complexity: 3466703.0
+          
+        } # ----- End optimization group 2 -----
+        # ESTIMATED NUMBER OF ITERATIONS: 3466703.0
+        
+      }
+    }
+    MINUS
+    {
+      
+      { # ----- Begin optimization group 3 -----
+        
+        ?party wdt:P361 ?partOf . # 	Collection size: 4252496.0	Predicate collection size: 4252496.0	Unique subjects: 2934108.0	Unique objects: 429828.0	Current complexity: 4252496.0
+        
+      } # ----- End optimization group 3 -----
+      # ESTIMATED NUMBER OF ITERATIONS: 4252496.0
+      
+    }
+  }
+  MINUS
+  {
+    
+    { # ----- Begin optimization group 4 -----
+      
+      ?posheld pq:P582 ?endTime . # 	Collection size: 3466703.0	Predicate collection size: 3466703.0	Unique subjects: 3463361.0	Unique objects: 144875.0	Current complexity: 3466703.0
+      
+    } # ----- End optimization group 4 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 3466703.0
+    
+  }
+  OPTIONAL
+  {
+    
+    { # ----- Begin optimization group 5 -----
+      
+      ?senator wdt:P18 ?image . # 	Collection size: 4084993.0	Predicate collection size: 4084993.0	Unique subjects: 3952654.0	Unique objects: 3821255.0	Current complexity: 4084993.0
+      
+    } # ----- End optimization group 5 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 4084993.0
+    
+  }
+}
+GROUP BY ?senator ?senatorLabel ?districtLabel ?partyLabel ?assumedOffice
+ORDER BY ASC(?senatorLabel)
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

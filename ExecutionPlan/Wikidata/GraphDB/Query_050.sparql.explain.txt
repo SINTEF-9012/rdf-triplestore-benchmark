@@ -1,0 +1,31 @@
+plan
+"PREFIX schema: <http://schema.org/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+
+SELECT ?lang (COUNT(?article) AS ?count)
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    hint:Query hint:optimizer ""None"" . # 	Collection size: 0.0	Predicate collection size: 0.0	Unique subjects: 0.0	Unique objects: 0.0	Current complexity: 0.0
+    ?article schema:isPartOf ?_anon_f47c4eca_3092_4784_aa75_297584189122 . # 	Collection size: 8.0348075E7	Predicate collection size: 8.0348075E7	Unique subjects: 8.0348075E7	Unique objects: 875.0	Current complexity: 0.0
+    ?article schema:inLanguage ?lang . # 	Collection size: 8.0348075E7	Predicate collection size: 8.0348075E7	Unique subjects: 8.0348075E7	Unique objects: 326.0	Current complexity: 0.0
+    ?article schema:about ?item . # 	Collection size: 1.79121248E8	Predicate collection size: 1.79121248E8	Unique subjects: 1.79116782E8	Unique objects: 9.8768707E7	Current complexity: 0.0
+    ?item wdt:P1367 ?yp_id . # 	Collection size: 24235.0	Predicate collection size: 24235.0	Unique subjects: 24196.0	Unique objects: 24228.0	Current complexity: 0.0
+    ?_anon_f47c4eca_3092_4784_aa75_297584189122 wikibase:wikiGroup ""wikipedia"" . # 	Collection size: 325.0	Predicate collection size: 875.0	Unique subjects: 875.0	Unique objects: 17.0	Current complexity: 0.0
+    hint:Prior hint:gearing ""forward"" . # 	Collection size: 0.0	Predicate collection size: 0.0	Unique subjects: 0.0	Unique objects: 0.0	Current complexity: 0.0
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 0.0
+  
+}
+GROUP BY ?lang
+ORDER BY DESC(?count)
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

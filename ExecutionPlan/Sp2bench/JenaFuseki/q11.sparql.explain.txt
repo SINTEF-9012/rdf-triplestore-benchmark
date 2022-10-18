@@ -1,0 +1,21 @@
+Picked up _JAVA_OPTIONS: -Djava.io.tmpdir=/data/java/tmp
+12:08:52 INFO  exec            :: QUERY
+  PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  
+  SELECT  ?ee
+  WHERE
+    { ?publication  rdfs:seeAlso  ?ee }
+  ORDER BY ?ee
+  OFFSET  50
+  LIMIT   10
+12:08:52 INFO  exec            :: ALGEBRA
+  (slice 50 _
+    (project (?ee)
+      (top (60 ?ee)
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?publication <http://www.w3.org/2000/01/rdf-schema#seeAlso> ?ee)))))
+12:08:52 INFO  exec            :: TDB2
+  (slice 50 _
+    (project (?ee)
+      (top (60 ?ee)
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?publication <http://www.w3.org/2000/01/rdf-schema#seeAlso> ?ee)))))
+12:08:52 INFO  exec            :: Execute ::   ?publication rdfs:seeAlso ?ee

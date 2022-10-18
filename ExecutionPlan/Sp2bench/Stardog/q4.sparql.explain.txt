@@ -1,0 +1,56 @@
+Explaining Query:
+
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX bench:   <http://localhost/vocabulary/bench/>
+PREFIX dc:      <http://purl.org/dc/elements/1.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX foaf:    <http://xmlns.com/foaf/0.1/>
+PREFIX swrc:    <http://swrc.ontoware.org/ontology#>
+
+SELECT DISTINCT ?name1 ?name2 
+WHERE {
+  ?article1 rdf:type bench:Article .
+  ?article2 rdf:type bench:Article .
+  ?article1 dc:creator ?author1 .
+  ?author1 foaf:name ?name1 .
+  ?article2 dc:creator ?author2 .
+  ?author2 foaf:name ?name2 .
+  ?article1 swrc:journal ?journal .
+  ?article2 swrc:journal ?journal .
+  FILTER (?name1<?name2)
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 330713 ms and hit an error: OperatorException.Cancelled: Query execution cancelled: Execution time exceeded query timeout 300000
+Total used memory: 18G
+Pre-execution time: 142 ms (0.0%)
+Post-processing time: 37126 ms (11.2%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Distinct [#545.9M], memory: 7.4G (40.3%), results: 113.5M, wall time: 80539 ms (24.4%)
+`─ Projection(?name1, ?name2) [#545.9M], results: 118.1M, wall time: 14163 ms (4.3%)
+   `─ Filter(?name1 < ?name2) [#545.9M], results: 118.1M, wall time: 82431 ms (24.9%)
+      `─ MergeJoin(?article1) [#1091.8M], results: 237.9M, wall time: 34277 ms (10.4%)
+         +─ HashJoin(?author1) [#5.3M], memory: 940M (5.0%), results: 1.5M, wall time: 8156 ms (2.5%)
+         │  +─ MergeJoin(?article1) [#5.3M], results: 1.5M, wall time: 565 ms (0.2%)
+         │  │  +─ Scan[POSC](?article1, rdf:type, <http://localhost/vocabulary/bench/Article>) [#1.9M], results: 642K (with gaps), wall time: 1647 ms (0.5%)
+         │  │  `─ Scan[PSOC](?article1, <http://purl.org/dc/elements/1.1/creator>, ?author1) [#28.6M], results: 1.6M (with gaps), wall time: 664 ms (0.2%)
+         │  `─ Scan[PSOC](?author1, <http://xmlns.com/foaf/0.1/name>, ?name1) [#12.6M], results: 12.6M, wall time: 4196 ms (1.3%)
+         `─ HashJoin(?journal) [#381.8M], memory: 291M (1.5%), results: 93.9M (with gaps), wall time: 26114 ms (7.9%)
+            +─ Scan[PSOC](?article1, <http://swrc.ontoware.org/ontology#journal>, ?journal) [#1.9M], results: 642K, wall time: 267 ms (0.1%)
+            `─ HashJoin(?author2) [#5.3M], memory: 584M (3.1%), results: 5.3M, wall time: 11882 ms (3.6%)
+               +─ Scan[POSC](?author2, <http://xmlns.com/foaf/0.1/name>, ?name2) [#12.6M], results: 12.6M, wall time: 4115 ms (1.2%)
+               `─ MergeJoin(?article2) [#5.3M], results: 5.3M, wall time: 1569 ms (0.5%)
+                  +─ Scan[PSOC](?article2, <http://purl.org/dc/elements/1.1/creator>, ?author2) [#28.6M], results: 5.3M (with gaps), wall time: 1790 ms (0.5%)
+                  `─ MergeJoin(?article2) [#1.9M], results: 1.9M (with gaps), wall time: 780 ms (0.2%)
+                     +─ Scan[POSC](?article2, rdf:type, <http://localhost/vocabulary/bench/Article>) [#1.9M], results: 1.9M (with gaps), wall time: 2352 ms (0.7%)
+                     `─ Scan[PSOC](?article2, <http://swrc.ontoware.org/ontology#journal>, ?journal) [#1.9M], results: 1.9M (with gaps), wall time: 951 ms (0.3%)
+

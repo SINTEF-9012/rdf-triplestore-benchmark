@@ -1,0 +1,26 @@
+plan
+"PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?city ?cityLabel ?coordinates
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    VALUES (?highway) {
+      (wd:Q559037)
+      (wd:Q58767)
+    }
+    ?highway wdt:P2789 ?city . # 	Collection size: 164660.0	Predicate collection size: 164660.0	Unique subjects: 44506.0	Unique objects: 46899.0	Current complexity: 329320.0
+    ?city wdt:P625 ?coordinates . # 	Collection size: 8827101.0	Predicate collection size: 8827101.0	Unique subjects: 8669631.0	Unique objects: 8596918.0	Current complexity: 335301.5718108418
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 335301.5718108418
+  
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

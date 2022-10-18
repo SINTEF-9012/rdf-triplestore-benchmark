@@ -1,0 +1,27 @@
+plan
+"PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?elementLabel ?_boiling_point ?_melting_point ?_electronegativity ?_density ?_mass
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?element wdt:P1108 ?_electronegativity . # 	Collection size: 98.0	Predicate collection size: 98.0	Unique subjects: 98.0	Unique objects: 55.0	Current complexity: 98.0
+    ?element wdt:P31 wd:Q11344 . # 	Collection size: 167.0	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 98.0
+    ?element wdt:P2067 ?_mass . # 	Collection size: 337964.0	Predicate collection size: 337964.0	Unique subjects: 333576.0	Unique objects: 83996.0	Current complexity: 99.28913351080412
+    ?element wdt:P2101 ?_melting_point . # 	Collection size: 31659.0	Predicate collection size: 31659.0	Unique subjects: 31221.0	Unique objects: 2255.0	Current complexity: 100.68206264432746
+    ?element wdt:P2054 ?_density . # 	Collection size: 1571.0	Predicate collection size: 1571.0	Unique subjects: 1467.0	Unique objects: 913.0	Current complexity: 107.81971398380261
+    ?element wdt:P2102 ?_boiling_point . # 	Collection size: 1003.0	Predicate collection size: 1003.0	Unique subjects: 910.0	Unique objects: 749.0	Current complexity: 118.8386517865429
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 118.8386517865429
+  
+}
+LIMIT 100
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

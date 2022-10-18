@@ -1,0 +1,1830 @@
+12:12:25 INFO  exec            :: QUERY
+  PREFIX  schema: <http://schema.org/>
+  PREFIX  pq:   <http://www.wikidata.org/prop/qualifier/>
+  PREFIX  bd:   <http://www.bigdata.com/rdf#>
+  PREFIX  pr:   <http://www.wikidata.org/prop/reference/>
+  PREFIX  ps:   <http://www.wikidata.org/prop/statement/>
+  PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
+  PREFIX  geof: <http://www.opengis.net/def/geosparql/function/>
+  PREFIX  wdt:  <http://www.wikidata.org/prop/direct/>
+  PREFIX  wds:  <http://www.wikidata.org/entity/statement/>
+  PREFIX  wdv:  <http://www.wikidata.org/value/>
+  PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>
+  PREFIX  skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX  psn:  <http://www.wikidata.org/prop/statement/value-normalized/>
+  PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX  pqn:  <http://www.wikidata.org/prop/qualifier/value-normalized/>
+  PREFIX  wd:   <http://www.wikidata.org/entity/>
+  PREFIX  geo:  <http://www.opengis.net/ont/geosparql#>
+  PREFIX  psv:  <http://www.wikidata.org/prop/statement/value/>
+  PREFIX  dct:  <http://purl.org/dc/terms/>
+  PREFIX  pqv:  <http://www.wikidata.org/prop/qualifier/value/>
+  PREFIX  ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+  PREFIX  wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+  PREFIX  wdref: <http://www.wikidata.org/reference/>
+  PREFIX  prov: <http://www.w3.org/ns/prov#>
+  PREFIX  cc:   <http://creativecommons.org/ns#>
+  PREFIX  wikibase: <http://wikiba.se/ontology#>
+  PREFIX  prn:  <http://www.wikidata.org/prop/reference/value-normalized/>
+  PREFIX  p:    <http://www.wikidata.org/prop/>
+  PREFIX  wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+  PREFIX  prv:  <http://www.wikidata.org/prop/reference/value/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  hint: <http://www.bigdata.com/queryHints#>
+  PREFIX  wdno: <http://www.wikidata.org/prop/novalue/>
+  
+  SELECT  ?p ?pLabel (count(*) AS ?count)
+  WHERE
+    { ?s  ?pd                   ?o .
+      ?p  wikibase:directClaim  ?pd .
+      ?s wdt:P31/(wdt:P279)* wd:Q729 .
+      ?o wdt:P31/(wdt:P279)* wd:Q43501
+    }
+  GROUP BY ?p ?pLabel
+  ORDER BY DESC(?count)
+12:12:25 INFO  exec            :: ALGEBRA
+  (project (?p ?pLabel ?count)
+    (order ((desc ?count))
+      (extend ((?count ?.0))
+        (group (?p ?pLabel) ((?.0 (count)))
+          (sequence
+            (quadpattern
+              (quad <urn:x-arq:DefaultGraphNode> ?s ?pd ?o)
+              (quad <urn:x-arq:DefaultGraphNode> ?p <http://wikiba.se/ontology#directClaim> ?pd)
+            )
+            (sequence
+              (graph <urn:x-arq:DefaultGraphNode>(path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>))
+              (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?s <http://www.wikidata.org/prop/direct/P31> ??P0)))
+            (sequence
+              (graph <urn:x-arq:DefaultGraphNode>(path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>))
+              (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?o <http://www.wikidata.org/prop/direct/P31> ??P1))))))))
+12:12:25 INFO  exec            :: TDB2
+  (project (?p ?pLabel ?count)
+    (order ((desc ?count))
+      (extend ((?count ?.0))
+        (group (?p ?pLabel) ((?.0 (count)))
+          (sequence
+            (quadpattern
+              (quad <urn:x-arq:DefaultGraphNode> ?s ?pd ?o)
+              (quad <urn:x-arq:DefaultGraphNode> ?p <http://wikiba.se/ontology#directClaim> ?pd)
+            )
+            (sequence
+              (graph <urn:x-arq:DefaultGraphNode>(path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>))
+              (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?s <http://www.wikidata.org/prop/direct/P31> ??P0)))
+            (sequence
+              (graph <urn:x-arq:DefaultGraphNode>(path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>))
+              (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?o <http://www.wikidata.org/prop/direct/P31> ??P1))))))))
+12:12:25 INFO  exec            :: Execute
+  ?p <http://wikiba.se/ontology#directClaim> ?pd
+  ?s ?pd ?o
+12:12:25 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:25 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:25 INFO  exec            :: Execute ::   ?s <http://www.wikidata.org/prop/direct/P31> ??P0
+12:12:26 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:26 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:26 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:26 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:26 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:26 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:26 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:26 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:27 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:27 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:27 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:27 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:27 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:27 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:27 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:27 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:27 INFO  exec            :: Execute ::   ?o <http://www.wikidata.org/prop/direct/P31> ??P1
+12:12:27 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:27 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:28 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:28 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:28 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:28 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:28 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:28 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:28 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:28 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:28 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:28 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:28 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:28 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:28 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:28 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:28 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:28 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:28 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:28 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:28 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:28 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:29 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:29 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:29 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:29 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:29 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:29 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:29 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:29 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:29 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:29 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:29 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:29 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:29 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:29 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:29 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:29 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:29 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:29 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:29 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:29 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:30 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:30 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:30 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:30 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:30 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:30 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:30 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:30 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:30 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:30 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:30 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:30 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:30 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:30 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:30 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:30 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:30 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:30 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:31 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:31 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:31 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:31 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:31 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:31 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:31 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:31 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:31 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:31 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:31 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:31 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:31 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:31 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:31 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:31 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:31 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:31 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:31 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:31 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:32 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:32 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:32 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:32 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:32 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:32 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:32 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:32 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:32 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:32 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:32 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:32 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:32 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:32 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:32 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:32 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:32 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:32 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:33 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:33 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:33 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:33 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:33 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:33 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:33 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:33 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:33 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:33 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:33 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:33 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:33 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:33 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:33 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:33 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:33 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:33 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:33 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:33 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:33 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:33 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:34 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:34 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:34 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:34 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:34 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:34 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:34 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:34 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:34 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:34 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:34 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:34 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:34 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:34 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:34 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:34 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:34 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:34 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:34 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:34 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:35 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:35 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:35 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:35 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:35 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:35 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:35 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:35 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:35 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:35 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:35 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:35 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:35 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:35 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:35 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:35 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:35 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:35 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:35 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:35 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:35 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:35 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:36 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:36 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:36 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:36 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:36 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:36 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:36 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:36 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:36 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:36 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:36 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:36 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:36 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:36 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:36 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:36 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:36 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:36 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:36 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:36 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:36 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:36 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:37 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:37 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:37 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:37 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:37 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:37 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:37 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:37 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:37 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:37 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:37 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:37 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:37 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:37 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:37 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:37 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:38 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:38 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:38 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:38 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:38 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:38 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:38 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:38 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:38 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:38 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:38 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:38 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:38 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:38 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:38 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:38 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:38 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:38 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:38 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:38 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:38 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:38 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:39 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:39 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:39 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:39 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:39 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:39 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:39 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:39 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:39 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:39 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:39 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:39 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:39 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:39 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:39 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:39 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:39 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:39 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:39 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:39 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:40 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:40 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:40 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:40 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:40 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:40 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:40 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:40 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:40 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:40 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:40 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:40 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:40 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:40 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:40 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:40 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:40 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:40 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:40 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:40 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:40 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:40 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:41 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:41 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:41 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:41 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:41 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:41 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:41 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:41 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:41 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:41 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:41 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:41 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:41 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:41 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:41 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:41 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:41 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:41 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:41 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:41 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:42 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:42 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:42 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:42 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:42 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:42 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:42 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:42 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:42 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:42 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:42 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:42 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:42 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:42 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:42 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:42 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:42 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:42 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:42 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:42 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:42 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:42 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:43 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:43 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:43 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:43 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:43 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:43 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:43 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:43 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:43 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:43 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:43 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:43 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:43 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:43 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:43 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:43 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:43 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:43 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:43 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:43 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:43 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:43 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:44 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:44 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:44 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:44 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:44 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:44 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:44 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:44 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:44 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:44 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:44 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:44 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:44 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:44 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:44 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:44 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:44 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:44 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:44 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:44 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:45 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:45 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:45 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:45 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:45 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:45 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:45 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:45 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:45 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:45 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:45 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:45 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:45 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:45 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:45 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:45 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:45 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:45 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:45 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:45 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:45 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:45 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:46 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:46 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:46 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:46 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:46 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:46 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:46 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:46 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:46 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:46 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:46 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:46 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:46 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:46 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:46 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:46 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:46 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:46 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:46 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:46 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:46 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:46 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:47 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:47 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:47 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:47 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:47 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:47 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:47 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:47 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:47 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:47 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:47 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:47 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:47 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:47 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:47 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:47 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:47 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:47 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:48 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:48 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:48 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:48 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:48 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:48 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:48 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:48 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:48 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:48 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:48 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:48 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:48 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:48 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:48 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:48 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:48 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:48 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:49 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:49 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:49 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:49 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:49 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:49 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:49 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:49 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:49 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:49 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:49 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:49 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:49 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:49 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:49 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:49 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:49 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:49 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:49 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:49 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:49 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:49 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:50 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:50 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:50 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:50 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:50 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:50 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:50 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:50 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:50 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:50 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:50 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:50 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:50 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:50 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:50 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:50 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:50 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:50 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:51 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:51 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:51 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:51 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:51 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:51 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:51 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:51 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:51 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:51 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:51 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:51 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:51 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:51 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:51 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:51 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:51 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:51 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:51 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:51 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:52 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:52 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:52 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:52 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:52 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:52 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:52 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:52 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:52 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:52 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:52 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:52 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:52 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:52 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:52 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:52 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:52 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:52 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:52 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:52 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:53 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:53 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:53 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:53 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:53 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:53 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:53 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:53 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:53 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:53 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:53 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:53 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:53 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:53 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:53 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:53 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:53 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:53 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:53 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:53 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:53 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:53 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:54 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:54 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:54 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:54 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:54 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:54 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:54 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:54 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:54 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:54 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:54 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:54 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:54 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:54 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:54 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:54 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:54 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:54 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:55 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:55 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:55 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:55 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:55 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:55 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:55 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:55 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:55 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:55 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:55 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:55 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:55 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:55 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:55 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:55 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:55 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:55 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:55 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:55 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:56 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:56 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:56 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:56 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:56 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:56 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:56 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:56 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:56 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:56 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:56 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:56 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:56 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:56 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:56 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:56 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:56 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:56 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:57 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:57 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:57 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:57 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:57 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:57 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:57 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:57 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:57 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:57 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:57 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:57 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:57 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:57 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:57 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:57 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:57 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:57 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:57 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:57 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:57 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:57 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:58 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:58 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:58 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:58 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:58 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:58 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:58 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:58 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:58 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:58 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:58 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:58 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:58 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:58 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:58 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:58 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:58 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:58 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:58 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:58 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:59 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:59 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:59 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:59 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:59 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:59 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:59 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:59 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:59 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:59 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:59 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:59 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:59 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:59 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:59 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:59 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:59 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:59 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:12:59 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:12:59 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:12:59 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:12:59 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:00 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:00 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:00 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:00 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:00 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:00 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:00 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:00 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:00 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:00 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:00 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:00 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:00 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:00 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:00 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:00 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:00 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:00 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:00 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:00 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:00 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:00 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:01 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:01 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:01 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:01 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:01 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:01 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:01 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:01 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:01 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:01 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:01 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:01 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:01 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:01 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:01 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:01 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:01 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:01 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:01 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:01 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:02 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:02 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:02 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:02 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:02 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:02 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:02 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:02 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:02 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:02 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:02 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:02 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:02 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:02 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:02 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:02 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:02 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:02 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:03 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:03 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:03 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:03 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:03 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:03 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:03 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:03 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:03 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:03 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:03 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:03 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:03 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:03 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:03 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:03 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:03 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:03 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:03 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:03 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:03 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:03 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:04 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:04 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:04 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:04 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:04 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:04 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:04 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:04 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:04 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:04 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:04 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:04 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:04 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:04 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:04 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:04 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:04 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:04 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:04 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:04 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:05 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:05 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:05 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:05 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:05 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:05 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:05 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:05 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:05 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:05 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:05 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:05 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:05 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:05 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:05 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:05 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:05 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:05 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:05 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:05 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:06 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:06 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:06 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:06 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:06 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:06 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:06 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:06 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:06 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:06 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:06 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:06 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:06 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:06 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:06 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:06 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:06 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:06 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:06 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:06 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:07 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:07 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:07 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:07 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:07 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:07 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:07 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:07 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:07 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:07 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:07 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:07 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:07 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:07 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:07 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:07 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:07 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:07 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:07 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:07 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:08 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:08 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:08 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:08 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:08 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:08 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:08 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:08 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:08 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:08 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:08 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:08 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:08 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:08 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:08 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:08 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:08 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:08 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:08 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:08 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:08 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:08 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:09 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:09 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:09 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:09 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:09 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:09 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:09 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:09 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:09 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:09 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:09 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:09 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:09 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:09 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:09 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:09 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:09 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:09 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:10 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:10 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:10 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:10 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:10 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:10 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:10 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:10 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:10 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:10 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:10 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:10 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:10 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:10 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:10 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:10 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:10 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:10 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:10 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:10 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:11 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:11 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:11 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:11 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:11 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:11 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:11 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:11 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:11 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:11 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:11 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:11 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:11 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:11 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:11 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:11 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:11 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:11 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:11 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:11 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:12 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:12 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:12 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:12 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:12 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:12 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:12 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:12 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:12 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:12 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:12 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:12 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:12 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:12 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:12 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:12 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:12 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:12 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:12 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:12 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:12 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:12 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:13 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:13 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:13 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:13 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:13 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:13 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:13 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:13 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:13 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:13 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:13 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:13 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:13 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:13 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:13 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:13 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:13 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:13 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:13 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:13 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:14 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:14 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:14 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:14 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:14 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:14 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:14 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:14 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:14 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:14 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:14 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:14 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:14 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:14 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:14 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:14 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:14 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:14 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:14 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:14 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:15 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:15 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:15 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:15 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:15 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:15 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:15 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:15 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:15 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:15 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:15 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:15 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:15 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:15 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:15 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:15 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:15 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:15 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:15 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:15 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:15 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:15 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:16 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:16 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:16 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:16 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:16 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:16 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:16 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:16 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:16 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:16 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:16 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:16 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:16 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:16 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:16 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:16 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:16 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:16 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:16 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:16 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:16 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:16 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:17 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:17 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:17 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:17 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:17 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:17 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:17 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:17 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:17 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:17 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:17 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:17 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:17 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:17 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:17 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:17 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:17 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:17 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:17 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:17 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:18 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:18 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:18 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:18 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:18 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:18 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:18 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:18 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:18 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:18 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:18 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:18 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:18 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:18 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:18 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:18 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:18 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:18 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:18 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:18 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:18 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:18 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:19 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:19 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:19 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:19 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:19 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:19 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:19 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:19 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:19 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:19 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:19 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:19 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:19 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:19 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:19 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:19 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:19 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:19 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:19 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:19 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:19 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:19 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:20 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:20 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:20 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:20 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:20 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:20 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:20 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:20 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:20 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:20 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:20 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:20 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:20 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:20 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:20 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:20 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:20 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:20 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:21 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:21 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:21 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:21 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:21 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:21 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:21 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:21 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:21 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:21 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:21 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:21 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:21 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:21 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:21 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:21 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:21 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:21 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:21 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:21 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:22 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:22 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:22 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:22 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:22 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:22 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:22 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:22 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:22 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:22 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:22 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:22 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:22 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:22 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:22 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:22 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:22 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:22 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:22 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:22 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:22 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:22 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:23 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:23 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:23 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:23 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:23 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:23 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:23 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:23 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:23 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:23 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:23 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:23 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:23 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:23 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:23 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:23 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:23 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:23 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:24 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:24 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:24 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:24 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729
+12:13:24 INFO  exec            :: TDB2
+  (path ??P1 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q43501>)
+12:13:24 INFO  exec            :: Path :: ??P1 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q43501
+12:13:24 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q729>)
+12:13:24 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P279>)* http://www.wikidata.org/entity/Q729

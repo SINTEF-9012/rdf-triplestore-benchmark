@@ -1,0 +1,84 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+# Make a list of the most used authority control properties for people for painters
+SELECT ?propertyLabel ?propertyDescription ?count WHERE {
+  {
+    select ?propertyclaim (COUNT(*) AS ?count) where {
+      ?item wdt:P106 wd:Q1028181 .
+      ?item wdt:P31 wd:Q5 .
+      ?item ?propertyclaim [] .
+    } group by ?propertyclaim
+  }
+  ?property wikibase:propertyType wikibase:ExternalId .
+  ?property wdt:P31 wd:Q19595382 .
+  ?property wikibase:claim ?propertyclaim .
+  #SERVICE wikibase:label {            # ... include the labels
+#    bd:serviceParam wikibase:language "en" .
+#  }
+} ORDER BY DESC (?count)
+LIMIT 100
+
+The Query Plan:
+
+Profiling results:
+Query executed in 82420 ms and returned 100 result(s)
+Total used memory: 2.7M
+Pre-execution time: 29 ms (0.0%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Slice(offset=0, limit=100) [#100], results: 100, wall time: 0 ms (0.0%)
+`─ OrderBy(DESC(?count), offset=0, limit=100) [#193], results: 100, wall time: 2 ms (0.0%)
+   `─ Projection(?propertyLabel, ?propertyDescription, ?count) [#193], results: 656, wall time: 0 ms (0.0%)
+      `─ HashJoin(?propertyclaim) [#193], memory: 641K (23.3%), results: 656, wall time: 7 ms (0.0%)
+         +─ NaryJoin(?property) [#193], results: 978, wall time: 3 ms (0.0%)
+         │  +─ Scan[PSOC](?property, <http://wikiba.se/ontology#claim>, ?propertyclaim) [#1], results: 1.8K (with gaps), wall time: 1 ms (0.0%)
+         │  +─ Scan[POSC](?property, <http://www.wikidata.org/prop/direct/P31>, <http://www.wikidata.org/entity/Q19595382>) [#193], results: 981 (with gaps), wall time: 0 ms (0.0%)
+         │  `─ Scan[POSC](?property, <http://wikiba.se/ontology#propertyType>, <http://wikiba.se/ontology#ExternalId>) [#1], results: 1.8K (with gaps), wall time: 0 ms (0.0%)
+         `─ Projection(?propertyclaim, ?count) [#1], results: 4.3K, wall time: 1 ms (0.0%)
+            `─ Group(by=[?propertyclaim] aggregates=[(COUNT(*) AS ?count)]) [#889K], memory: 737K (26.7%), results: 4.3K, wall time: 10767 ms (13.1%)
+               `─ NaryJoin(?item) [#889K], results: 18.7M, wall time: 6111 ms (7.4%)
+                  +─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P31>, <http://www.wikidata.org/entity/Q5>) [#9.4M], results: 315K (with gaps), wall time: 648 ms (0.8%)
+                  +─ Scan[SPO](?item, ?propertyclaim, ?_anon_1) [#16388.1M], results: 18.9M (with gaps), wall time: 64733 ms (78.5%)
+                  `─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P106>, <http://www.wikidata.org/entity/Q1028181>) [#178K], results: 178K (with gaps), wall time: 117 ms (0.1%)
+

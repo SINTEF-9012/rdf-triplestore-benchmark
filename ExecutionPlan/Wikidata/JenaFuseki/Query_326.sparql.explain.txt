@@ -1,0 +1,1405 @@
+10:17:18 INFO  exec            :: QUERY
+  PREFIX  schema: <http://schema.org/>
+  PREFIX  pq:   <http://www.wikidata.org/prop/qualifier/>
+  PREFIX  bd:   <http://www.bigdata.com/rdf#>
+  PREFIX  pr:   <http://www.wikidata.org/prop/reference/>
+  PREFIX  ps:   <http://www.wikidata.org/prop/statement/>
+  PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
+  PREFIX  geof: <http://www.opengis.net/def/geosparql/function/>
+  PREFIX  wdt:  <http://www.wikidata.org/prop/direct/>
+  PREFIX  wds:  <http://www.wikidata.org/entity/statement/>
+  PREFIX  wdv:  <http://www.wikidata.org/value/>
+  PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>
+  PREFIX  skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX  psn:  <http://www.wikidata.org/prop/statement/value-normalized/>
+  PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX  pqn:  <http://www.wikidata.org/prop/qualifier/value-normalized/>
+  PREFIX  wd:   <http://www.wikidata.org/entity/>
+  PREFIX  geo:  <http://www.opengis.net/ont/geosparql#>
+  PREFIX  psv:  <http://www.wikidata.org/prop/statement/value/>
+  PREFIX  dct:  <http://purl.org/dc/terms/>
+  PREFIX  pqv:  <http://www.wikidata.org/prop/qualifier/value/>
+  PREFIX  ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+  PREFIX  wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+  PREFIX  wdref: <http://www.wikidata.org/reference/>
+  PREFIX  prov: <http://www.w3.org/ns/prov#>
+  PREFIX  cc:   <http://creativecommons.org/ns#>
+  PREFIX  wikibase: <http://wikiba.se/ontology#>
+  PREFIX  prn:  <http://www.wikidata.org/prop/reference/value-normalized/>
+  PREFIX  p:    <http://www.wikidata.org/prop/>
+  PREFIX  wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+  PREFIX  prv:  <http://www.wikidata.org/prop/reference/value/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  hint: <http://www.bigdata.com/queryHints#>
+  PREFIX  wdno: <http://www.wikidata.org/prop/novalue/>
+  
+  SELECT  ?item (SAMPLE(?titleL) AS ?title) (GROUP_CONCAT(DISTINCT ?creatorL ; separator=', ') AS ?creator) (GROUP_CONCAT(DISTINCT ?genreL ; separator=', ') AS ?genre) (GROUP_CONCAT(DISTINCT ?placeL ; separator=', ') AS ?place) (GROUP_CONCAT(DISTINCT ?arr ; separator=', ') AS ?arrondissement) (SAMPLE(?img) AS ?image) (SAMPLE(?coord) AS ?coordinates)
+  WHERE
+    { { SELECT DISTINCT  ?item
+        WHERE
+          {   { ?item  wdt:P136  wd:Q557141 ;
+                       wdt:P131  wd:Q90
+              }
+            UNION
+              { ?item  wdt:P136  wd:Q557141 .
+                ?item wdt:P131/(wdt:P131)* wd:Q90
+              }
+          }
+      }
+      OPTIONAL
+        { ?item  rdfs:label  ?titleL
+          FILTER ( lang(?titleL) = "fr" )
+        }
+      OPTIONAL
+        { ?item  wdt:P170    _:b0 .
+          _:b0   rdfs:label  ?creatorL
+          FILTER ( lang(?creatorL) = "fr" )
+        }
+      OPTIONAL
+        {   { ?item  wdt:P136  ?g
+              FILTER ( str(?g) != "http://www.wikidata.org/entity/Q557141" )
+            }
+          UNION
+            { ?item  wdt:P31  ?g }
+          ?g  rdfs:label  ?genreL
+          FILTER ( lang(?genreL) = "fr" )
+        }
+      OPTIONAL
+        { ?item  wdt:P276    _:b1 .
+          _:b1   rdfs:label  ?placeL
+          FILTER ( lang(?placeL) = "fr" )
+        }
+      OPTIONAL
+        { ?item  wdt:P131    _:b2 .
+          _:b2   wdt:P131    wd:Q90 ;
+                 rdfs:label  ?arrL
+          FILTER ( lang(?arrL) = "fr" )
+          BIND(replace(?arrL, "^([0-9]+).*$", "$1", "si") AS ?arr)
+        }
+      OPTIONAL
+        { ?item  wdt:P18  ?img }
+      OPTIONAL
+        { ?item  wdt:P625  ?coord }
+    }
+  GROUP BY ?item
+10:17:18 INFO  exec            :: ALGEBRA
+  (project (?item ?title ?creator ?genre ?place ?arrondissement ?image ?coordinates)
+    (extend ((?title ?.0) (?creator ?.1) (?genre ?.2) (?place ?.3) (?arrondissement ?.4) (?image ?.5) (?coordinates ?.6))
+      (group (?item) ((?.0 (sample ?titleL)) (?.1 (group_concat distinct(separator ', ') ?creatorL)) (?.2 (group_concat distinct(separator ', ') ?genreL)) (?.3 (group_concat distinct(separator ', ') ?placeL)) (?.4 (group_concat distinct(separator ', ') ?arr)) (?.5 (sample ?img)) (?.6 (sample ?coord)))
+        (conditional
+          (conditional
+            (conditional
+              (conditional
+                (conditional
+                  (conditional
+                    (conditional
+                      (distinct
+                        (project (?item)
+                          (union
+                            (quadpattern
+                              (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P136> <http://www.wikidata.org/entity/Q557141>)
+                              (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+                            )
+                            (sequence
+                              (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P136> <http://www.wikidata.org/entity/Q557141>))
+                              (sequence
+                                (graph <urn:x-arq:DefaultGraphNode>(path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>))
+                                (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P131> ??P0)))))))
+                      (filter (= (lang ?titleL) "fr")
+                        (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.w3.org/2000/01/rdf-schema#label> ?titleL))))
+                    (filter (= (lang ?creatorL) "fr")
+                      (quadpattern
+                        (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P170> ??0)
+                        (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.w3.org/2000/01/rdf-schema#label> ?creatorL)
+                      )))
+                  (sequence
+                    (union
+                      (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+                        (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P136> ?g)))
+                      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P31> ?g)))
+                    (filter (= (lang ?genreL) "fr")
+                      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?g <http://www.w3.org/2000/01/rdf-schema#label> ?genreL)))))
+                (filter (= (lang ?placeL) "fr")
+                  (quadpattern
+                    (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P276> ??1)
+                    (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+                  )))
+              (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+                (filter (= (lang ?arrL) "fr")
+                  (quadpattern
+                    (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P131> ??2)
+                    (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+                    (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+                  ))))
+            (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P18> ?img)))
+          (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P625> ?coord))))))
+10:17:18 INFO  exec            :: TDB2
+  (project (?item ?title ?creator ?genre ?place ?arrondissement ?image ?coordinates)
+    (extend ((?title ?.0) (?creator ?.1) (?genre ?.2) (?place ?.3) (?arrondissement ?.4) (?image ?.5) (?coordinates ?.6))
+      (group (?item) ((?.0 (sample ?titleL)) (?.1 (group_concat distinct(separator ', ') ?creatorL)) (?.2 (group_concat distinct(separator ', ') ?genreL)) (?.3 (group_concat distinct(separator ', ') ?placeL)) (?.4 (group_concat distinct(separator ', ') ?arr)) (?.5 (sample ?img)) (?.6 (sample ?coord)))
+        (conditional
+          (conditional
+            (conditional
+              (conditional
+                (conditional
+                  (conditional
+                    (conditional
+                      (distinct
+                        (project (?item)
+                          (union
+                            (quadpattern
+                              (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P136> <http://www.wikidata.org/entity/Q557141>)
+                              (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+                            )
+                            (sequence
+                              (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P136> <http://www.wikidata.org/entity/Q557141>))
+                              (sequence
+                                (graph <urn:x-arq:DefaultGraphNode>(path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>))
+                                (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P131> ??P0)))))))
+                      (filter (= (lang ?titleL) "fr")
+                        (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.w3.org/2000/01/rdf-schema#label> ?titleL))))
+                    (filter (= (lang ?creatorL) "fr")
+                      (quadpattern
+                        (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P170> ??0)
+                        (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.w3.org/2000/01/rdf-schema#label> ?creatorL)
+                      )))
+                  (sequence
+                    (union
+                      (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+                        (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P136> ?g)))
+                      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P31> ?g)))
+                    (filter (= (lang ?genreL) "fr")
+                      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?g <http://www.w3.org/2000/01/rdf-schema#label> ?genreL)))))
+                (filter (= (lang ?placeL) "fr")
+                  (quadpattern
+                    (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P276> ??1)
+                    (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+                  )))
+              (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+                (filter (= (lang ?arrL) "fr")
+                  (quadpattern
+                    (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P131> ??2)
+                    (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+                    (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+                  ))))
+            (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P18> ?img)))
+          (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P625> ?coord))))))
+10:17:18 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P136> <http://www.wikidata.org/entity/Q557141>)
+    (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+  )
+10:17:18 INFO  exec            :: Execute
+  ?item <http://www.wikidata.org/prop/direct/P136> <http://www.wikidata.org/entity/Q557141>
+  ?item <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+10:17:18 INFO  exec            :: TDB2
+  (sequence
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P136> <http://www.wikidata.org/entity/Q557141>))
+    (sequence
+      (graph <urn:x-arq:DefaultGraphNode>(path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>))
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P131> ??P0))))
+10:17:18 INFO  exec            :: Execute ::   ?item <http://www.wikidata.org/prop/direct/P136> <http://www.wikidata.org/entity/Q557141>
+10:17:18 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:18 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:34 INFO  exec            :: Execute ::   ?item <http://www.wikidata.org/prop/direct/P131> ??P0
+10:17:34 INFO  exec            :: TDB2
+  (filter (= (lang ?titleL) "fr")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23714159> <http://www.w3.org/2000/01/rdf-schema#label> ?titleL)))
+10:17:34 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q23714159> rdfs:label ?titleL
+10:17:34 INFO  exec            :: TDB2
+  (filter (= (lang ?creatorL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P170> ??0)
+      (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.w3.org/2000/01/rdf-schema#label> ?creatorL)
+    ))
+10:17:34 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P170> ??0
+  ??0 rdfs:label ?creatorL
+10:17:34 INFO  exec            :: TDB2
+  (sequence
+    (union
+      (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P136> ?g)))
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P31> ?g)))
+    (filter (= (lang ?genreL) "fr")
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?g <http://www.w3.org/2000/01/rdf-schema#label> ?genreL))))
+10:17:34 INFO  exec            :: TDB2
+  (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P136> ?g)))
+10:17:34 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P136> ?g
+10:17:34 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P31> ?g))
+10:17:34 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P31> ?g
+10:17:34 INFO  exec            :: Execute ::   ?g rdfs:label ?genreL
+10:17:34 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:17:34 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:17:34 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:17:34 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:17:34 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:17:34 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P18> ?img
+10:17:34 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:17:34 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:17:34 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:17:34 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:17:34 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:17:34 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:17:34 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:17:34 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P18> ?img
+10:17:34 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:17:34 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:17:34 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:17:34 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:17:34 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:17:34 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:17:34 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:17:34 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P18> ?img
+10:17:34 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:17:34 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q23714159> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:17:35 INFO  exec            :: TDB2
+  (filter (= (lang ?titleL) "fr")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q22248929> <http://www.w3.org/2000/01/rdf-schema#label> ?titleL)))
+10:17:35 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q22248929> rdfs:label ?titleL
+10:17:35 INFO  exec            :: TDB2
+  (filter (= (lang ?creatorL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P170> ??0)
+      (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.w3.org/2000/01/rdf-schema#label> ?creatorL)
+    ))
+10:17:35 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P170> ??0
+  ??0 rdfs:label ?creatorL
+10:17:35 INFO  exec            :: TDB2
+  (sequence
+    (union
+      (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P136> ?g)))
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P31> ?g)))
+    (filter (= (lang ?genreL) "fr")
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?g <http://www.w3.org/2000/01/rdf-schema#label> ?genreL))))
+10:17:35 INFO  exec            :: TDB2
+  (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P136> ?g)))
+10:17:35 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P136> ?g
+10:17:35 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P31> ?g))
+10:17:35 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P31> ?g
+10:17:35 INFO  exec            :: Execute ::   ?g rdfs:label ?genreL
+10:17:35 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:17:35 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:17:35 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:17:35 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:17:35 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:17:35 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P18> ?img
+10:17:35 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:17:35 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:17:35 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:17:35 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:17:35 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:17:35 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:17:35 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:17:35 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P18> ?img
+10:17:35 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:17:35 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q22248929> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:17:35 INFO  exec            :: TDB2
+  (filter (= (lang ?titleL) "fr")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200201> <http://www.w3.org/2000/01/rdf-schema#label> ?titleL)))
+10:17:35 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200201> rdfs:label ?titleL
+10:17:35 INFO  exec            :: TDB2
+  (filter (= (lang ?creatorL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P170> ??0)
+      (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.w3.org/2000/01/rdf-schema#label> ?creatorL)
+    ))
+10:17:35 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P170> ??0
+  ??0 rdfs:label ?creatorL
+10:17:35 INFO  exec            :: TDB2
+  (sequence
+    (union
+      (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P136> ?g)))
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P31> ?g)))
+    (filter (= (lang ?genreL) "fr")
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?g <http://www.w3.org/2000/01/rdf-schema#label> ?genreL))))
+10:17:35 INFO  exec            :: TDB2
+  (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P136> ?g)))
+10:17:35 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P136> ?g
+10:17:35 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P31> ?g))
+10:17:35 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P31> ?g
+10:17:35 INFO  exec            :: Execute ::   ?g rdfs:label ?genreL
+10:17:35 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:17:35 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:17:35 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:17:35 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:17:35 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:17:35 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P18> ?img
+10:17:35 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:17:35 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:17:35 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:17:35 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:17:35 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:17:35 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:17:35 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:17:35 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P18> ?img
+10:17:35 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:17:35 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200201> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:17:41 INFO  exec            :: TDB2
+  (filter (= (lang ?titleL) "fr")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200204> <http://www.w3.org/2000/01/rdf-schema#label> ?titleL)))
+10:17:41 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200204> rdfs:label ?titleL
+10:17:41 INFO  exec            :: TDB2
+  (filter (= (lang ?creatorL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P170> ??0)
+      (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.w3.org/2000/01/rdf-schema#label> ?creatorL)
+    ))
+10:17:41 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P170> ??0
+  ??0 rdfs:label ?creatorL
+10:17:41 INFO  exec            :: TDB2
+  (sequence
+    (union
+      (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P136> ?g)))
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P31> ?g)))
+    (filter (= (lang ?genreL) "fr")
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?g <http://www.w3.org/2000/01/rdf-schema#label> ?genreL))))
+10:17:41 INFO  exec            :: TDB2
+  (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P136> ?g)))
+10:17:41 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P136> ?g
+10:17:41 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P31> ?g))
+10:17:41 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P31> ?g
+10:17:41 INFO  exec            :: Execute ::   ?g rdfs:label ?genreL
+10:17:41 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:17:41 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:17:41 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:17:41 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:17:41 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:17:41 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P18> ?img
+10:17:41 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:17:41 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:17:41 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:17:41 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:17:41 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:17:41 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:17:41 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:17:41 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P18> ?img
+10:17:41 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:17:41 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200204> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:17:42 INFO  exec            :: TDB2
+  (filter (= (lang ?titleL) "fr")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q5652249> <http://www.w3.org/2000/01/rdf-schema#label> ?titleL)))
+10:17:42 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q5652249> rdfs:label ?titleL
+10:17:42 INFO  exec            :: TDB2
+  (filter (= (lang ?creatorL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P170> ??0)
+      (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.w3.org/2000/01/rdf-schema#label> ?creatorL)
+    ))
+10:17:42 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P170> ??0
+  ??0 rdfs:label ?creatorL
+10:17:42 INFO  exec            :: TDB2
+  (sequence
+    (union
+      (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P136> ?g)))
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P31> ?g)))
+    (filter (= (lang ?genreL) "fr")
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?g <http://www.w3.org/2000/01/rdf-schema#label> ?genreL))))
+10:17:42 INFO  exec            :: TDB2
+  (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P136> ?g)))
+10:17:42 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P136> ?g
+10:17:42 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P31> ?g))
+10:17:42 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P31> ?g
+10:17:42 INFO  exec            :: Execute ::   ?g rdfs:label ?genreL
+10:17:42 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:17:42 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:17:42 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:17:42 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:17:42 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:17:42 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P18> ?img
+10:17:42 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:17:42 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:17:42 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:17:42 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:17:42 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:17:42 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:17:42 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:17:42 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P18> ?img
+10:17:42 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:17:42 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:17:42 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:17:42 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:17:42 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:17:42 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:17:42 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:17:42 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P18> ?img
+10:17:42 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:17:42 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q5652249> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:17:43 INFO  exec            :: TDB2
+  (filter (= (lang ?titleL) "fr")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2983639> <http://www.w3.org/2000/01/rdf-schema#label> ?titleL)))
+10:17:43 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q2983639> rdfs:label ?titleL
+10:17:43 INFO  exec            :: TDB2
+  (filter (= (lang ?creatorL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P170> ??0)
+      (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.w3.org/2000/01/rdf-schema#label> ?creatorL)
+    ))
+10:17:43 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P170> ??0
+  ??0 rdfs:label ?creatorL
+10:17:43 INFO  exec            :: TDB2
+  (sequence
+    (union
+      (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P136> ?g)))
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P31> ?g)))
+    (filter (= (lang ?genreL) "fr")
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?g <http://www.w3.org/2000/01/rdf-schema#label> ?genreL))))
+10:17:43 INFO  exec            :: TDB2
+  (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P136> ?g)))
+10:17:43 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P136> ?g
+10:17:43 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P31> ?g))
+10:17:43 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P31> ?g
+10:17:43 INFO  exec            :: Execute ::   ?g rdfs:label ?genreL
+10:17:43 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:17:43 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:17:43 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:17:43 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:17:43 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:17:43 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P18> ?img
+10:17:43 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:17:43 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:17:43 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:17:43 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:17:43 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:17:43 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:17:43 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:17:43 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P18> ?img
+10:17:43 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:17:43 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q2983639> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:17:49 INFO  exec            :: TDB2
+  (filter (= (lang ?titleL) "fr")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3223122> <http://www.w3.org/2000/01/rdf-schema#label> ?titleL)))
+10:17:49 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q3223122> rdfs:label ?titleL
+10:17:49 INFO  exec            :: TDB2
+  (filter (= (lang ?creatorL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3223122> <http://www.wikidata.org/prop/direct/P170> ??0)
+      (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.w3.org/2000/01/rdf-schema#label> ?creatorL)
+    ))
+10:17:49 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q3223122> <http://www.wikidata.org/prop/direct/P170> ??0
+  ??0 rdfs:label ?creatorL
+10:17:49 INFO  exec            :: TDB2
+  (sequence
+    (union
+      (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3223122> <http://www.wikidata.org/prop/direct/P136> ?g)))
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3223122> <http://www.wikidata.org/prop/direct/P31> ?g)))
+    (filter (= (lang ?genreL) "fr")
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?g <http://www.w3.org/2000/01/rdf-schema#label> ?genreL))))
+10:17:49 INFO  exec            :: TDB2
+  (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3223122> <http://www.wikidata.org/prop/direct/P136> ?g)))
+10:17:49 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q3223122> <http://www.wikidata.org/prop/direct/P136> ?g
+10:17:49 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3223122> <http://www.wikidata.org/prop/direct/P31> ?g))
+10:17:49 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q3223122> <http://www.wikidata.org/prop/direct/P31> ?g
+10:17:49 INFO  exec            :: Execute ::   ?g rdfs:label ?genreL
+10:17:49 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3223122> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:17:49 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q3223122> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:17:49 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3223122> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:17:49 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q3223122> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:17:49 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3223122> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:17:49 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q3223122> <http://www.wikidata.org/prop/direct/P18> ?img
+10:17:49 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3223122> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:17:49 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q3223122> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:17:49 INFO  exec            :: TDB2
+  (filter (= (lang ?titleL) "fr")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200280> <http://www.w3.org/2000/01/rdf-schema#label> ?titleL)))
+10:17:49 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200280> rdfs:label ?titleL
+10:17:49 INFO  exec            :: TDB2
+  (filter (= (lang ?creatorL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P170> ??0)
+      (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.w3.org/2000/01/rdf-schema#label> ?creatorL)
+    ))
+10:17:49 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P170> ??0
+  ??0 rdfs:label ?creatorL
+10:17:49 INFO  exec            :: TDB2
+  (sequence
+    (union
+      (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P136> ?g)))
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P31> ?g)))
+    (filter (= (lang ?genreL) "fr")
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?g <http://www.w3.org/2000/01/rdf-schema#label> ?genreL))))
+10:17:49 INFO  exec            :: TDB2
+  (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P136> ?g)))
+10:17:49 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P136> ?g
+10:17:49 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P31> ?g))
+10:17:49 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P31> ?g
+10:17:49 INFO  exec            :: Execute ::   ?g rdfs:label ?genreL
+10:17:49 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:17:49 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:17:49 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:17:49 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:17:49 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:17:49 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P18> ?img
+10:17:49 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:17:49 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:17:49 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:17:49 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:17:49 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:17:49 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:17:49 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:17:49 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P18> ?img
+10:17:49 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:17:49 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q99200280> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:17:50 INFO  exec            :: TDB2
+  (filter (= (lang ?titleL) "fr")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q10860702> <http://www.w3.org/2000/01/rdf-schema#label> ?titleL)))
+10:17:50 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q10860702> rdfs:label ?titleL
+10:17:50 INFO  exec            :: TDB2
+  (filter (= (lang ?creatorL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q10860702> <http://www.wikidata.org/prop/direct/P170> ??0)
+      (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.w3.org/2000/01/rdf-schema#label> ?creatorL)
+    ))
+10:17:50 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q10860702> <http://www.wikidata.org/prop/direct/P170> ??0
+  ??0 rdfs:label ?creatorL
+10:17:50 INFO  exec            :: TDB2
+  (sequence
+    (union
+      (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q10860702> <http://www.wikidata.org/prop/direct/P136> ?g)))
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q10860702> <http://www.wikidata.org/prop/direct/P31> ?g)))
+    (filter (= (lang ?genreL) "fr")
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?g <http://www.w3.org/2000/01/rdf-schema#label> ?genreL))))
+10:17:50 INFO  exec            :: TDB2
+  (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q10860702> <http://www.wikidata.org/prop/direct/P136> ?g)))
+10:17:50 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q10860702> <http://www.wikidata.org/prop/direct/P136> ?g
+10:17:50 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q10860702> <http://www.wikidata.org/prop/direct/P31> ?g))
+10:17:50 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q10860702> <http://www.wikidata.org/prop/direct/P31> ?g
+10:17:50 INFO  exec            :: Execute ::   ?g rdfs:label ?genreL
+10:17:50 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q10860702> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:17:50 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q10860702> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:17:50 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q10860702> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:17:50 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q10860702> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:17:50 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q10860702> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:17:50 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q10860702> <http://www.wikidata.org/prop/direct/P18> ?img
+10:17:50 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q10860702> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:17:50 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q10860702> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:17:52 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:52 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:53 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:53 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:53 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:53 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:53 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:53 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:53 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:53 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:54 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:54 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:54 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:54 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:54 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:54 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:55 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:55 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:55 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:55 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:55 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:55 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:55 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:55 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:56 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:56 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:56 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:56 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:56 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:56 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:57 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:57 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:57 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:57 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:57 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:57 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:57 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:57 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:58 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:58 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:58 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:58 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:58 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:58 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:58 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:58 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:59 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:59 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:59 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:59 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:59 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:59 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:17:59 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:17:59 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:00 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:00 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:00 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:00 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:00 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:00 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:00 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:00 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:01 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:01 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:01 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:01 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:01 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:01 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:01 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:01 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:02 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:02 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:02 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:02 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:02 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:02 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:02 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:02 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:03 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:03 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:03 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:03 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:03 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:03 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:04 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:04 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:04 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:04 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:04 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:04 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:04 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:04 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:04 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:04 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:05 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:05 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:05 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:05 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:05 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:05 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:05 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:05 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:06 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:06 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:06 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:06 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:06 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:06 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:06 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:06 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:07 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:07 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:07 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:07 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:07 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:07 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:07 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:07 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:08 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:08 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:08 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:08 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:08 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:08 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:08 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:08 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:09 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:09 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:09 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:09 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:09 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:09 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:09 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:09 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:10 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:10 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:10 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:10 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:10 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:10 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:10 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:10 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:11 INFO  exec            :: TDB2
+  (filter (= (lang ?titleL) "fr")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18147589> <http://www.w3.org/2000/01/rdf-schema#label> ?titleL)))
+10:18:11 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q18147589> rdfs:label ?titleL
+10:18:11 INFO  exec            :: TDB2
+  (filter (= (lang ?creatorL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18147589> <http://www.wikidata.org/prop/direct/P170> ??0)
+      (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.w3.org/2000/01/rdf-schema#label> ?creatorL)
+    ))
+10:18:11 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q18147589> <http://www.wikidata.org/prop/direct/P170> ??0
+  ??0 rdfs:label ?creatorL
+10:18:11 INFO  exec            :: TDB2
+  (sequence
+    (union
+      (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18147589> <http://www.wikidata.org/prop/direct/P136> ?g)))
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18147589> <http://www.wikidata.org/prop/direct/P31> ?g)))
+    (filter (= (lang ?genreL) "fr")
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?g <http://www.w3.org/2000/01/rdf-schema#label> ?genreL))))
+10:18:11 INFO  exec            :: TDB2
+  (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18147589> <http://www.wikidata.org/prop/direct/P136> ?g)))
+10:18:11 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q18147589> <http://www.wikidata.org/prop/direct/P136> ?g
+10:18:11 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18147589> <http://www.wikidata.org/prop/direct/P31> ?g))
+10:18:11 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q18147589> <http://www.wikidata.org/prop/direct/P31> ?g
+10:18:11 INFO  exec            :: Execute ::   ?g rdfs:label ?genreL
+10:18:11 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18147589> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:18:11 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q18147589> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:18:11 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18147589> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:18:11 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q18147589> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:18:11 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18147589> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:18:11 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q18147589> <http://www.wikidata.org/prop/direct/P18> ?img
+10:18:11 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18147589> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:18:11 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q18147589> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:18:11 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:11 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:11 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:11 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:11 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:11 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:12 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:12 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:12 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:12 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:12 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:12 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:12 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:12 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:13 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:13 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:13 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:13 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:13 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:13 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:13 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:13 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:14 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:14 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:14 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:14 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:14 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:14 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:14 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:14 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:15 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:15 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:15 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:15 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:15 INFO  exec            :: TDB2
+  (filter (= (lang ?titleL) "fr")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3476504> <http://www.w3.org/2000/01/rdf-schema#label> ?titleL)))
+10:18:15 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q3476504> rdfs:label ?titleL
+10:18:15 INFO  exec            :: TDB2
+  (filter (= (lang ?creatorL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3476504> <http://www.wikidata.org/prop/direct/P170> ??0)
+      (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.w3.org/2000/01/rdf-schema#label> ?creatorL)
+    ))
+10:18:15 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q3476504> <http://www.wikidata.org/prop/direct/P170> ??0
+  ??0 rdfs:label ?creatorL
+10:18:15 INFO  exec            :: TDB2
+  (sequence
+    (union
+      (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3476504> <http://www.wikidata.org/prop/direct/P136> ?g)))
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3476504> <http://www.wikidata.org/prop/direct/P31> ?g)))
+    (filter (= (lang ?genreL) "fr")
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?g <http://www.w3.org/2000/01/rdf-schema#label> ?genreL))))
+10:18:15 INFO  exec            :: TDB2
+  (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3476504> <http://www.wikidata.org/prop/direct/P136> ?g)))
+10:18:15 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q3476504> <http://www.wikidata.org/prop/direct/P136> ?g
+10:18:15 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3476504> <http://www.wikidata.org/prop/direct/P31> ?g))
+10:18:15 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q3476504> <http://www.wikidata.org/prop/direct/P31> ?g
+10:18:15 INFO  exec            :: Execute ::   ?g rdfs:label ?genreL
+10:18:15 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3476504> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:18:15 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q3476504> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:18:15 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3476504> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:18:15 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q3476504> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:18:15 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3476504> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:18:15 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q3476504> <http://www.wikidata.org/prop/direct/P18> ?img
+10:18:15 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q3476504> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:18:15 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q3476504> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:18:15 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:15 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:15 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:15 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:16 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:16 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:16 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:16 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:16 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:16 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:16 INFO  exec            :: TDB2
+  (filter (= (lang ?titleL) "fr")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23593257> <http://www.w3.org/2000/01/rdf-schema#label> ?titleL)))
+10:18:16 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q23593257> rdfs:label ?titleL
+10:18:16 INFO  exec            :: TDB2
+  (filter (= (lang ?creatorL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23593257> <http://www.wikidata.org/prop/direct/P170> ??0)
+      (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.w3.org/2000/01/rdf-schema#label> ?creatorL)
+    ))
+10:18:16 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q23593257> <http://www.wikidata.org/prop/direct/P170> ??0
+  ??0 rdfs:label ?creatorL
+10:18:16 INFO  exec            :: TDB2
+  (sequence
+    (union
+      (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23593257> <http://www.wikidata.org/prop/direct/P136> ?g)))
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23593257> <http://www.wikidata.org/prop/direct/P31> ?g)))
+    (filter (= (lang ?genreL) "fr")
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?g <http://www.w3.org/2000/01/rdf-schema#label> ?genreL))))
+10:18:16 INFO  exec            :: TDB2
+  (filter (!= (str ?g) "http://www.wikidata.org/entity/Q557141")
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23593257> <http://www.wikidata.org/prop/direct/P136> ?g)))
+10:18:16 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q23593257> <http://www.wikidata.org/prop/direct/P136> ?g
+10:18:16 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23593257> <http://www.wikidata.org/prop/direct/P31> ?g))
+10:18:16 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q23593257> <http://www.wikidata.org/prop/direct/P31> ?g
+10:18:16 INFO  exec            :: Execute ::   ?g rdfs:label ?genreL
+10:18:16 INFO  exec            :: TDB2
+  (filter (= (lang ?placeL) "fr")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23593257> <http://www.wikidata.org/prop/direct/P276> ??1)
+      (quad <urn:x-arq:DefaultGraphNode> ??1 <http://www.w3.org/2000/01/rdf-schema#label> ?placeL)
+    ))
+10:18:16 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q23593257> <http://www.wikidata.org/prop/direct/P276> ??1
+  ??1 rdfs:label ?placeL
+10:18:16 INFO  exec            :: TDB2
+  (extend ((?arr (replace ?arrL "^([0-9]+).*$" "$1" "si")))
+    (filter (= (lang ?arrL) "fr")
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23593257> <http://www.wikidata.org/prop/direct/P131> ??2)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>)
+        (quad <urn:x-arq:DefaultGraphNode> ??2 <http://www.w3.org/2000/01/rdf-schema#label> ?arrL)
+      )))
+10:18:16 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q23593257> <http://www.wikidata.org/prop/direct/P131> ??2
+  ??2 <http://www.wikidata.org/prop/direct/P131> <http://www.wikidata.org/entity/Q90>
+  ??2 rdfs:label ?arrL
+10:18:16 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23593257> <http://www.wikidata.org/prop/direct/P18> ?img))
+10:18:16 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q23593257> <http://www.wikidata.org/prop/direct/P18> ?img
+10:18:16 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q23593257> <http://www.wikidata.org/prop/direct/P625> ?coord))
+10:18:16 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q23593257> <http://www.wikidata.org/prop/direct/P625> ?coord
+10:18:17 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:17 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90
+10:18:17 INFO  exec            :: TDB2
+  (path ??P0 (path* <http://www.wikidata.org/prop/direct/P131>) <http://www.wikidata.org/entity/Q90>)
+10:18:17 INFO  exec            :: Path :: ??P0 (<http://www.wikidata.org/prop/direct/P131>)* http://www.wikidata.org/entity/Q90

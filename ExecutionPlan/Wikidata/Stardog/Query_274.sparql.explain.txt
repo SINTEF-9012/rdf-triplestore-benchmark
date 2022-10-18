@@ -1,0 +1,93 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT DISTINCT ?museumLabel ?museumDescription ?villeId ?villeIdLabel (?villeIdLabel AS ?ville) ?coord ?lat ?lon
+WHERE
+{
+  ?museum wdt:P539 ?museofile.  # french museofile Id
+  ?museum wdt:P131* wd:Q12130. # in Brittany
+  ?museum wdt:P131 ?villeId. #city of the museum
+  # ?object wdt:P166 wd:Q2275045 # that have french label "musées de France"
+  OPTIONAL {?museum wdt:P856 ?link.}     # official website
+  OPTIONAL {?museum wdt:P625 ?coord .} # geographic coord
+  OPTIONAL {
+    ?museum p:P625 ?statement.
+    ?statement psv:P625 ?node.
+    ?node wikibase:geoLatitude ?lat.
+    ?node wikibase:geoLongitude ?lon.
+   }
+  #SERVICE wikibase:label { bd:serviceParam wikibase:language "fr". } #french label
+}
+ORDER BY  ?villeIdLabel
+
+The Query Plan:
+
+Profiling results:
+Query executed in 46779 ms and returned 42 result(s)
+Total used memory: 3.9G
+Pre-execution time: 26 ms (0.1%)
+Post-processing time: 5 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+OrderBy(ASC(?villeIdLabel)) [#1], memory: 256K (0.0%), results: 42, wall time: 0 ms (0.0%)
+`─ Distinct [#1], memory: 224K (0.0%), results: 42, wall time: 1 ms (0.0%)
+   `─ Projection(?museumLabel, ?museumDescription, ?villeId, ?villeIdLabel, ?villeIdLabel AS ?ville, ?coord, ?lat, ?lon) [#1], results: 43, wall time: 0 ms (0.0%)
+      `─ HashJoinOuter(?museum) [#1], memory: 1.2G (29.9%), results: 43, wall time: 6326 ms (13.5%)
+         +─ MergeJoinOuter(?museum) [#1], results: 41, wall time: 1 ms (0.0%)
+         │  +─ MergeJoinOuter(?museum) [#1], results: 40, wall time: 0 ms (0.0%)
+         │  │  +─ MergeJoin(?museum) [#1], results: 40, wall time: 2 ms (0.0%)
+         │  │  │  +─ DirectHashJoin(?museum) [#1], results: 613 (with gaps), wall time: 2 ms (0.0%)
+         │  │  │  │  +─ Scan[PSC](?museum, <http://www.wikidata.org/prop/direct/P539>, _) [#1], results: 612 (with gaps), wall time: 7 ms (0.0%)
+         │  │  │  │  `─ Scan[PSOC](?museum, <http://www.wikidata.org/prop/direct/P131>, ?villeId) [#10.8M], results: 653 (with gaps), wall time: 311 ms (0.7%)
+         │  │  │  `─ Sort(?museum) [#596], memory: 1.3M (0.0%), results: 617 (with gaps), wall time: 26 ms (0.1%)
+         │  │  │     `─ PropertyPath(?museum -> <http://www.wikidata.org/entity/Q12130>, minLength=0, reversed) [#596], results: 28K, wall time: 398 ms (0.9%)
+         │  │  │        `─ Scan[POSC](?museum, <http://www.wikidata.org/prop/direct/P131>, <http://www.wikidata.org/entity/Q12130>) [#595]
+         │  │  `─ Scan[PSC](?museum, <http://www.wikidata.org/prop/direct/P856>, _) [#1.3M], results: 62 (with gaps), wall time: 35 ms (0.1%)
+         │  `─ Scan[PSOC](?museum, <http://www.wikidata.org/prop/direct/P625>, ?coord) [#8.8M], results: 69 (with gaps), wall time: 0 ms (0.0%)
+         `─ HashJoin(?node) [#8.8M], memory: 803M (20.1%), results: 8.8M, wall time: 15213 ms (32.5%)
+            +─ MergeJoin(?statement) [#8.8M], results: 8.8M, wall time: 4206 ms (9.0%)
+            │  +─ Scan[POSC](?museum, <http://www.wikidata.org/prop/P625>, ?statement) [#8.8M], results: 8.8M (with gaps), wall time: 3183 ms (6.8%)
+            │  `─ Scan[PSOC](?statement, <http://www.wikidata.org/prop/statement/value/P625>, ?node) [#8.8M], results: 8.8M (with gaps), wall time: 4803 ms (10.3%)
+            `─ MergeJoin(?node) [#8.8M], results: 8.8M, wall time: 3842 ms (8.2%)
+               +─ Scan[PSOC](?node, <http://wikiba.se/ontology#geoLongitude>, ?lon) [#8.8M], results: 8.8M, wall time: 3625 ms (7.7%)
+               `─ Scan[PSOC](?node, <http://wikiba.se/ontology#geoLatitude>, ?lat) [#8.8M], results: 8.8M (with gaps), wall time: 4762 ms (10.2%)
+

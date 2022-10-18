@@ -1,0 +1,124 @@
+Query:
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+
+SELECT ?compound ?compoundLabel ?speciesLabel ?sourceLabel ?doi ?wpid WHERE {
+  ?compound wdt:P31 wd:Q11173.
+  MINUS { ?compound wdt:P31 wd:Q8054. }
+  ?compound p:P703 ?statement.
+  ?statement rdf:type wikibase:BestRank.
+  ?statement ps:P703 ?species.
+  OPTIONAL {
+    ?statement (prov:wasDerivedFrom/pr:P248) ?source.
+    OPTIONAL { ?source wdt:P2410 ?wpid. }
+    OPTIONAL { ?source wdt:P356 ?doi. }
+  }
+  #SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+ORDER BY ASC(?compound)
+
+╔════╤════════╤════════╤═══════════════════╤════════════════════════════════════════════════════════════════════════════╤══════════╤══════════╤═══════════╤════════════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name              │ Arguments                                                                  │ Mode     │ Units In │ Units Out │ Ratio      │ Time (ms) ║
+╠════╪════════╪════════╪═══════════════════╪════════════════════════════════════════════════════════════════════════════╪══════════╪══════════╪═══════════╪════════════╪═══════════╣
+║ 0  │ 1      │ -      │ SolutionInjection │ solutions=[{}]                                                             │ -        │ 0        │ 1         │ 0.00       │ 0         ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────────┼───────────╢
+║ 1  │ 2      │ -      │ PipelineJoin      │ pattern=distinct(?compound, wdt:P31, wd:Q11173)                            │ -        │ 1        │ 1223675   │ 1223675.00 │ 46709     ║
+║    │        │        │                   │ joinType=join                                                              │          │          │           │            │           ║
+║    │        │        │                   │ joinProjectionVars=[?compound]                                             │          │          │           │            │           ║
+║    │        │        │                   │ patternEstimate=2085934                                                    │          │          │           │            │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────────┼───────────╢
+║ 2  │ 3      │ -      │ PipelineJoin      │ pattern=distinct(?compound, p:P703, ?statement)                            │ -        │ 1223675  │ 426932    │ 0.35       │ 936990    ║
+║    │        │        │                   │ joinType=join                                                              │          │          │           │            │           ║
+║    │        │        │                   │ joinProjectionVars=[?compound, ?statement]                                 │          │          │           │            │           ║
+║    │        │        │                   │ patternEstimate=5256562                                                    │          │          │           │            │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────────┼───────────╢
+║ 3  │ 4      │ -      │ PipelineJoin      │ pattern=distinct(?statement, ps:P703, ?species)                            │ -        │ 426932   │ 426932    │ 1.00       │ 334277    ║
+║    │        │        │                   │ joinType=join                                                              │          │          │           │            │           ║
+║    │        │        │                   │ joinProjectionVars=[?statement, ?species]                                  │          │          │           │            │           ║
+║    │        │        │                   │ patternEstimate=4611596                                                    │          │          │           │            │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────────┼───────────╢
+║ 4  │ 5      │ -      │ PipelineJoin      │ pattern=distinct(?statement, rdf:type, wikibase:BestRank)                  │ -        │ 426932   │ 426929    │ 1.00       │ 108060    ║
+║    │        │        │                   │ joinType=join                                                              │          │          │           │            │           ║
+║    │        │        │                   │ joinProjectionVars=[?statement]                                            │          │          │           │            │           ║
+║    │        │        │                   │ patternEstimate=1383202384                                                 │          │          │           │            │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────────┼───────────╢
+║ 5  │ 6      │ -      │ HashIndexBuild    │ solutionSet=solutionSet2                                                   │ -        │ 426929   │ 163404    │ 0.38       │ 2061      ║
+║    │        │        │                   │ joinVars=[?compound]                                                       │          │          │           │            │           ║
+║    │        │        │                   │ sourceType=pipeline                                                        │          │          │           │            │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────────┼───────────╢
+║ 6  │ 7      │ -      │ PipelineJoin      │ pattern=distinct(?compound, wdt:P31, wd:Q8054)                             │ -        │ 163404   │ 6         │ 0.00       │ 11559     ║
+║    │        │        │                   │ joinType=join                                                              │          │          │           │            │           ║
+║    │        │        │                   │ joinProjectionVars=[?compound]                                             │          │          │           │            │           ║
+║    │        │        │                   │ patternEstimate=2557004                                                    │          │          │           │            │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────────┼───────────╢
+║ 7  │ 8      │ -      │ HashIndexJoin     │ solutionSet=solutionSet2                                                   │ -        │ 6        │ 426923    │ 71153.83   │ 1039      ║
+║    │        │        │                   │ joinType=minus                                                             │          │          │           │            │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────────┼───────────╢
+║ 8  │ 9      │ -      │ HashIndexBuild    │ solutionSet=solutionSet1                                                   │ -        │ 426923   │ 426923    │ 1.00       │ 33219     ║
+║    │        │        │                   │ joinVars=[?statement]                                                      │          │          │           │            │           ║
+║    │        │        │                   │ sourceType=pipeline                                                        │          │          │           │            │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────────┼───────────╢
+║ 9  │ 10     │ -      │ PipelineJoin      │ pattern=distinct(?statement, prov:wasDerivedFrom, ?_internalVar1)          │ -        │ 426923   │ 521364    │ 1.22       │ 1001071   ║
+║    │        │        │                   │ joinType=join                                                              │          │          │           │            │           ║
+║    │        │        │                   │ joinProjectionVars=[?statement, ?_internalVar1]                            │          │          │           │            │           ║
+║    │        │        │                   │ patternEstimate=867836058                                                  │          │          │           │            │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────────┼───────────╢
+║ 10 │ 11     │ -      │ PipelineJoin      │ pattern=distinct(?_internalVar1, pr:P248, ?source)                         │ -        │ 521364   │ 521313    │ 1.00       │ 1084842   ║
+║    │        │        │                   │ joinType=join                                                              │          │          │           │            │           ║
+║    │        │        │                   │ joinProjectionVars=[?_internalVar1, ?source]                               │          │          │           │            │           ║
+║    │        │        │                   │ patternEstimate=118303232                                                  │          │          │           │            │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────────┼───────────╢
+║ 11 │ 12     │ -      │ PipelineJoin      │ pattern=distinct(?source, wdt:P2410, ?wpid)                                │ -        │ 521313   │ 521313    │ 1.00       │ 1085304   ║
+║    │        │        │                   │ joinType=optional                                                          │          │          │           │            │           ║
+║    │        │        │                   │ joinProjectionVars=[?source, ?wpid]                                        │          │          │           │            │           ║
+║    │        │        │                   │ patternEstimate=854                                                        │          │          │           │            │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────────┼───────────╢
+║ 12 │ 13     │ -      │ PipelineJoin      │ pattern=distinct(?source, wdt:P356, ?doi)                                  │ -        │ 521313   │ 521319    │ 1.00       │ 1021377   ║
+║    │        │        │                   │ joinType=optional                                                          │          │          │           │            │           ║
+║    │        │        │                   │ joinProjectionVars=[?source, ?doi]                                         │          │          │           │            │           ║
+║    │        │        │                   │ patternEstimate=54425066                                                   │          │          │           │            │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────────┼───────────╢
+║ 13 │ 14     │ -      │ HashIndexJoin     │ solutionSet=solutionSet1                                                   │ -        │ 521319   │ 521424    │ 1.00       │ 3832      ║
+║    │        │        │                   │ joinType=optional                                                          │          │          │           │            │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────────┼───────────╢
+║ 14 │ 15     │ -      │ TermResolution    │ vars=[?compound]                                                           │ id2value │ 521424   │ 521424    │ 1.00       │ 107397    ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────────┼───────────╢
+║ 15 │ 16     │ -      │ Sort              │ sortOrder=[ASC(?compound)]                                                 │ -        │ 521424   │ 521424    │ 1.00       │ 48553     ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────────┼───────────╢
+║ 16 │ 17     │ -      │ Projection        │ vars=[?compound, ?compoundLabel, ?speciesLabel, ?sourceLabel, ?doi, ?wpid] │ retain   │ 521424   │ 521424    │ 1.00       │ 44087     ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────────┼───────────╢
+║ 17 │ -      │ -      │ TermResolution    │ vars=[?compound, ?compoundLabel, ?speciesLabel, ?sourceLabel, ?doi, ?wpid] │ id2value │ 521424   │ 521424    │ 1.00       │ 45102     ║
+╚════╧════════╧════════╧═══════════════════╧════════════════════════════════════════════════════════════════════════════╧══════════╧══════════╧═══════════╧════════════╧═══════════╝
+

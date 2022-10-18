@@ -1,0 +1,130 @@
+Query:
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT ?father ?fatherLabel (SAMPLE(?picture_) AS ?picture) ?children
+WITH
+{
+  SELECT ?father (COUNT(?father) AS ?children)
+  WHERE
+  {
+    ?subj wdt:P22 ?father .
+  }
+  GROUP BY ?father
+  ORDER BY DESC(?children)
+  LIMIT 50
+}
+AS %get_fathers
+WHERE
+{
+  INCLUDE %get_fathers
+  OPTIONAL { ?father wdt:P18 ?picture_ . }
+  #SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en" }
+}
+GROUP BY ?father ?fatherLabel ?children
+ORDER BY DESC(?children)
+
+╔════╤════════╤════════╤═══════════════════╤════════════════════════════════════════════════════════════════════════════════════╤══════════╤══════════╤═══════════╤═══════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name              │ Arguments                                                                          │ Mode     │ Units In │ Units Out │ Ratio │ Time (ms) ║
+╠════╪════════╪════════╪═══════════════════╪════════════════════════════════════════════════════════════════════════════════════╪══════════╪══════════╪═══════════╪═══════╪═══════════╣
+║ 0  │ 1      │ -      │ SolutionInjection │ solutions=[{}]                                                                     │ -        │ 0        │ 1         │ 0.00  │ 0         ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 1  │ 2      │ -      │ NamedSubquery     │ subQuery=subQuery1                                                                 │ -        │ 1        │ 1         │ 1.00  │ 7128      ║
+║    │        │        │                   │ solutionSet=solutionSet2                                                           │          │          │           │       │           ║
+║    │        │        │                   │ joinVars=[]                                                                        │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 2  │ 3      │ -      │ NamedSubquery     │ subQuery=subQuery2                                                                 │ -        │ 1        │ 1         │ 1.00  │ 3570      ║
+║    │        │        │                   │ solutionSet=solutionSet1                                                           │          │          │           │       │           ║
+║    │        │        │                   │ joinVars=[]                                                                        │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 3  │ 4      │ -      │ HashIndexJoin     │ solutionSet=solutionSet1                                                           │ -        │ 1        │ 50        │ 50.00 │ 0         ║
+║    │        │        │                   │ joinType=join                                                                      │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 4  │ 5      │ -      │ PipelineJoin      │ pattern=distinct(?father, wdt:P18, ?picture_)                                      │ -        │ 50       │ 60        │ 1.20  │ 63        ║
+║    │        │        │                   │ joinType=optional                                                                  │          │          │           │       │           ║
+║    │        │        │                   │ joinProjectionVars=[?father, ?picture_]                                            │          │          │           │       │           ║
+║    │        │        │                   │ patternEstimate=6873696                                                            │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 5  │ 6      │ -      │ Aggregate         │ groupBy=[?father, ?fatherLabel, ?children]                                         │ -        │ 60       │ 50        │ 0.83  │ 1         ║
+║    │        │        │                   │ aggregates=[?father, ?fatherLabel, BIND(SAMPLE(?picture_) AS ?picture), ?children] │          │          │           │       │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 6  │ 7      │ -      │ TermResolution    │ vars=[?children]                                                                   │ id2value │ 50       │ 50        │ 1.00  │ 0         ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 7  │ 8      │ -      │ Sort              │ sortOrder=[DESC(?children)]                                                        │ -        │ 50       │ 50        │ 1.00  │ 0         ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 8  │ 9      │ -      │ Projection        │ vars=[?father, ?fatherLabel, ?picture, ?children]                                  │ retain   │ 50       │ 50        │ 1.00  │ 0         ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────┼───────────╢
+║ 9  │ -      │ -      │ TermResolution    │ vars=[?father, ?fatherLabel, ?picture, ?children]                                  │ id2value │ 50       │ 50        │ 1.00  │ 74        ║
+╚════╧════════╧════════╧═══════════════════╧════════════════════════════════════════════════════════════════════════════════════╧══════════╧══════════╧═══════════╧═══════╧═══════════╝
+
+
+subQuery2
+╔════╤════════╤════════╤═══════════════════╤═══════════════════════════════════════════════════════════╤══════════╤══════════╤═══════════╤═══════════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name              │ Arguments                                                 │ Mode     │ Units In │ Units Out │ Ratio     │ Time (ms) ║
+╠════╪════════╪════════╪═══════════════════╪═══════════════════════════════════════════════════════════╪══════════╪══════════╪═══════════╪═══════════╪═══════════╣
+║ 0  │ 1      │ -      │ Distinct          │ vars=[?father, ?children]                                 │ -        │ 1        │ 1         │ 1.00      │ 0         ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 1  │ 2      │ -      │ HashIndexJoin     │ solutionSet=solutionSet2                                  │ -        │ 1        │ 494727    │ 494727.00 │ 1347      ║
+║    │        │        │                   │ joinType=join                                             │          │          │           │           │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 2  │ 3      │ -      │ PipelineCountJoin │ pattern=distinct(?subj, wdt:P22, ?father, ?_internalVar1) │ -        │ 494727   │ 494727    │ 1.00      │ 30255     ║
+║    │        │        │                   │ joinType=join                                             │          │          │           │           │           ║
+║    │        │        │                   │ joinProjectionVars=[?subj, ?father]                       │          │          │           │           │           ║
+║    │        │        │                   │ patternEstimate=1538596                                   │          │          │           │           │           ║
+║    │        │        │                   │ countVar=?children                                        │          │          │           │           │           ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 3  │ 4      │ -      │ TermResolution    │ vars=[?children]                                          │ id2value │ 494727   │ 494727    │ 1.00      │ 354       ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 4  │ 5      │ -      │ Sort              │ sortOrder=[DESC(?children)]                               │ -        │ 494727   │ 2000      │ 0.00      │ 2780      ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 5  │ 6      │ -      │ Projection        │ vars=[?father, ?children]                                 │ retain   │ 2000     │ 2000      │ 1.00      │ 0         ║
+╟────┼────────┼────────┼───────────────────┼───────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 6  │ -      │ -      │ Slice             │ limit=50                                                  │ -        │ 50       │ 50        │ 1.00      │ 1         ║
+╚════╧════════╧════════╧═══════════════════╧═══════════════════════════════════════════════════════════╧══════════╧══════════╧═══════════╧═══════════╧═══════════╝
+
+
+subQuery1
+╔════╤════════╤════════╤══════════════╤═══════════════════════════════════════════════════════════╤════════╤══════════╤═══════════╤═══════════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name         │ Arguments                                                 │ Mode   │ Units In │ Units Out │ Ratio     │ Time (ms) ║
+╠════╪════════╪════════╪══════════════╪═══════════════════════════════════════════════════════════╪════════╪══════════╪═══════════╪═══════════╪═══════════╣
+║ 0  │ 1      │ -      │ Distinct     │ vars=[?father]                                            │ -      │ 1        │ 1         │ 1.00      │ 0         ║
+╟────┼────────┼────────┼──────────────┼───────────────────────────────────────────────────────────┼────────┼──────────┼───────────┼───────────┼───────────╢
+║ 1  │ 2      │ -      │ PipelineJoin │ pattern=distinct(?subj, wdt:P22, ?father, ?_internalVar2) │ -      │ 1        │ 494727    │ 494727.00 │ 7065      ║
+║    │        │        │              │ joinType=join                                             │        │          │           │           │           ║
+║    │        │        │              │ joinProjectionVars=[?father]                              │        │          │           │           │           ║
+║    │        │        │              │ patternEstimate=384649                                    │        │          │           │           │           ║
+╟────┼────────┼────────┼──────────────┼───────────────────────────────────────────────────────────┼────────┼──────────┼───────────┼───────────┼───────────╢
+║ 2  │ -      │ -      │ Projection   │ vars=[?father]                                            │ retain │ 494727   │ 494727    │ 1.00      │ 49        ║
+╚════╧════════╧════════╧══════════════╧═══════════════════════════════════════════════════════════╧════════╧══════════╧═══════════╧═══════════╧═══════════╝
+

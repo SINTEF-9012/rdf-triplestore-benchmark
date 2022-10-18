@@ -1,0 +1,67 @@
+14:47:04 INFO  exec            :: QUERY
+  PREFIX  schema: <http://schema.org/>
+  PREFIX  pq:   <http://www.wikidata.org/prop/qualifier/>
+  PREFIX  bd:   <http://www.bigdata.com/rdf#>
+  PREFIX  pr:   <http://www.wikidata.org/prop/reference/>
+  PREFIX  ps:   <http://www.wikidata.org/prop/statement/>
+  PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
+  PREFIX  geof: <http://www.opengis.net/def/geosparql/function/>
+  PREFIX  wdt:  <http://www.wikidata.org/prop/direct/>
+  PREFIX  wds:  <http://www.wikidata.org/entity/statement/>
+  PREFIX  wdv:  <http://www.wikidata.org/value/>
+  PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>
+  PREFIX  skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX  psn:  <http://www.wikidata.org/prop/statement/value-normalized/>
+  PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX  pqn:  <http://www.wikidata.org/prop/qualifier/value-normalized/>
+  PREFIX  wd:   <http://www.wikidata.org/entity/>
+  PREFIX  geo:  <http://www.opengis.net/ont/geosparql#>
+  PREFIX  psv:  <http://www.wikidata.org/prop/statement/value/>
+  PREFIX  dct:  <http://purl.org/dc/terms/>
+  PREFIX  pqv:  <http://www.wikidata.org/prop/qualifier/value/>
+  PREFIX  ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+  PREFIX  wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+  PREFIX  wdref: <http://www.wikidata.org/reference/>
+  PREFIX  prov: <http://www.w3.org/ns/prov#>
+  PREFIX  cc:   <http://creativecommons.org/ns#>
+  PREFIX  wikibase: <http://wikiba.se/ontology#>
+  PREFIX  prn:  <http://www.wikidata.org/prop/reference/value-normalized/>
+  PREFIX  p:    <http://www.wikidata.org/prop/>
+  PREFIX  wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+  PREFIX  prv:  <http://www.wikidata.org/prop/reference/value/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  hint: <http://www.bigdata.com/queryHints#>
+  PREFIX  wdno: <http://www.wikidata.org/prop/novalue/>
+  
+  SELECT  ?album ?performerLabel ?albumLabel ?publication_date
+  WHERE
+    { VALUES ?performer { wd:Q936474 wd:Q207898 }
+      ?album  wdt:P175  ?performer ;
+              wdt:P577  ?publication_date
+    }
+14:47:04 INFO  exec            :: ALGEBRA
+  (project (?album ?performerLabel ?albumLabel ?publication_date)
+    (sequence
+      (table (vars ?performer)
+        (row [?performer <http://www.wikidata.org/entity/Q936474>])
+        (row [?performer <http://www.wikidata.org/entity/Q207898>])
+      )
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> ?album <http://www.wikidata.org/prop/direct/P175> ?performer)
+        (quad <urn:x-arq:DefaultGraphNode> ?album <http://www.wikidata.org/prop/direct/P577> ?publication_date)
+      )))
+14:47:04 INFO  exec            :: TDB2
+  (project (?album ?performerLabel ?albumLabel ?publication_date)
+    (sequence
+      (table (vars ?performer)
+        (row [?performer <http://www.wikidata.org/entity/Q936474>])
+        (row [?performer <http://www.wikidata.org/entity/Q207898>])
+      )
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> ?album <http://www.wikidata.org/prop/direct/P175> ?performer)
+        (quad <urn:x-arq:DefaultGraphNode> ?album <http://www.wikidata.org/prop/direct/P577> ?publication_date)
+      )))
+14:47:04 INFO  exec            :: Execute
+  ?album <http://www.wikidata.org/prop/direct/P175> ?performer
+  ?album <http://www.wikidata.org/prop/direct/P577> ?publication_date
+Time: 0.228 sec

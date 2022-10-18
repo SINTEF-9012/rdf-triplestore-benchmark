@@ -1,0 +1,36 @@
+plan
+"PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?drugLabel ?geneLabel ?biological_processLabel ?diseaseLabel
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ArbitraryLengthPath ( min=0, from disease, to __const_24c6ef15_uri) over {
+	 [ disease http://www.wikidata.org/prop/direct/P279 http://www.wikidata.org/entity/Q12078 ]
+	 }  # Collection size: 500.0
+    ?disease wdt:P2293 ?gene . # 	Collection size: 12439.0	Predicate collection size: 12439.0	Unique subjects: 7743.0	Unique objects: 7331.0	Current complexity: 6219500.0
+    ?gene wdt:P688 ?gene_product . # 	Collection size: 973730.0	Predicate collection size: 973730.0	Unique subjects: 959276.0	Unique objects: 961862.0	Current complexity: 6313213.022112509
+    ?gene_product wdt:P682 ?biological_process . # 	Collection size: 1140528.0	Predicate collection size: 1140528.0	Unique subjects: 365232.0	Unique objects: 15558.0	Current complexity: 1.971458202371078E7
+    ?drug wdt:P129 ?gene_product . # 	Collection size: 9445.0	Predicate collection size: 9445.0	Unique subjects: 2824.0	Unique objects: 3017.0	Current complexity: 6.1718338486558944E7
+    ArbitraryLengthPath ( min=0, from biological_process, to __const_4147a5ce_uri) over {
+	 UNION {
+[ biological_process http://www.wikidata.org/prop/direct/P361 http://www.wikidata.org/entity/Q14818032 ]
+
+---------------
+[ biological_process http://www.wikidata.org/prop/direct/P279 http://www.wikidata.org/entity/Q14818032 ]
+
+---------------
+}	 }  # Collection size: 1000.0
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 6.1718338486558945E10
+  
+}
+LIMIT 1000
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

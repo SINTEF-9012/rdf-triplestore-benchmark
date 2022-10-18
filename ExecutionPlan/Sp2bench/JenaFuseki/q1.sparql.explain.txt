@@ -1,0 +1,33 @@
+Picked up _JAVA_OPTIONS: -Djava.io.tmpdir=/data/java/tmp
+12:08:50 INFO  exec            :: QUERY
+  PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>
+  PREFIX  dcterms: <http://purl.org/dc/terms/>
+  PREFIX  bench: <http://localhost/vocabulary/bench/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  dc:   <http://purl.org/dc/elements/1.1/>
+  
+  SELECT  ?yr
+  WHERE
+    { ?journal  rdf:type        bench:Journal ;
+                dc:title        "Journal 1 (1940)" ;
+                dcterms:issued  ?yr
+    }
+12:08:50 INFO  exec            :: ALGEBRA
+  (project (?yr)
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> ?journal <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost/vocabulary/bench/Journal>)
+      (quad <urn:x-arq:DefaultGraphNode> ?journal <http://purl.org/dc/elements/1.1/title> "Journal 1 (1940)")
+      (quad <urn:x-arq:DefaultGraphNode> ?journal <http://purl.org/dc/terms/issued> ?yr)
+    ))
+12:08:50 INFO  exec            :: TDB2
+  (project (?yr)
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> ?journal <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost/vocabulary/bench/Journal>)
+      (quad <urn:x-arq:DefaultGraphNode> ?journal <http://purl.org/dc/elements/1.1/title> "Journal 1 (1940)")
+      (quad <urn:x-arq:DefaultGraphNode> ?journal <http://purl.org/dc/terms/issued> ?yr)
+    ))
+12:08:50 INFO  exec            :: Execute
+  ?journal <http://purl.org/dc/elements/1.1/title> "Journal 1 (1940)"
+  ?journal rdf:type <http://localhost/vocabulary/bench/Journal>
+  ?journal <http://purl.org/dc/terms/issued> ?yr
+Time: 0.117 sec

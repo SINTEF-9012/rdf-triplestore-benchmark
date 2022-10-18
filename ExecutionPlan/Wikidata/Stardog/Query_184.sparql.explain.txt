@@ -1,0 +1,243 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT DISTINCT ?pathway ?pathwayLabel ?pwpart ?pwpartLabel ?variant ?variantLabel ?disease?diseaseLabel WHERE {
+
+   VALUES ?predictor {p:P3354 p:P3355 p:P3356 p:P3357 p:P3358 p:P3359}
+   VALUES ?predictorQualifier {pq:P2175}
+   VALUES ?wpID {"WP2828"}
+  
+   ?pathway wdt:P2410 ?wpID ; # Pathways has a Wikipathways identifier
+          wdt:P527 ?pwpart . # which contains pathways parts
+  
+   ?disease wdt:P279+ wd:Q504775 .  # The disease is a subclass of urinary bladder cancer 
+                                    # based on annotations in the Disease ontology
+   ?variant wdt:P3329 ?civicID ; # a variant known in CIViC 
+             ?predictor ?node ; # has a predicting relation with diseases
+                                   # labeled as being a subclass of urinary bladder cancer
+             wdt:P3433 ?pwpart .  # variant is biological variant of
+   
+   {?node ?predictorStatement ?drug_label ;
+              ?predictorQualifier ?disease .}
+   UNION 
+   {
+      ?node ?predictorStatement ?disease  .
+   }
+   #SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 3740 ms and returned 4 result(s)
+Total used memory: 10M
+Pre-execution time: 3070 ms (82.1%)
+Post-processing time: 5 ms (0.1%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Distinct [#1], memory: 224K (2.2%), results: 4, wall time: 4 ms (0.1%)
+`─ Projection(?pathway, ?pathwayLabel, ?pwpart, ?pwpartLabel, ?variant, ?variantLabel, ?disease, ?diseaseLabel) [#12], results: 11, wall time: 0 ms (0.0%)
+   `─ NestedLoopJoin(_) [#12], results: 11, wall time: 1 ms (0.0%)
+      +─ HashJoin(?disease) [#12], memory: 1.5M (14.5%), results: 12, wall time: 51 ms (1.4%)
+      │  +─ PropertyPath(?disease -> <http://www.wikidata.org/entity/Q504775>, minLength=1, reversed) [#106], results: 60, wall time: 0 ms (0.0%)
+      │  │  `─ Scan[POSC](?disease, <http://www.wikidata.org/prop/direct/P279>, <http://www.wikidata.org/entity/Q504775>) [#105]
+      │  `─ MergeJoin(?variant) [#12], results: 13K, wall time: 9 ms (0.2%)
+      │     +─ Scan[PSC](?variant, <http://www.wikidata.org/prop/direct/P3329>, _) [#1], results: 248 (with gaps), wall time: 8 ms (0.2%)
+      │     `─ Union [#12], results: 13K (with gaps), wall time: 4 ms (0.1%)
+      │        +─ Union [#10], results: 12K (with gaps), wall time: 4 ms (0.1%)
+      │        │  +─ Union [#8], results: 12K (with gaps), wall time: 2 ms (0.1%)
+      │        │  │  +─ Union [#6], results: 12K (with gaps), wall time: 4 ms (0.1%)
+      │        │  │  │  +─ Union [#4], results: 12K (with gaps), wall time: 3 ms (0.1%)
+      │        │  │  │  │  +─ Union [#2], results: 7.9K (with gaps), wall time: 3 ms (0.1%)
+      │        │  │  │  │  │  +─ Bind("WP2828" AS ?wpID) sortedBy=?variant [#1], results: 3.9K (with gaps), wall time: 3 ms (0.1%)
+      │        │  │  │  │  │  │  `─ DirectHashJoin(?node) [#1], results: 3.9K (with gaps), wall time: 7 ms (0.2%)
+      │        │  │  │  │  │  │     +─ HashJoin(?pwpart) [#1], memory: 288K (2.8%), results: 482 (with gaps), wall time: 23 ms (0.6%)
+      │        │  │  │  │  │  │     │  +─ MergeJoin(?variant) [#1], results: 1.2K (with gaps), wall time: 4 ms (0.1%)
+      │        │  │  │  │  │  │     │  │  +─ Bind(<http://www.wikidata.org/prop/P3354> AS ?predictor) sortedBy=?variant [#1], results: 1.2K (with gaps), wall time: 1 ms (0.0%)
+      │        │  │  │  │  │  │     │  │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/P3354>, ?node) [#1], results: 1.2K (with gaps), wall time: 5 ms (0.1%)
+      │        │  │  │  │  │  │     │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/direct/P3433>, ?pwpart) [#1], results: 872 (with gaps), wall time: 4 ms (0.1%)
+      │        │  │  │  │  │  │     │  `─ MergeJoin(?pathway) [#1], results: 40, wall time: 0 ms (0.0%)
+      │        │  │  │  │  │  │     │     +─ Scan[POSC](?pathway, <http://www.wikidata.org/prop/direct/P2410>, "WP2828") [#1], results: 1 (with gaps), wall time: 4 ms (0.1%)
+      │        │  │  │  │  │  │     │     `─ Scan[PSOC](?pathway, <http://www.wikidata.org/prop/direct/P527>, ?pwpart) [#1.9M], results: 41 (with gaps), wall time: 8 ms (0.2%)
+      │        │  │  │  │  │  │     `─ MergeJoin(?node) [#150963.1M], results: 4.4K (with gaps), wall time: 4 ms (0.1%)
+      │        │  │  │  │  │  │        +─ Scan[S](?node, _, _) [#1779.0M], results: 987 (with gaps), wall time: 206 ms (5.5%)
+      │        │  │  │  │  │  │        `─ Scan[SPO](?node, ?predictorQualifier, ?disease) [#16388.1M], results: 4.4K (with gaps), wall time: 8 ms (0.2%)
+      │        │  │  │  │  │  `─ Bind("WP2828" AS ?wpID) sortedBy=?variant [#1], results: 3.9K (with gaps), wall time: 3 ms (0.1%)
+      │        │  │  │  │  │     `─ DirectHashJoin(?node) [#1], results: 3.9K (with gaps), wall time: 5 ms (0.1%)
+      │        │  │  │  │  │        +─ HashJoin(?pwpart) [#1], memory: 288K (2.8%), results: 482 (with gaps), wall time: 12 ms (0.3%)
+      │        │  │  │  │  │        │  +─ MergeJoin(?variant) [#1], results: 1.2K (with gaps), wall time: 4 ms (0.1%)
+      │        │  │  │  │  │        │  │  +─ Bind(<http://www.wikidata.org/prop/P3354> AS ?predictor) sortedBy=?variant [#1], results: 1.2K (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  │  │  │        │  │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/P3354>, ?node) [#1], results: 1.2K (with gaps), wall time: 1 ms (0.0%)
+      │        │  │  │  │  │        │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/direct/P3433>, ?pwpart) [#1], results: 872 (with gaps), wall time: 1 ms (0.0%)
+      │        │  │  │  │  │        │  `─ MergeJoin(?pathway) [#1], results: 40, wall time: 0 ms (0.0%)
+      │        │  │  │  │  │        │     +─ Scan[POSC](?pathway, <http://www.wikidata.org/prop/direct/P2410>, "WP2828") [#1], results: 1 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  │  │  │        │     `─ Scan[PSOC](?pathway, <http://www.wikidata.org/prop/direct/P527>, ?pwpart) [#1.9M], results: 41 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  │  │  │        `─ Scan[SPO](?node, ?predictorStatement, ?disease) [#16388.1M], results: 4.4K (with gaps), wall time: 7 ms (0.2%)
+      │        │  │  │  │  `─ Union [#2], results: 3.8K (with gaps), wall time: 3 ms (0.1%)
+      │        │  │  │  │     +─ Bind("WP2828" AS ?wpID) sortedBy=?variant [#1], results: 1.9K (with gaps), wall time: 2 ms (0.1%)
+      │        │  │  │  │     │  `─ DirectHashJoin(?node) [#1], results: 1.9K (with gaps), wall time: 3 ms (0.1%)
+      │        │  │  │  │     │     +─ HashJoin(?pwpart) [#1], memory: 288K (2.8%), results: 232, wall time: 9 ms (0.2%)
+      │        │  │  │  │     │     │  +─ MergeJoin(?variant) [#1], results: 981, wall time: 3 ms (0.1%)
+      │        │  │  │  │     │     │  │  +─ Bind(<http://www.wikidata.org/prop/P3355> AS ?predictor) sortedBy=?variant [#1], results: 981, wall time: 1 ms (0.0%)
+      │        │  │  │  │     │     │  │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/P3355>, ?node) [#1], results: 981, wall time: 1 ms (0.0%)
+      │        │  │  │  │     │     │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/direct/P3433>, ?pwpart) [#1], results: 732 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  │  │     │     │  `─ MergeJoin(?pathway) [#1], results: 40, wall time: 0 ms (0.0%)
+      │        │  │  │  │     │     │     +─ Scan[POSC](?pathway, <http://www.wikidata.org/prop/direct/P2410>, "WP2828") [#1], results: 1 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  │  │     │     │     `─ Scan[PSOC](?pathway, <http://www.wikidata.org/prop/direct/P527>, ?pwpart) [#1.9M], results: 41 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  │  │     │     `─ MergeJoin(?node) [#150963.1M], results: 2.1K (with gaps), wall time: 2 ms (0.1%)
+      │        │  │  │  │     │        +─ Scan[S](?node, _, _) [#1779.0M], results: 494 (with gaps), wall time: 117 ms (3.1%)
+      │        │  │  │  │     │        `─ Scan[SPO](?node, ?predictorQualifier, ?disease) [#16388.1M], results: 2.1K (with gaps), wall time: 3 ms (0.1%)
+      │        │  │  │  │     `─ Bind("WP2828" AS ?wpID) sortedBy=?variant [#1], results: 1.9K (with gaps), wall time: 1 ms (0.0%)
+      │        │  │  │  │        `─ DirectHashJoin(?node) [#1], results: 1.9K (with gaps), wall time: 2 ms (0.1%)
+      │        │  │  │  │           +─ HashJoin(?pwpart) [#1], memory: 288K (2.8%), results: 232, wall time: 8 ms (0.2%)
+      │        │  │  │  │           │  +─ MergeJoin(?variant) [#1], results: 981, wall time: 2 ms (0.1%)
+      │        │  │  │  │           │  │  +─ Bind(<http://www.wikidata.org/prop/P3355> AS ?predictor) sortedBy=?variant [#1], results: 981, wall time: 1 ms (0.0%)
+      │        │  │  │  │           │  │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/P3355>, ?node) [#1], results: 981, wall time: 0 ms (0.0%)
+      │        │  │  │  │           │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/direct/P3433>, ?pwpart) [#1], results: 732 (with gaps), wall time: 1 ms (0.0%)
+      │        │  │  │  │           │  `─ MergeJoin(?pathway) [#1], results: 40, wall time: 0 ms (0.0%)
+      │        │  │  │  │           │     +─ Scan[POSC](?pathway, <http://www.wikidata.org/prop/direct/P2410>, "WP2828") [#1], results: 1 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  │  │           │     `─ Scan[PSOC](?pathway, <http://www.wikidata.org/prop/direct/P527>, ?pwpart) [#1.9M], results: 41 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  │  │           `─ Scan[SPO](?node, ?predictorStatement, ?disease) [#16388.1M], results: 2.1K (with gaps), wall time: 3 ms (0.1%)
+      │        │  │  │  `─ Union [#2], results: 212 (with gaps), wall time: 1 ms (0.0%)
+      │        │  │  │     +─ Bind("WP2828" AS ?wpID) sortedBy=?variant [#1], results: 106 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  │     │  `─ DirectHashJoin(?node) [#1], results: 106 (with gaps), wall time: 1 ms (0.0%)
+      │        │  │  │     │     +─ HashJoin(?pwpart) [#1], memory: 288K (2.8%), results: 15, wall time: 5 ms (0.1%)
+      │        │  │  │     │     │  +─ MergeJoin(?variant) [#1], results: 165, wall time: 0 ms (0.0%)
+      │        │  │  │     │     │  │  +─ Bind(<http://www.wikidata.org/prop/P3356> AS ?predictor) sortedBy=?variant [#1], results: 165, wall time: 1 ms (0.0%)
+      │        │  │  │     │     │  │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/P3356>, ?node) [#1], results: 165, wall time: 0 ms (0.0%)
+      │        │  │  │     │     │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/direct/P3433>, ?pwpart) [#1], results: 227 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  │     │     │  `─ MergeJoin(?pathway) [#1], results: 40, wall time: 0 ms (0.0%)
+      │        │  │  │     │     │     +─ Scan[POSC](?pathway, <http://www.wikidata.org/prop/direct/P2410>, "WP2828") [#1], results: 1 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  │     │     │     `─ Scan[PSOC](?pathway, <http://www.wikidata.org/prop/direct/P527>, ?pwpart) [#1.9M], results: 41 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  │     │     `─ MergeJoin(?node) [#150963.1M], results: 122 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  │     │        +─ Scan[S](?node, _, _) [#1779.0M], results: 32 (with gaps), wall time: 13 ms (0.3%)
+      │        │  │  │     │        `─ Scan[SPO](?node, ?predictorQualifier, ?disease) [#16388.1M], results: 122 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  │     `─ Bind("WP2828" AS ?wpID) sortedBy=?variant [#1], results: 106 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  │        `─ DirectHashJoin(?node) [#1], results: 106 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  │           +─ HashJoin(?pwpart) [#1], memory: 288K (2.8%), results: 15, wall time: 3 ms (0.1%)
+      │        │  │  │           │  +─ MergeJoin(?variant) [#1], results: 165, wall time: 1 ms (0.0%)
+      │        │  │  │           │  │  +─ Bind(<http://www.wikidata.org/prop/P3356> AS ?predictor) sortedBy=?variant [#1], results: 165, wall time: 0 ms (0.0%)
+      │        │  │  │           │  │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/P3356>, ?node) [#1], results: 165, wall time: 0 ms (0.0%)
+      │        │  │  │           │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/direct/P3433>, ?pwpart) [#1], results: 227 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  │           │  `─ MergeJoin(?pathway) [#1], results: 40, wall time: 0 ms (0.0%)
+      │        │  │  │           │     +─ Scan[POSC](?pathway, <http://www.wikidata.org/prop/direct/P2410>, "WP2828") [#1], results: 1 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  │           │     `─ Scan[PSOC](?pathway, <http://www.wikidata.org/prop/direct/P527>, ?pwpart) [#1.9M], results: 41 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  │           `─ Scan[SPO](?node, ?predictorStatement, ?disease) [#16388.1M], results: 122 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │  `─ Union [#2], results: 0 (with gaps), wall time: 1 ms (0.0%)
+      │        │  │     +─ Bind("WP2828" AS ?wpID) sortedBy=?variant [#1], results: 0 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │     │  `─ DirectHashJoin(?node) [#1], results: 0 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │     │     +─ HashJoin(?pwpart) [#1], memory: 288K (2.8%), results: 0, wall time: 3 ms (0.1%)
+      │        │  │     │     │  +─ MergeJoin(?variant) [#1], results: 9, wall time: 0 ms (0.0%)
+      │        │  │     │     │  │  +─ Bind(<http://www.wikidata.org/prop/P3357> AS ?predictor) sortedBy=?variant [#1], results: 9, wall time: 0 ms (0.0%)
+      │        │  │     │     │  │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/P3357>, ?node) [#1], results: 9, wall time: 0 ms (0.0%)
+      │        │  │     │     │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/direct/P3433>, ?pwpart) [#1], results: 18 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │     │     │  `─ MergeJoin(?pathway) [#1], results: 40, wall time: 0 ms (0.0%)
+      │        │  │     │     │     +─ Scan[POSC](?pathway, <http://www.wikidata.org/prop/direct/P2410>, "WP2828") [#1], results: 1 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │     │     │     `─ Scan[PSOC](?pathway, <http://www.wikidata.org/prop/direct/P527>, ?pwpart) [#1.9M], results: 41 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │     │     `─ MergeJoin(?node) [#150963.1M], results: 0, wall time: 0 ms (0.0%)
+      │        │  │     │        +─ Scan[S](?node, _, _) [#1779.0M], results: 0, wall time: 0 ms (0.0%)
+      │        │  │     │        `─ Scan[SPO](?node, ?predictorQualifier, ?disease) [#16388.1M], results: 0, wall time: 0 ms (0.0%)
+      │        │  │     `─ Bind("WP2828" AS ?wpID) sortedBy=?variant [#1], results: 0 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │        `─ DirectHashJoin(?node) [#1], results: 0 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │           +─ HashJoin(?pwpart) [#1], memory: 288K (2.8%), results: 0, wall time: 2 ms (0.1%)
+      │        │  │           │  +─ MergeJoin(?variant) [#1], results: 9, wall time: 0 ms (0.0%)
+      │        │  │           │  │  +─ Bind(<http://www.wikidata.org/prop/P3357> AS ?predictor) sortedBy=?variant [#1], results: 9, wall time: 0 ms (0.0%)
+      │        │  │           │  │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/P3357>, ?node) [#1], results: 9, wall time: 0 ms (0.0%)
+      │        │  │           │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/direct/P3433>, ?pwpart) [#1], results: 18 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │           │  `─ MergeJoin(?pathway) [#1], results: 40, wall time: 0 ms (0.0%)
+      │        │  │           │     +─ Scan[POSC](?pathway, <http://www.wikidata.org/prop/direct/P2410>, "WP2828") [#1], results: 1 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │           │     `─ Scan[PSOC](?pathway, <http://www.wikidata.org/prop/direct/P527>, ?pwpart) [#1.9M], results: 41 (with gaps), wall time: 0 ms (0.0%)
+      │        │  │           `─ Scan[SPO](?node, ?predictorStatement, ?disease) [#16388.1M], results: 0, wall time: 0 ms (0.0%)
+      │        │  `─ Union [#2], results: 142 (with gaps), wall time: 0 ms (0.0%)
+      │        │     +─ Bind("WP2828" AS ?wpID) sortedBy=?variant [#1], results: 71 (with gaps), wall time: 0 ms (0.0%)
+      │        │     │  `─ DirectHashJoin(?node) [#1], results: 71 (with gaps), wall time: 0 ms (0.0%)
+      │        │     │     +─ HashJoin(?pwpart) [#1], memory: 288K (2.8%), results: 10, wall time: 3 ms (0.1%)
+      │        │     │     │  +─ MergeJoin(?variant) [#1], results: 97, wall time: 1 ms (0.0%)
+      │        │     │     │  │  +─ Bind(<http://www.wikidata.org/prop/P3358> AS ?predictor) sortedBy=?variant [#1], results: 97, wall time: 0 ms (0.0%)
+      │        │     │     │  │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/P3358>, ?node) [#1], results: 97, wall time: 0 ms (0.0%)
+      │        │     │     │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/direct/P3433>, ?pwpart) [#1], results: 134 (with gaps), wall time: 0 ms (0.0%)
+      │        │     │     │  `─ MergeJoin(?pathway) [#1], results: 40, wall time: 0 ms (0.0%)
+      │        │     │     │     +─ Scan[POSC](?pathway, <http://www.wikidata.org/prop/direct/P2410>, "WP2828") [#1], results: 1 (with gaps), wall time: 0 ms (0.0%)
+      │        │     │     │     `─ Scan[PSOC](?pathway, <http://www.wikidata.org/prop/direct/P527>, ?pwpart) [#1.9M], results: 41 (with gaps), wall time: 0 ms (0.0%)
+      │        │     │     `─ MergeJoin(?node) [#150963.1M], results: 82 (with gaps), wall time: 0 ms (0.0%)
+      │        │     │        +─ Scan[S](?node, _, _) [#1779.0M], results: 22 (with gaps), wall time: 14 ms (0.4%)
+      │        │     │        `─ Scan[SPO](?node, ?predictorQualifier, ?disease) [#16388.1M], results: 82 (with gaps), wall time: 0 ms (0.0%)
+      │        │     `─ Bind("WP2828" AS ?wpID) sortedBy=?variant [#1], results: 71 (with gaps), wall time: 0 ms (0.0%)
+      │        │        `─ DirectHashJoin(?node) [#1], results: 71 (with gaps), wall time: 0 ms (0.0%)
+      │        │           +─ HashJoin(?pwpart) [#1], memory: 288K (2.8%), results: 10, wall time: 3 ms (0.1%)
+      │        │           │  +─ MergeJoin(?variant) [#1], results: 97, wall time: 0 ms (0.0%)
+      │        │           │  │  +─ Bind(<http://www.wikidata.org/prop/P3358> AS ?predictor) sortedBy=?variant [#1], results: 97, wall time: 0 ms (0.0%)
+      │        │           │  │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/P3358>, ?node) [#1], results: 97, wall time: 0 ms (0.0%)
+      │        │           │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/direct/P3433>, ?pwpart) [#1], results: 134 (with gaps), wall time: 0 ms (0.0%)
+      │        │           │  `─ MergeJoin(?pathway) [#1], results: 40, wall time: 0 ms (0.0%)
+      │        │           │     +─ Scan[POSC](?pathway, <http://www.wikidata.org/prop/direct/P2410>, "WP2828") [#1], results: 1 (with gaps), wall time: 0 ms (0.0%)
+      │        │           │     `─ Scan[PSOC](?pathway, <http://www.wikidata.org/prop/direct/P527>, ?pwpart) [#1.9M], results: 41 (with gaps), wall time: 0 ms (0.0%)
+      │        │           `─ Scan[SPO](?node, ?predictorStatement, ?disease) [#16388.1M], results: 82 (with gaps), wall time: 0 ms (0.0%)
+      │        `─ Union [#2], results: 1.4K (with gaps), wall time: 1 ms (0.0%)
+      │           +─ Bind("WP2828" AS ?wpID) sortedBy=?variant [#1], results: 700 (with gaps), wall time: 0 ms (0.0%)
+      │           │  `─ DirectHashJoin(?node) [#1], results: 700 (with gaps), wall time: 2 ms (0.1%)
+      │           │     +─ HashJoin(?pwpart) [#1], memory: 288K (2.8%), results: 96, wall time: 5 ms (0.1%)
+      │           │     │  +─ MergeJoin(?variant) [#1], results: 301, wall time: 1 ms (0.0%)
+      │           │     │  │  +─ Bind(<http://www.wikidata.org/prop/P3359> AS ?predictor) sortedBy=?variant [#1], results: 301, wall time: 1 ms (0.0%)
+      │           │     │  │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/P3359>, ?node) [#1], results: 301, wall time: 0 ms (0.0%)
+      │           │     │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/direct/P3433>, ?pwpart) [#1], results: 345 (with gaps), wall time: 0 ms (0.0%)
+      │           │     │  `─ MergeJoin(?pathway) [#1], results: 40, wall time: 0 ms (0.0%)
+      │           │     │     +─ Scan[POSC](?pathway, <http://www.wikidata.org/prop/direct/P2410>, "WP2828") [#1], results: 1 (with gaps), wall time: 0 ms (0.0%)
+      │           │     │     `─ Scan[PSOC](?pathway, <http://www.wikidata.org/prop/direct/P527>, ?pwpart) [#1.9M], results: 41 (with gaps), wall time: 0 ms (0.0%)
+      │           │     `─ MergeJoin(?node) [#150963.1M], results: 797 (with gaps), wall time: 2 ms (0.1%)
+      │           │        +─ Scan[S](?node, _, _) [#1779.0M], results: 199 (with gaps), wall time: 22 ms (0.6%)
+      │           │        `─ Scan[SPO](?node, ?predictorQualifier, ?disease) [#16388.1M], results: 797 (with gaps), wall time: 0 ms (0.0%)
+      │           `─ Bind("WP2828" AS ?wpID) sortedBy=?variant [#1], results: 700 (with gaps), wall time: 1 ms (0.0%)
+      │              `─ DirectHashJoin(?node) [#1], results: 700 (with gaps), wall time: 1 ms (0.0%)
+      │                 +─ HashJoin(?pwpart) [#1], memory: 288K (2.8%), results: 96, wall time: 3 ms (0.1%)
+      │                 │  +─ MergeJoin(?variant) [#1], results: 301, wall time: 2 ms (0.1%)
+      │                 │  │  +─ Bind(<http://www.wikidata.org/prop/P3359> AS ?predictor) sortedBy=?variant [#1], results: 301, wall time: 0 ms (0.0%)
+      │                 │  │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/P3359>, ?node) [#1], results: 301, wall time: 0 ms (0.0%)
+      │                 │  │  `─ Scan[PSOC](?variant, <http://www.wikidata.org/prop/direct/P3433>, ?pwpart) [#1], results: 345 (with gaps), wall time: 0 ms (0.0%)
+      │                 │  `─ MergeJoin(?pathway) [#1], results: 40, wall time: 0 ms (0.0%)
+      │                 │     +─ Scan[POSC](?pathway, <http://www.wikidata.org/prop/direct/P2410>, "WP2828") [#1], results: 1 (with gaps), wall time: 0 ms (0.0%)
+      │                 │     `─ Scan[PSOC](?pathway, <http://www.wikidata.org/prop/direct/P527>, ?pwpart) [#1.9M], results: 41 (with gaps), wall time: 0 ms (0.0%)
+      │                 `─ Scan[SPO](?node, ?predictorStatement, ?disease) [#16388.1M], results: 797 (with gaps), wall time: 1 ms (0.0%)
+      `─ VALUES (?predictorQualifier) {
+         `─ ( <http://www.wikidata.org/prop/qualifier/P2175> )
+         }, results: 12, wall time: 0 ms (0.0%)
+

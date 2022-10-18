@@ -1,0 +1,55 @@
+Picked up _JAVA_OPTIONS: -Djava.io.tmpdir=/data/java/tmp
+12:17:44 INFO  exec            :: QUERY
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  foaf: <http://xmlns.com/foaf/0.1/>
+  
+  SELECT DISTINCT  ?predicate
+  WHERE
+    {   { ?person   rdf:type    foaf:Person .
+          ?subject  ?predicate  ?person
+        }
+      UNION
+        { ?person  rdf:type    foaf:Person ;
+                   ?predicate  ?object
+        }
+    }
+12:17:44 INFO  exec            :: ALGEBRA
+  (distinct
+    (project (?predicate)
+      (union
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?person <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person>)
+          (quad <urn:x-arq:DefaultGraphNode> ?subject ?predicate ?person)
+        )
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?person <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person>)
+          (quad <urn:x-arq:DefaultGraphNode> ?person ?predicate ?object)
+        ))))
+12:17:44 INFO  exec            :: TDB2
+  (distinct
+    (project (?predicate)
+      (union
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?person <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person>)
+          (quad <urn:x-arq:DefaultGraphNode> ?subject ?predicate ?person)
+        )
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?person <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person>)
+          (quad <urn:x-arq:DefaultGraphNode> ?person ?predicate ?object)
+        ))))
+12:17:44 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> ?person <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person>)
+    (quad <urn:x-arq:DefaultGraphNode> ?subject ?predicate ?person)
+  )
+12:17:44 INFO  exec            :: Execute
+  ?person rdf:type <http://xmlns.com/foaf/0.1/Person>
+  ?subject ?predicate ?person
+12:17:44 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> ?person <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person>)
+    (quad <urn:x-arq:DefaultGraphNode> ?person ?predicate ?object)
+  )
+12:17:44 INFO  exec            :: Execute
+  ?person rdf:type <http://xmlns.com/foaf/0.1/Person>
+  ?person ?predicate ?object

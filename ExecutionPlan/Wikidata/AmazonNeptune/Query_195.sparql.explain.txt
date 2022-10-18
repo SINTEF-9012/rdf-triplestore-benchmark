@@ -1,0 +1,130 @@
+Query:
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+#title: Animals which are Threatened as per IUCN Red List 
+# https://en.wikipedia.org/wiki/Conservation_status
+# Common names are in English only
+
+SELECT ?animal ?scientific_names ?common_names ?statusLabel where
+{
+  # hint:Prior hint:runLast true
+   {
+      SELECT DISTINCT ?animal (GROUP_CONCAT(distinct ?scientific_name; separator=", ") as ?scientific_names)  (GROUP_CONCAT(distinct ?common_name; separator=", ") as ?common_names) WHERE 
+      {
+ 
+        ?animal wdt:P141 ?status;
+                wdt:P225 ?scientific_name;
+                wdt:P1843 ?common_name.
+        filter( ?status
+           IN (
+               wd:Q11394,  #Endangered
+               wd:Q219127, #critcally endangered
+               wd:Q278113  #vulnurable
+              ) 
+          ).
+  
+        # Only return common names in English
+        FILTER(LANGMATCHES(LANG(?common_name), "en")) 
+      }
+      group by ?animal
+   }.
+   ?animal wdt:P141 ?status.
+   #SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+
+╔════╤════════╤════════╤═══════════════════╤════════════════════════════════════════════════════════════════╤══════════╤══════════╤═══════════╤═══════════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name              │ Arguments                                                      │ Mode     │ Units In │ Units Out │ Ratio     │ Time (ms) ║
+╠════╪════════╪════════╪═══════════════════╪════════════════════════════════════════════════════════════════╪══════════╪══════════╪═══════════╪═══════════╪═══════════╣
+║ 0  │ 1      │ -      │ SolutionInjection │ solutions=[{}]                                                 │ -        │ 0        │ 1         │ 0.00      │ 0         ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 1  │ 2      │ -      │ NamedSubquery     │ subQuery=subQuery1                                             │ -        │ 1        │ 1         │ 1.00      │ 17154     ║
+║    │        │        │                   │ solutionSet=solutionSet1                                       │          │          │           │           │           ║
+║    │        │        │                   │ joinVars=[?animal]                                             │          │          │           │           │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 2  │ 3      │ -      │ PipelineJoin      │ pattern=distinct(?animal, wdt:P141, ?status)                   │ -        │ 1        │ 139880    │ 139880.00 │ 856       ║
+║    │        │        │                   │ joinType=join                                                  │          │          │           │           │           ║
+║    │        │        │                   │ joinProjectionVars=[?animal, ?status]                          │          │          │           │           │           ║
+║    │        │        │                   │ patternEstimate=215016                                         │          │          │           │           │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 3  │ 4      │ -      │ HashIndexJoin     │ solutionSet=solutionSet1                                       │ -        │ 139880   │ 9689      │ 0.07      │ 426       ║
+║    │        │        │                   │ joinType=join                                                  │          │          │           │           │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 4  │ 5      │ -      │ Projection        │ vars=[?animal, ?scientific_names, ?common_names, ?statusLabel] │ retain   │ 9689     │ 9689      │ 1.00      │ 23        ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼───────────┼───────────╢
+║ 5  │ -      │ -      │ TermResolution    │ vars=[?animal, ?scientific_names, ?common_names, ?statusLabel] │ id2value │ 9689     │ 9689      │ 1.00      │ 139       ║
+╚════╧════════╧════════╧═══════════════════╧════════════════════════════════════════════════════════════════╧══════════╧══════════╧═══════════╧═══════════╧═══════════╝
+
+
+subQuery1
+╔════╤════════╤════════╤════════════════════╤══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╤══════════╤══════════╤═══════════╤══════════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name               │ Arguments                                                                                                                                                                            │ Mode     │ Units In │ Units Out │ Ratio    │ Time (ms) ║
+╠════╪════════╪════════╪════════════════════╪══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╪══════════╪══════════╪═══════════╪══════════╪═══════════╣
+║ 0  │ 1      │ -      │ Distinct           │ vars=[?animal, ?scientific_names, ?common_names]                                                                                                                                     │ -        │ 1        │ 1         │ 1.00     │ 0         ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 1  │ 2      │ -      │ PipelineJoin       │ pattern=distinct(?animal, wdt:P141, ?status)                                                                                                                                         │ -        │ 1        │ 39533     │ 39533.00 │ 15666     ║
+║    │        │        │                    │ inlineFilters=[                                                                                                                                                                      │          │          │           │          │           ║
+║    │        │        │                    │ ?status IN (wd:Q11394, wd:Q219127, wd:Q278113)                                                                                                                                       │          │          │           │          │           ║
+║    │        │        │                    │ ]                                                                                                                                                                                    │          │          │           │          │           ║
+║    │        │        │                    │ joinType=join                                                                                                                                                                        │          │          │           │          │           ║
+║    │        │        │                    │ joinProjectionVars=[?animal, ?status]                                                                                                                                                │          │          │           │          │           ║
+║    │        │        │                    │ patternEstimate=42852                                                                                                                                                                │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 2  │ 3      │ -      │ PipelineJoin       │ pattern=distinct(?animal, wdt:P1843, ?common_name)                                                                                                                                   │ -        │ 39533    │ 55362     │ 1.40     │ 83395     ║
+║    │        │        │                    │ joinType=join                                                                                                                                                                        │          │          │           │          │           ║
+║    │        │        │                    │ joinProjectionVars=[?animal, ?common_name]                                                                                                                                           │          │          │           │          │           ║
+║    │        │        │                    │ constraints=[langMatches(lang(?common_name), "en"^^xsd:string)]                                                                                                                      │          │          │           │          │           ║
+║    │        │        │                    │ patternEstimate=741320                                                                                                                                                               │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 3  │ 4      │ 5      │ ConditionalRouting │ condition=needsMaterialization(langMatches(lang(?common_name), "en"^^xsd:string))                                                                                                    │ -        │ 55362    │ 55362     │ 1.00     │ 134       ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 4  │ 5      │ -      │ TermResolution     │ vars=[?common_name]                                                                                                                                                                  │ id2value │ 55362    │ 55362     │ 1.00     │ 16877     ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 5  │ 6      │ -      │ Filter             │ condition=langMatches(lang(?common_name), "en"^^xsd:string)                                                                                                                          │ -        │ 55362    │ 16991     │ 0.31     │ 108       ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 6  │ 7      │ -      │ PipelineJoin       │ pattern=distinct(?animal, wdt:P225, ?scientific_name)                                                                                                                                │ -        │ 16991    │ 17011     │ 1.00     │ 28150     ║
+║    │        │        │                    │ joinType=join                                                                                                                                                                        │          │          │           │          │           ║
+║    │        │        │                    │ joinProjectionVars=[?animal, ?scientific_name]                                                                                                                                       │          │          │           │          │           ║
+║    │        │        │                    │ patternEstimate=7849728                                                                                                                                                              │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 7  │ 8      │ -      │ TermResolution     │ vars=[?scientific_name, ?common_name]                                                                                                                                                │ id2value │ 17011    │ 17011     │ 1.00     │ 3957      ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 8  │ 9      │ -      │ Aggregate          │ groupBy=[?animal]                                                                                                                                                                    │ -        │ 17011    │ 9689      │ 0.57     │ 363       ║
+║    │        │        │                    │ aggregates=[?animal, BIND(GROUP_CONCAT(DISTINCT ?scientific_name; separator=", ") AS ?scientific_names), BIND(GROUP_CONCAT(DISTINCT ?common_name; separator=", ") AS ?common_names)] │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 9  │ 10     │ -      │ Distinct           │ vars=[?animal, ?scientific_names, ?common_names]                                                                                                                                     │ -        │ 9689     │ 9689      │ 1.00     │ 66        ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 10 │ -      │ -      │ Projection         │ vars=[?animal, ?scientific_names, ?common_names]                                                                                                                                     │ retain   │ 9689     │ 9689      │ 1.00     │ 2         ║
+╚════╧════════╧════════╧════════════════════╧══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╧══════════╧══════════╧═══════════╧══════════╧═══════════╝
+

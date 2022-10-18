@@ -1,0 +1,104 @@
+Query:
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT ?director ?director_label ?films ?sitelinks ((?films * ?sitelinks) as ?rank)
+WHERE {
+  {SELECT ?director (count(distinct ?film) as ?films) (count(distinct ?sitelink) as ?sitelinks)
+     WHERE { 
+       ?director wdt:P106 wd:Q2526255 .         # has "film director" as occupation
+     ?film wdt:P57 ?director .            # get all films directed by the director
+       ?sitelink schema:about ?director .       # get all the sitelinks about the director
+       } GROUP BY ?director }
+#SERVICE wikibase:label { 
+#  bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en".  # Get label if it exists
+#?director rdfs:label ?director_label }  
+} ORDER BY DESC(?rank)
+LIMIT 100
+
+╔════╤════════╤════════╤════════════════════╤══════════════════════════════════════════════════════════════╤══════════╤══════════╤═══════════╤══════════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name               │ Arguments                                                    │ Mode     │ Units In │ Units Out │ Ratio    │ Time (ms) ║
+╠════╪════════╪════════╪════════════════════╪══════════════════════════════════════════════════════════════╪══════════╪══════════╪═══════════╪══════════╪═══════════╣
+║ 0  │ 1      │ -      │ SolutionInjection  │ solutions=[{}]                                               │ -        │ 0        │ 1         │ 0.00     │ 0         ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 1  │ 2      │ -      │ NamedSubquery      │ subQuery=subQuery1                                           │ -        │ 1        │ 1         │ 1.00     │ 18861     ║
+║    │        │        │                    │ solutionSet=solutionSet1                                     │          │          │           │          │           ║
+║    │        │        │                    │ joinVars=[]                                                  │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 2  │ 3      │ -      │ HashIndexJoin      │ solutionSet=solutionSet1                                     │ -        │ 1        │ 51440     │ 51440.00 │ 88        ║
+║    │        │        │                    │ joinType=join                                                │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 3  │ 4      │ 5      │ ConditionalRouting │ condition=needsMaterialization((?films * ?sitelinks))        │ -        │ 51440    │ 51440     │ 1.00     │ 257       ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 4  │ 5      │ -      │ TermResolution     │ vars=[?films, ?sitelinks]                                    │ id2value │ 0        │ 0         │ 0.00     │ 0         ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 5  │ 6      │ -      │ Filter             │ condition=BIND((?films * ?sitelinks) AS ?rank)               │ -        │ 51440    │ 51440     │ 1.00     │ 297       ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 6  │ 7      │ -      │ TermResolution     │ vars=[?rank]                                                 │ id2value │ 51440    │ 51440     │ 1.00     │ 31        ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 7  │ 8      │ -      │ Sort               │ sortOrder=[DESC(?rank)]                                      │ -        │ 51440    │ 3000      │ 0.06     │ 346       ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 8  │ 9      │ -      │ Projection         │ vars=[?director, ?director_label, ?films, ?sitelinks, ?rank] │ retain   │ 2000     │ 2000      │ 1.00     │ 3         ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 9  │ -      │ -      │ Slice              │ limit=100                                                    │ -        │ 100      │ 100       │ 1.00     │ 2         ║
+╚════╧════════╧════════╧════════════════════╧══════════════════════════════════════════════════════════════╧══════════╧══════════╧═══════════╧══════════╧═══════════╝
+
+
+subQuery1
+╔════╤════════╤════════╤══════════════╤══════════════════════════════════════════════════════════════════════════════════════════════════════════════╤════════╤══════════╤═══════════╤══════════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name         │ Arguments                                                                                                    │ Mode   │ Units In │ Units Out │ Ratio    │ Time (ms) ║
+╠════╪════════╪════════╪══════════════╪══════════════════════════════════════════════════════════════════════════════════════════════════════════════╪════════╪══════════╪═══════════╪══════════╪═══════════╣
+║ 0  │ 1      │ -      │ Distinct     │ vars=[?director, ?films, ?sitelinks]                                                                         │ -      │ 1        │ 1         │ 1.00     │ 0         ║
+╟────┼────────┼────────┼──────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────┼────────┼──────────┼───────────┼──────────┼───────────╢
+║ 1  │ 2      │ -      │ PipelineJoin │ pattern=distinct(?director, wdt:P106, wd:Q2526255)                                                           │ -      │ 1        │ 67457     │ 67457.00 │ 8518      ║
+║    │        │        │              │ joinType=join                                                                                                │        │          │           │          │           ║
+║    │        │        │              │ joinProjectionVars=[?director]                                                                               │        │          │           │          │           ║
+║    │        │        │              │ patternEstimate=96198                                                                                        │        │          │           │          │           ║
+╟────┼────────┼────────┼──────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────┼────────┼──────────┼───────────┼──────────┼───────────╢
+║ 2  │ 3      │ -      │ PipelineJoin │ pattern=distinct(?film, wdt:P57, ?director)                                                                  │ -      │ 67457    │ 285970    │ 4.24     │ 174641    ║
+║    │        │        │              │ joinType=join                                                                                                │        │          │           │          │           ║
+║    │        │        │              │ joinProjectionVars=[?film, ?director]                                                                        │        │          │           │          │           ║
+║    │        │        │              │ patternEstimate=755648                                                                                       │        │          │           │          │           ║
+╟────┼────────┼────────┼──────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────┼────────┼──────────┼───────────┼──────────┼───────────╢
+║ 3  │ 4      │ -      │ PipelineJoin │ pattern=distinct(?sitelink, schema:about, ?director)                                                         │ -      │ 285970   │ 3212376   │ 11.23    │ 220983    ║
+║    │        │        │              │ joinType=join                                                                                                │        │          │           │          │           ║
+║    │        │        │              │ joinProjectionVars=[?sitelink, ?director]                                                                    │        │          │           │          │           ║
+║    │        │        │              │ patternEstimate=244456274                                                                                    │        │          │           │          │           ║
+╟────┼────────┼────────┼──────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────┼────────┼──────────┼───────────┼──────────┼───────────╢
+║ 4  │ 5      │ -      │ Aggregate    │ groupBy=[?director]                                                                                          │ -      │ 3212376  │ 51440     │ 0.02     │ 18741     ║
+║    │        │        │              │ aggregates=[?director, BIND(COUNT(DISTINCT ?film) AS ?films), BIND(COUNT(DISTINCT ?sitelink) AS ?sitelinks)] │        │          │           │          │           ║
+╟────┼────────┼────────┼──────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────┼────────┼──────────┼───────────┼──────────┼───────────╢
+║ 5  │ -      │ -      │ Projection   │ vars=[?director, ?films, ?sitelinks]                                                                         │ retain │ 51440    │ 51440     │ 1.00     │ 21        ║
+╚════╧════════╧════════╧══════════════╧══════════════════════════════════════════════════════════════════════════════════════════════════════════════╧════════╧══════════╧═══════════╧══════════╧═══════════╝
+

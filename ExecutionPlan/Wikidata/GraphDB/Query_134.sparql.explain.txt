@@ -1,0 +1,42 @@
+plan
+"PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?item ?itemLabel ?count
+{
+  {
+    SELECT ?item (COUNT(?country) AS ?count)
+    {
+      
+      { # ----- Begin optimization group 1 -----
+        
+        ArbitraryLengthPath ( min=0, from _anon_1ce88503_866a_4386_871a_f706c872ac6d, to __const_24f0c4f8_uri) over {
+	 [ _anon_1ce88503_866a_4386_871a_f706c872ac6d http://www.wikidata.org/prop/direct/P279 http://www.wikidata.org/entity/Q41176 ]
+	 }  # Collection size: 500.0
+        ?item wdt:P31 ?_anon_1ce88503_866a_4386_871a_f706c872ac6d . # 	Collection size: 9.768112E7	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 4.884056E10
+        ?item wdt:P17 ?country . # 	Collection size: 1.4294192E7	Predicate collection size: 1.4294192E7	Unique subjects: 1.4082865E7	Unique objects: 3230.0	Current complexity: 4.957345980576538E10
+        FILTER (!(EXISTS {
+        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+          
+          { # ----- Begin optimization group 2 -----
+          
+          ?country wdt:P576 ?end . # 	Collection size: 229927.0	Predicate collection size: 229927.0	Unique subjects: 228829.0	Unique objects: 22549.0	Current complexity: 229927.0
+          
+          } # ----- End optimization group 2 -----
+          # ESTIMATED NUMBER OF ITERATIONS: 229927.0        
+        }))
+        
+      } # ----- End optimization group 1 -----
+      # ESTIMATED NUMBER OF ITERATIONS: 4.957345980576538E10
+      
+    }
+    GROUP BY ?item
+  }
+  FILTER (?count > 1)
+}
+ORDER BY DESC(?count) ASC(?itemL)
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

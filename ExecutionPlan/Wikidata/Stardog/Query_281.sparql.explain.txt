@@ -1,0 +1,99 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT DISTINCT ?actor ?actorLabel ?characterLabel ?movie1Label ?movie2Label WHERE {
+  ?movie1 p:P161 [
+            ps:P161 ?actor;
+            pq:P453 ?character
+          ];
+          wdt:P577 ?movie1Publication.
+  ?movie2  p:P161 [
+            ps:P161 ?actor;
+            pq:P453 ?character
+          ];
+          wdt:P577 ?movie2Publication.
+  MINUS{?movie1 wdt:P31/wdt:P279? wd:Q24856} # Not a series
+  MINUS{?movie2 wdt:P31/wdt:P279? wd:Q24856} # Not a series
+  FILTER(?character != wd:Q18086706). # Not as "themselves"
+  FILTER(?movie1Publication + "P40Y"^^xsd:duration < ?movie2Publication) # 40 years between them
+  #SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 64984 ms and returned 24 result(s)
+Total used memory: 427M
+Pre-execution time: 266 ms (0.4%)
+Post-processing time: 9 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Distinct [#1], memory: 224K (0.1%), results: 24, wall time: 1 ms (0.0%)
+`─ Projection(?actor, ?actorLabel, ?characterLabel, ?movie1Label, ?movie2Label) [#1], results: 912, wall time: 1 ms (0.0%)
+   `─ Filter((?movie1Publication + "P40Y"^^xsd:duration) < ?movie2Publication) [#1], results: 912, wall time: 11676 ms (18.0%)
+      `─ Filter(?character != <http://www.wikidata.org/entity/Q18086706>) [#1], results: 4.6M, wall time: 968 ms (1.5%)
+         `─ Minus(HashLookup) [#1], results: 4.6M, wall time: 2602 ms (4.0%)
+            +─ Minus(HashLookup) [#1], results: 4.6M, wall time: 2752 ms (4.2%)
+            │  +─ DirectHashJoin(?movie1) [#1], results: 4.6M, wall time: 2636 ms (4.1%)
+            │  │  +─ DirectHashJoin(?_anon_1) [#1], results: 2.3M, wall time: 1469 ms (2.3%)
+            │  │  │  +─ DirectHashJoin(?movie2) [#1], results: 2.3M, wall time: 1248 ms (1.9%)
+            │  │  │  │  +─ DirectHashJoin(?_anon_2) [#64K], results: 1.4M, wall time: 911 ms (1.4%)
+            │  │  │  │  │  +─ HashJoin(?_anon_1) [#85K], memory: 107M (25.0%), results: 1.4M, wall time: 6249 ms (9.6%)
+            │  │  │  │  │  │  +─ HashJoin(?_anon_2) [#9.6M], memory: 107M (25.0%), results: 9.6M, wall time: 10758 ms (16.6%)
+            │  │  │  │  │  │  │  +─ MergeJoin(?character) [#12.9M], results: 12.9M, wall time: 2186 ms (3.4%)
+            │  │  │  │  │  │  │  │  +─ Scan[POSC](?_anon_1, <http://www.wikidata.org/prop/qualifier/P453>, ?character) [#75K], results: 75K, wall time: 43 ms (0.1%)
+            │  │  │  │  │  │  │  │  `─ Scan[POSC](?_anon_2, <http://www.wikidata.org/prop/qualifier/P453>, ?character) [#75K], results: 75K (with gaps), wall time: 40 ms (0.1%)
+            │  │  │  │  │  │  │  `─ Scan[POSC](?_anon_2, <http://www.wikidata.org/prop/statement/P161>, ?actor) [#1.4M], results: 1.4M, wall time: 357 ms (0.5%)
+            │  │  │  │  │  │  `─ Scan[POSC](?_anon_1, <http://www.wikidata.org/prop/statement/P161>, ?actor) [#1.4M], results: 1.4M, wall time: 476 ms (0.7%)
+            │  │  │  │  │  `─ Scan[POSC](?movie2, <http://www.wikidata.org/prop/P161>, ?_anon_2) [#1.4M], results: 2.8M (with gaps), wall time: 4264 ms (6.6%)
+            │  │  │  │  `─ Scan[PSOC](?movie2, <http://www.wikidata.org/prop/direct/P577>, ?movie2Publication) [#39.8M], results: 3.7M (with gaps), wall time: 6072 ms (9.3%)
+            │  │  │  `─ Scan[POSC](?movie1, <http://www.wikidata.org/prop/P161>, ?_anon_1) [#1.4M], results: 4.7M (with gaps), wall time: 4458 ms (6.9%)
+            │  │  `─ Scan[PSOC](?movie1, <http://www.wikidata.org/prop/direct/P577>, ?movie1Publication) [#39.8M], results: 7.0M (with gaps), wall time: 5538 ms (8.5%)
+            │  `─ DirectHashJoin(?pojwsdiq) [#1], results: 1.5K, wall time: 1 ms (0.0%)
+            │     +─ PropertyPath(?pojwsdiq -> <http://www.wikidata.org/entity/Q24856>, minLength=0, maxLength=1, reversed) [#1], results: 8, wall time: 0 ms (0.0%)
+            │     │  `─ Scan[POSC](?pojwsdiq, <http://www.wikidata.org/prop/direct/P279>, <http://www.wikidata.org/entity/Q24856>) [#1]
+            │     `─ Scan[POSC](?movie1, <http://www.wikidata.org/prop/direct/P31>, ?pojwsdiq) [#97.7M], results: 1.5K (with gaps), wall time: 0 ms (0.0%)
+            `─ DirectHashJoin(?jefuitsb) [#1], results: 1.5K, wall time: 1 ms (0.0%)
+               +─ PropertyPath(?jefuitsb -> <http://www.wikidata.org/entity/Q24856>, minLength=0, maxLength=1, reversed) [#1], results: 8, wall time: 0 ms (0.0%)
+               │  `─ Scan[POSC](?jefuitsb, <http://www.wikidata.org/prop/direct/P279>, <http://www.wikidata.org/entity/Q24856>) [#1]
+               `─ Scan[POSC](?movie2, <http://www.wikidata.org/prop/direct/P31>, ?jefuitsb) [#97.7M], results: 1.5K (with gaps), wall time: 1 ms (0.0%)
+

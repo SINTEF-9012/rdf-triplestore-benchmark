@@ -1,0 +1,26 @@
+plan
+"PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?item ?itemLabel
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?item wdt:P921 wd:Q2013 . # 	Collection size: 475.0	Predicate collection size: 1.8730235E7	Unique subjects: 1.3182003E7	Unique objects: 850291.0	Current complexity: 475.0
+    ?item wdt:P31 ?_anon_5d864542_ea6d_45fa_9dfb_04e473d7a891 . # 	Collection size: 9.768112E7	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 503.97512091549453
+    ArbitraryLengthPath ( min=0, from _anon_5d864542_ea6d_45fa_9dfb_04e473d7a891, to __const_7479f223_uri) over {
+	 [ _anon_5d864542_ea6d_45fa_9dfb_04e473d7a891 http://www.wikidata.org/prop/direct/P279 http://www.wikidata.org/entity/Q191067 ]
+	 }  # Collection size: 1000.0
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 503975.1209154945
+  
+}
+LIMIT 100
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

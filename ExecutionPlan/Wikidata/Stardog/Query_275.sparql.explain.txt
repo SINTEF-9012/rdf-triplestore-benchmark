@@ -1,0 +1,93 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+#All museums (including subclass of museum) in Barcelona with coordinates
+SELECT DISTINCT ?item ?name ?coord ?lat ?lon
+WHERE
+{
+ hint:Query hint:optimizer "None" .
+ ?item wdt:P131* wd:Q1492 .
+ ?item wdt:P31/wdt:P279* wd:Q33506 .
+ ?item wdt:P625 ?coord .
+ ?item p:P625 ?coordinate .
+ ?coordinate psv:P625 ?coordinate_node .
+ ?coordinate_node wikibase:geoLatitude ?lat .
+ ?coordinate_node wikibase:geoLongitude ?lon .
+ #SERVICE wikibase:label {
+# bd:serviceParam wikibase:language "ca" .
+# ?item rdfs:label ?name
+# }
+}
+ORDER BY ASC (?name)
+
+The Query Plan:
+
+Profiling results:
+Query executed in 1 ms and returned 0 result(s)
+Total used memory: 384K
+Pre-execution time: 1 ms (100.0%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+OrderBy(ASC(?name)) [#47], results: 0, wall time: 0 ms (0.0%)
+`─ Distinct [#47], memory: 192K (50.0%), results: 0, wall time: 0 ms (0.0%)
+   `─ Projection(?item, ?name, ?coord, ?lat, ?lon) [#47], results: 0, wall time: 0 ms (0.0%)
+      `─ NestedLoopJoin(_) [#47], results: 0, wall time: 0 ms (0.0%)
+         +─ Scan[SPOC](<http://www.bigdata.com/queryHints#Query>, <http://www.bigdata.com/queryHints#optimizer>, "None") [#1], results: 0, wall time: 0 ms (0.0%)
+         `─ HashJoin(?item) [#47], results: 0, wall time: 0 ms (0.0%)
+            +─ PropertyPath(?item -> <http://www.wikidata.org/entity/Q1492>, minLength=0, reversed) [#384K], results: 0, wall time: 0 ms (0.0%)
+            │  `─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P131>, <http://www.wikidata.org/entity/Q1492>) [#8.2K]
+            `─ DirectHashJoin(?coordinate_node) [#1], results: 0, wall time: 0 ms (0.0%)
+               +─ DirectHashJoin(?coordinate) [#1], results: 0, wall time: 0 ms (0.0%)
+               │  +─ DirectHashJoin(?item) [#1], results: 0, wall time: 0 ms (0.0%)
+               │  │  +─ DirectHashJoin(?olvrvzql) [#1], results: 0, wall time: 0 ms (0.0%)
+               │  │  │  +─ PropertyPath(?olvrvzql -> <http://www.wikidata.org/entity/Q33506>, minLength=0, reversed) [#156], results: 0, wall time: 0 ms (0.0%)
+               │  │  │  │  `─ Scan[POSC](?olvrvzql, <http://www.wikidata.org/prop/direct/P279>, <http://www.wikidata.org/entity/Q33506>) [#155]
+               │  │  │  `─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P31>, ?olvrvzql) [#97.7M], results: 0, wall time: 0 ms (0.0%)
+               │  │  `─ MergeJoin(?item) [#8.6M], results: 0, wall time: 0 ms (0.0%)
+               │  │     +─ Scan[PSOC](?item, <http://www.wikidata.org/prop/direct/P625>, ?coord) [#8.8M], results: 0, wall time: 0 ms (0.0%)
+               │  │     `─ Scan[PSOC](?item, <http://www.wikidata.org/prop/P625>, ?coordinate) [#8.8M], results: 0, wall time: 0 ms (0.0%)
+               │  `─ Scan[PSOC](?coordinate, <http://www.wikidata.org/prop/statement/value/P625>, ?coordinate_node) [#8.8M], results: 0, wall time: 0 ms (0.0%)
+               `─ MergeJoin(?coordinate_node) [#8.8M], results: 0, wall time: 0 ms (0.0%)
+                  +─ Scan[PSOC](?coordinate_node, <http://wikiba.se/ontology#geoLatitude>, ?lat) [#8.8M], results: 0, wall time: 0 ms (0.0%)
+                  `─ Scan[PSOC](?coordinate_node, <http://wikiba.se/ontology#geoLongitude>, ?lon) [#8.8M], results: 0, wall time: 0 ms (0.0%)
+

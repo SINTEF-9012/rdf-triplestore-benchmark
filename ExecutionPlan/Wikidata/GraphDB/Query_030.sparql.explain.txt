@@ -1,0 +1,30 @@
+plan
+"PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+
+SELECT ?lexemeId ?lemma ?example
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?lexemeId dct:language wd:Q9027 . # 	Collection size: 0.0	Predicate collection size: 0.0	Unique subjects: 0.0	Unique objects: 0.0	Current complexity: 0.0
+    ?lexemeId wikibase:lemma ?lemma . # 	Collection size: 0.0	Predicate collection size: 0.0	Unique subjects: 0.0	Unique objects: 0.0	Current complexity: 0.0
+    ?lexemeId p:P5831 ?statement . # 	Collection size: 3.0	Predicate collection size: 3.0	Unique subjects: 3.0	Unique objects: 3.0	Current complexity: 0.0
+    ?statement ps:P5831 ?example . # 	Collection size: 3.0	Predicate collection size: 3.0	Unique subjects: 3.0	Unique objects: 3.0	Current complexity: 0.0
+    ?statement pq:P6072 ?_anon_1 . # 	Collection size: 9.0	Predicate collection size: 9.0	Unique subjects: 9.0	Unique objects: 5.0	Current complexity: 0.0
+    ?statement pq:P5830 ?_anon_2 . # 	Collection size: 9.0	Predicate collection size: 9.0	Unique subjects: 9.0	Unique objects: 6.0	Current complexity: 0.0
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 0.0
+  
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

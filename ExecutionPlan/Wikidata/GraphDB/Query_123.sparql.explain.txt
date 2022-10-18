@@ -1,0 +1,52 @@
+plan
+"PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+
+SELECT ?place ?location ?elev ?image
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    VALUES (?unit) {
+      (wd:Q11573)
+      (wd:Q3710)
+      (wd:Q828224)
+    }
+    ?placeElev wikibase:quantityUnit ?unit . # 	Collection size: 5.2760141E7	Predicate collection size: 5.2760141E7	Unique subjects: 5.2760141E7	Unique objects: 2483.0	Current complexity: 1.58280423E8
+    ?placeElev wikibase:quantityAmount ?elev . # 	Collection size: 5.2760141E7	Predicate collection size: 5.2760141E7	Unique subjects: 5.2760141E7	Unique objects: 3.2844397E7	Current complexity: 1.58280423E8
+    BIND (""0.01""^^<http://www.w3.org/2001/XMLSchema#decimal> AS ?km)
+    FILTER ((?elev < (?km * 1000) || (?elev < (?km * 3281) || ?unit = wd:Q828224)))
+    FILTER ((?elev < (?km * 1000) || (?unit = wd:Q3710 || ?elev < ?km)))
+    FILTER ((?elev < (?km * 1000) || (?unit = wd:Q3710 || ?unit = wd:Q828224)))
+    FILTER ((?unit = wd:Q11573 || (?elev < (?km * 3281) || ?elev < ?km)))
+    FILTER ((?unit = wd:Q11573 || (?elev < (?km * 3281) || ?unit = wd:Q828224)))
+    FILTER ((?unit = wd:Q11573 || (?unit = wd:Q3710 || ?elev < ?km)))
+    FILTER ((?elev < (?km * 1000) || (?elev < (?km * 3281) || ?elev < ?km)))
+    ?_anon_7397459e_d6c0_41da_9665_092e286ad7c8 psv:P2044 ?placeElev . # 	Collection size: 1342668.0	Predicate collection size: 1342668.0	Unique subjects: 1342668.0	Unique objects: 36914.0	Current complexity: 5.757112721150891E9
+    ?place p:P2044 ?_anon_7397459e_d6c0_41da_9665_092e286ad7c8 . # 	Collection size: 1342697.0	Predicate collection size: 1342697.0	Unique subjects: 1325156.0	Unique objects: 1342697.0	Current complexity: 5.757112721150891E9
+    ?place wdt:P625 ?location . # 	Collection size: 8827101.0	Predicate collection size: 8827101.0	Unique subjects: 8669631.0	Unique objects: 8596918.0	Current complexity: 5.861681478483196E9
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 5.861681478483196E9
+  
+  OPTIONAL
+  {
+    
+    { # ----- Begin optimization group 2 -----
+      
+      ?place wdt:P18 ?image . # 	Collection size: 4084993.0	Predicate collection size: 4084993.0	Unique subjects: 3952654.0	Unique objects: 3821255.0	Current complexity: 1.0334810484297385
+      
+    } # ----- End optimization group 2 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 1.0334810484297385
+    
+  }
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

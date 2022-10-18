@@ -1,0 +1,33 @@
+Explaining Query:
+
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX bench: <http://localhost/vocabulary/bench/>
+PREFIX swrc:  <http://swrc.ontoware.org/ontology#>
+
+SELECT ?article
+WHERE {
+  ?article rdf:type bench:Article .
+  ?article ?property ?value .
+  FILTER (?property=swrc:month)
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 75 ms and returned 11865 result(s)
+Pre-execution time: 2 ms (2.7%)
+Post-processing time: 36 ms (48.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Projection(?article) [#1.7M], results: 12K, wall time: 2 ms (2.7%)
+`─ Bind(<http://swrc.ontoware.org/ontology#month> AS ?property) sortedBy=?property [#1.7M], results: 12K, wall time: 4 ms (5.3%)
+   `─ MergeJoin(?article) [#1.7M], results: 12K, wall time: 5 ms (6.7%)
+      +─ Scan[POSC](?article, rdf:type, <http://localhost/vocabulary/bench/Article>) [#1.9M], results: 12K (with gaps), wall time: 19 ms (25.3%)
+      `─ Scan[PSOC](?article, <http://swrc.ontoware.org/ontology#month>, ?value) [#9.1M], results: 12K (with gaps), wall time: 4 ms (5.3%)
+

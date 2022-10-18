@@ -1,0 +1,121 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+# Select the desired columns and get labels
+SELECT ?occ ?occLabel ?avgAge ?avgBirthYear ?count
+WHERE
+{
+  {
+    # Group the people by their occupation and calculate age
+    SELECT
+      ?occ
+        (count(?p) as ?count)
+        (round(avg(?birthYear)) as ?avgBirthYear)
+        (avg(?deathYear - ?birthYear) as ?avgAge)
+    WHERE {
+      {
+        # Get people with occupation + birth/death dates; combine multiple birth/death dates using avg
+        SELECT
+          ?p
+            ?occ
+            (avg(year(?birth)) as ?birthYear)
+            (avg(year(?death)) as ?deathYear)
+        WHERE {
+           ?p  wdt:P31 wd:Q5 ;
+              wdt:P106 ?occ ;
+              p:P569/psv:P569 [
+                wikibase:timePrecision "9"^^xsd:integer ; # precision of at least year
+                wikibase:timeValue ?birth ;
+              ] ;
+              p:P570/psv:P570 [
+                wikibase:timePrecision "9"^^xsd:integer ; # precision of at least year
+                wikibase:timeValue ?death ;
+              ] .
+        }
+        GROUP BY ?p ?occ
+      }
+    }
+    GROUP BY ?occ
+  }
+ 
+  FILTER (?count > 300) # arbitrary number to weed out values with 'few' observations
+  #SERVICE wikibase:label { bd:serviceParam wikibase:language "en" . }
+}
+ORDER BY ASC(?avgAge)
+
+The Query Plan:
+
+Profiling results:
+Query executed in 22899 ms and returned 199 result(s)
+Total used memory: 338M
+Pre-execution time: 198 ms (0.9%)
+Post-processing time: 16 ms (0.1%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+OrderBy(ASC(?avgAge)) [#1], memory: 256K (0.1%), results: 199, wall time: 2 ms (0.0%)
+`─ Projection(?occ, ?occLabel, ?avgAge, ?avgBirthYear, ?count) [#1], results: 199, wall time: 0 ms (0.0%)
+   `─ Projection(?occ, ?count, ?avgBirthYear, ?avgAge) [#1], results: 199, wall time: 0 ms (0.0%)
+      `─ Bind(ROUND(?jghacqft) AS ?avgBirthYear) [#1], results: 199, wall time: 3 ms (0.0%)
+         `─ Filter("300"^^xsd:integer < ?count) [#1], results: 199, wall time: 1 ms (0.0%)
+            `─ Group(by=[?occ] aggregates=[(COUNT(*) AS ?count) (AVG(?birthYear) AS ?jghacqft) (AVG((?deathYear - ?birthYear)) AS ?avgAge)]) [#497], memory: 929K (0.3%), results: 4.8K, wall time: 767 ms (3.3%)
+               `─ Projection(?p, ?occ, ?birthYear, ?deathYear) [#497], results: 494K, wall time: 75 ms (0.3%)
+                  `─ Group(by=[?p, ?occ] aggregates=[(AVG(YEAR(?birth)) AS ?birthYear) (AVG(YEAR(?death)) AS ?deathYear)]) [#2.0K], memory: 81M (24.1%), results: 494K, wall time: 2304 ms (10.1%)
+                     `─ DirectHashJoin(?p) [#2.0K], results: 513K, wall time: 376 ms (1.6%)
+                        +─ DirectHashJoin(?p) [#2.0K], results: 513K, wall time: 369 ms (1.6%)
+                        │  +─ HashJoin(?vvvsqunz) [#3.8K], memory: 86M (25.6%), results: 527K, wall time: 2397 ms (10.5%)
+                        │  │  +─ MergeJoin(?_anon_1) [#349K], results: 1.5M, wall time: 400 ms (1.7%)
+                        │  │  │  +─ Scan[POSC](?vvvsqunz, <http://www.wikidata.org/prop/statement/value/P569>, ?_anon_1) [#5.4M], results: 1.6M (with gaps), wall time: 1168 ms (5.1%)
+                        │  │  │  `─ MergeJoin(?_anon_1) [#23K], results: 15K (with gaps), wall time: 11 ms (0.0%)
+                        │  │  │     +─ Scan[POSC](?_anon_1, <http://wikiba.se/ontology#timePrecision>, "9"^^<http://www.w3.org/2001/XMLSchema#integer>) [#23K], results: 15K (with gaps), wall time: 30 ms (0.1%)
+                        │  │  │     `─ Scan[PSOC](?_anon_1, <http://wikiba.se/ontology#timeValue>, ?birth) [#360K], results: 21K (with gaps), wall time: 27 ms (0.1%)
+                        │  │  `─ DirectHashJoin(?p) [#59K], results: 704K, wall time: 468 ms (2.0%)
+                        │  │     +─ DirectHashJoin(?rryhoxzy) [#178K], results: 739K, wall time: 454 ms (2.0%)
+                        │  │     │  +─ MergeJoin(?_anon_2) [#178K], results: 739K, wall time: 201 ms (0.9%)
+                        │  │     │  │  +─ Scan[POSC](?rryhoxzy, <http://www.wikidata.org/prop/statement/value/P570>, ?_anon_2) [#2.7M], results: 749K (with gaps), wall time: 625 ms (2.7%)
+                        │  │     │  │  `─ MergeJoin(?_anon_2) [#23K], results: 15K (with gaps), wall time: 9 ms (0.0%)
+                        │  │     │  │     +─ Scan[POSC](?_anon_2, <http://wikiba.se/ontology#timePrecision>, "9"^^<http://www.w3.org/2001/XMLSchema#integer>) [#23K], results: 15K (with gaps), wall time: 31 ms (0.1%)
+                        │  │     │  │     `─ Scan[PSOC](?_anon_2, <http://wikiba.se/ontology#timeValue>, ?death) [#360K], results: 22K (with gaps), wall time: 70 ms (0.3%)
+                        │  │     │  `─ Scan[POSC](?p, <http://www.wikidata.org/prop/P570>, ?rryhoxzy) [#2.8M], results: 1.5M (with gaps), wall time: 2507 ms (10.9%)
+                        │  │     `─ Scan[PSOC](?p, <http://www.wikidata.org/prop/P569>, ?vvvsqunz) [#5.4M], results: 1.4M (with gaps), wall time: 3266 ms (14.3%)
+                        │  `─ Scan[PSOC](?p, <http://www.wikidata.org/prop/direct/P106>, ?occ) [#8.9M], results: 1.0M (with gaps), wall time: 5273 ms (23.0%)
+                        `─ Scan[POSC](?p, <http://www.wikidata.org/prop/direct/P31>, <http://www.wikidata.org/entity/Q5>) [#9.4M], results: 1.0M (with gaps), wall time: 1849 ms (8.1%)
+

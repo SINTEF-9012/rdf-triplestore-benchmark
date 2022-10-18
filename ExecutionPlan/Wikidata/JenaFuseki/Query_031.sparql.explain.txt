@@ -1,0 +1,73 @@
+14:47:42 INFO  exec            :: QUERY
+  PREFIX  schema: <http://schema.org/>
+  PREFIX  pq:   <http://www.wikidata.org/prop/qualifier/>
+  PREFIX  bd:   <http://www.bigdata.com/rdf#>
+  PREFIX  pr:   <http://www.wikidata.org/prop/reference/>
+  PREFIX  ps:   <http://www.wikidata.org/prop/statement/>
+  PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
+  PREFIX  geof: <http://www.opengis.net/def/geosparql/function/>
+  PREFIX  wdt:  <http://www.wikidata.org/prop/direct/>
+  PREFIX  wds:  <http://www.wikidata.org/entity/statement/>
+  PREFIX  wdv:  <http://www.wikidata.org/value/>
+  PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>
+  PREFIX  skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX  psn:  <http://www.wikidata.org/prop/statement/value-normalized/>
+  PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX  pqn:  <http://www.wikidata.org/prop/qualifier/value-normalized/>
+  PREFIX  wd:   <http://www.wikidata.org/entity/>
+  PREFIX  geo:  <http://www.opengis.net/ont/geosparql#>
+  PREFIX  psv:  <http://www.wikidata.org/prop/statement/value/>
+  PREFIX  dct:  <http://purl.org/dc/terms/>
+  PREFIX  pqv:  <http://www.wikidata.org/prop/qualifier/value/>
+  PREFIX  ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+  PREFIX  wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+  PREFIX  wdref: <http://www.wikidata.org/reference/>
+  PREFIX  prov: <http://www.w3.org/ns/prov#>
+  PREFIX  cc:   <http://creativecommons.org/ns#>
+  PREFIX  wikibase: <http://wikiba.se/ontology#>
+  PREFIX  prn:  <http://www.wikidata.org/prop/reference/value-normalized/>
+  PREFIX  p:    <http://www.wikidata.org/prop/>
+  PREFIX  wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+  PREFIX  prv:  <http://www.wikidata.org/prop/reference/value/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  hint: <http://www.bigdata.com/queryHints#>
+  PREFIX  wdno: <http://www.wikidata.org/prop/novalue/>
+  
+  SELECT DISTINCT  ?lexemeId ?lemma ?q_concept ?q_conceptDescription ?picture
+  WHERE
+    { ?lexemeId  dct:language   wd:Q1860 ;
+                wikibase:lemma  ?lemma ;
+                ontolex:sense   ?sense .
+      ?sense    wdt:P5137       ?q_concept .
+      ?q_concept  wdt:P18       ?picture
+    }
+  ORDER BY lcase(?lemma)
+14:47:42 INFO  exec            :: ALGEBRA
+  (order ((lcase ?lemma))
+    (distinct
+      (project (?lexemeId ?lemma ?q_concept ?q_conceptDescription ?picture)
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?lexemeId <http://purl.org/dc/terms/language> <http://www.wikidata.org/entity/Q1860>)
+          (quad <urn:x-arq:DefaultGraphNode> ?lexemeId <http://wikiba.se/ontology#lemma> ?lemma)
+          (quad <urn:x-arq:DefaultGraphNode> ?lexemeId <http://www.w3.org/ns/lemon/ontolex#sense> ?sense)
+          (quad <urn:x-arq:DefaultGraphNode> ?sense <http://www.wikidata.org/prop/direct/P5137> ?q_concept)
+          (quad <urn:x-arq:DefaultGraphNode> ?q_concept <http://www.wikidata.org/prop/direct/P18> ?picture)
+        ))))
+14:47:42 INFO  exec            :: TDB2
+  (order ((lcase ?lemma))
+    (distinct
+      (project (?lexemeId ?lemma ?q_concept ?q_conceptDescription ?picture)
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?lexemeId <http://purl.org/dc/terms/language> <http://www.wikidata.org/entity/Q1860>)
+          (quad <urn:x-arq:DefaultGraphNode> ?lexemeId <http://wikiba.se/ontology#lemma> ?lemma)
+          (quad <urn:x-arq:DefaultGraphNode> ?lexemeId <http://www.w3.org/ns/lemon/ontolex#sense> ?sense)
+          (quad <urn:x-arq:DefaultGraphNode> ?sense <http://www.wikidata.org/prop/direct/P5137> ?q_concept)
+          (quad <urn:x-arq:DefaultGraphNode> ?q_concept <http://www.wikidata.org/prop/direct/P18> ?picture)
+        ))))
+14:47:42 INFO  exec            :: Execute
+  ?lexemeId <http://purl.org/dc/terms/language> <http://www.wikidata.org/entity/Q1860>
+  ?lexemeId <http://wikiba.se/ontology#lemma> ?lemma
+  ?lexemeId <http://www.w3.org/ns/lemon/ontolex#sense> ?sense
+  ?sense <http://www.wikidata.org/prop/direct/P5137> ?q_concept
+  ?q_concept <http://www.wikidata.org/prop/direct/P18> ?picture
+Time: 0.116 sec

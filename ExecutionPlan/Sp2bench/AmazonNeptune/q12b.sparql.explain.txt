@@ -1,0 +1,1 @@
+{"detailedMessage":"EXPLAIN is supported only for SELECT queries","code":"UnsupportedOperationException","requestId":"88bfc6cb-50a6-3f2f-7c21-f4a9788a1755"}

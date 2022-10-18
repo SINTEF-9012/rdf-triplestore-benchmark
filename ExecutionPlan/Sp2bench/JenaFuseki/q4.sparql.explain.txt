@@ -1,0 +1,65 @@
+Picked up _JAVA_OPTIONS: -Djava.io.tmpdir=/data/java/tmp
+12:12:43 INFO  exec            :: QUERY
+  PREFIX  swrc: <http://swrc.ontoware.org/ontology#>
+  PREFIX  bench: <http://localhost/vocabulary/bench/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  dcterms: <http://purl.org/dc/terms/>
+  PREFIX  foaf: <http://xmlns.com/foaf/0.1/>
+  PREFIX  dc:   <http://purl.org/dc/elements/1.1/>
+  
+  SELECT DISTINCT  ?name1 ?name2
+  WHERE
+    { ?article1  rdf:type     bench:Article .
+      ?article2  rdf:type     bench:Article .
+      ?article1  dc:creator   ?author1 .
+      ?author1  foaf:name     ?name1 .
+      ?article2  dc:creator   ?author2 .
+      ?author2  foaf:name     ?name2 .
+      ?article1  swrc:journal  ?journal .
+      ?article2  swrc:journal  ?journal
+      FILTER ( ?name1 < ?name2 )
+    }
+12:12:43 INFO  exec            :: ALGEBRA
+  (distinct
+    (project (?name1 ?name2)
+      (sequence
+        (filter (< ?name1 ?name2)
+          (quadpattern
+            (quad <urn:x-arq:DefaultGraphNode> ?article1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost/vocabulary/bench/Article>)
+            (quad <urn:x-arq:DefaultGraphNode> ?article2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost/vocabulary/bench/Article>)
+            (quad <urn:x-arq:DefaultGraphNode> ?article1 <http://purl.org/dc/elements/1.1/creator> ?author1)
+            (quad <urn:x-arq:DefaultGraphNode> ?author1 <http://xmlns.com/foaf/0.1/name> ?name1)
+            (quad <urn:x-arq:DefaultGraphNode> ?article2 <http://purl.org/dc/elements/1.1/creator> ?author2)
+            (quad <urn:x-arq:DefaultGraphNode> ?author2 <http://xmlns.com/foaf/0.1/name> ?name2)
+          ))
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?article1 <http://swrc.ontoware.org/ontology#journal> ?journal)
+          (quad <urn:x-arq:DefaultGraphNode> ?article2 <http://swrc.ontoware.org/ontology#journal> ?journal)
+        ))))
+12:12:43 INFO  exec            :: TDB2
+  (distinct
+    (project (?name1 ?name2)
+      (sequence
+        (filter (< ?name1 ?name2)
+          (quadpattern
+            (quad <urn:x-arq:DefaultGraphNode> ?article1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost/vocabulary/bench/Article>)
+            (quad <urn:x-arq:DefaultGraphNode> ?article2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost/vocabulary/bench/Article>)
+            (quad <urn:x-arq:DefaultGraphNode> ?article1 <http://purl.org/dc/elements/1.1/creator> ?author1)
+            (quad <urn:x-arq:DefaultGraphNode> ?author1 <http://xmlns.com/foaf/0.1/name> ?name1)
+            (quad <urn:x-arq:DefaultGraphNode> ?article2 <http://purl.org/dc/elements/1.1/creator> ?author2)
+            (quad <urn:x-arq:DefaultGraphNode> ?author2 <http://xmlns.com/foaf/0.1/name> ?name2)
+          ))
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?article1 <http://swrc.ontoware.org/ontology#journal> ?journal)
+          (quad <urn:x-arq:DefaultGraphNode> ?article2 <http://swrc.ontoware.org/ontology#journal> ?journal)
+        ))))
+12:12:43 INFO  exec            :: Execute
+  ?article1 rdf:type <http://localhost/vocabulary/bench/Article>
+  ?article1 <http://purl.org/dc/elements/1.1/creator> ?author1
+  ?author1 <http://xmlns.com/foaf/0.1/name> ?name1
+  ?article2 rdf:type <http://localhost/vocabulary/bench/Article>
+  ?article2 <http://purl.org/dc/elements/1.1/creator> ?author2
+  ?author2 <http://xmlns.com/foaf/0.1/name> ?name2
+12:12:43 INFO  exec            :: Execute
+  ?article1 <http://swrc.ontoware.org/ontology#journal> ?journal
+  ?article2 <http://swrc.ontoware.org/ontology#journal> ?journal

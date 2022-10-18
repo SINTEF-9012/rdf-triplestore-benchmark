@@ -1,0 +1,80 @@
+plan
+"PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT DISTINCT ?pathway ?pathwayLabel ?pwpart ?pwpartLabel ?variant ?variantLabel ?disease ?diseaseLabel
+{
+  {
+    
+    { # ----- Begin optimization group 1 -----
+      
+      VALUES (?predictor) {
+        (p:P3354)
+        (p:P3355)
+        (p:P3356)
+        (p:P3357)
+        (p:P3358)
+        (p:P3359)
+      }
+      VALUES (?predictorQualifier) {
+        (pq:P2175)
+      }
+      VALUES (?wpID) {
+        (""WP2828"")
+      }
+      ?pathway wdt:P2410 ?wpID . # 	Collection size: 854.0	Predicate collection size: 854.0	Unique subjects: 854.0	Unique objects: 852.0	Current complexity: 5124.0
+      ?pathway wdt:P527 ?pwpart . # 	Collection size: 1857915.0	Predicate collection size: 1857915.0	Unique subjects: 660850.0	Unique objects: 893095.0	Current complexity: 14405.623757282288
+      ?variant wdt:P3433 ?pwpart . # 	Collection size: 2059.0	Predicate collection size: 2059.0	Unique subjects: 2059.0	Unique objects: 363.0	Current complexity: 81711.23778579678
+      ?variant wdt:P3329 ?civicID . # 	Collection size: 1945.0	Predicate collection size: 1945.0	Unique subjects: 1945.0	Unique objects: 1945.0	Current complexity: 81711.23778579678
+      ?variant ?predictor ?node . # 	Collection size: 1.6143385121E10	Predicate collection size: 1.6143385121E10	Unique subjects: 9.755125685E9	Unique objects: 4.63666434E9	Current complexity: 135220.8083098342
+      ?node ?predictorQualifier ?disease . # 	Collection size: 1.6143385121E10	Predicate collection size: 1.6143385121E10	Unique subjects: 9.755125685E9	Unique objects: 4.63666434E9	Current complexity: 223771.753989305
+      ?node ?predictorStatement ?drug_label . # 	Collection size: 1.6143385121E10	Predicate collection size: 1.6143385121E10	Unique subjects: 9.755125685E9	Unique objects: 4.63666434E9	Current complexity: 370311.33380533365
+      ArbitraryLengthPath ( min=1, from disease, to __const_7acff897_uri) over {
+	 [ disease http://www.wikidata.org/prop/direct/P279 http://www.wikidata.org/entity/Q504775 ]
+	 }  # Collection size: 1000.0
+      
+    } # ----- End optimization group 1 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 3.703113338053337E8
+    
+  }
+  UNION
+  {
+    
+    { # ----- Begin optimization group 2 -----
+      
+      VALUES (?predictor) {
+        (p:P3354)
+        (p:P3355)
+        (p:P3356)
+        (p:P3357)
+        (p:P3358)
+        (p:P3359)
+      }
+      VALUES (?predictorQualifier) {
+        (pq:P2175)
+      }
+      VALUES (?wpID) {
+        (""WP2828"")
+      }
+      ?pathway wdt:P2410 ?wpID . # 	Collection size: 854.0	Predicate collection size: 854.0	Unique subjects: 854.0	Unique objects: 852.0	Current complexity: 5124.0
+      ?pathway wdt:P527 ?pwpart . # 	Collection size: 1857915.0	Predicate collection size: 1857915.0	Unique subjects: 660850.0	Unique objects: 893095.0	Current complexity: 14405.623757282288
+      ?variant wdt:P3433 ?pwpart . # 	Collection size: 2059.0	Predicate collection size: 2059.0	Unique subjects: 2059.0	Unique objects: 363.0	Current complexity: 81711.23778579678
+      ?variant wdt:P3329 ?civicID . # 	Collection size: 1945.0	Predicate collection size: 1945.0	Unique subjects: 1945.0	Unique objects: 1945.0	Current complexity: 81711.23778579678
+      ?variant ?predictor ?node . # 	Collection size: 1.6143385121E10	Predicate collection size: 1.6143385121E10	Unique subjects: 9.755125685E9	Unique objects: 4.63666434E9	Current complexity: 135220.8083098342
+      ?node ?predictorStatement ?disease . # 	Collection size: 1.6143385121E10	Predicate collection size: 1.6143385121E10	Unique subjects: 9.755125685E9	Unique objects: 4.63666434E9	Current complexity: 223771.753989305
+      ArbitraryLengthPath ( min=1, from disease, to __const_7acff897_uri) over {
+	 [ disease http://www.wikidata.org/prop/direct/P279 http://www.wikidata.org/entity/Q504775 ]
+	 }  # Collection size: 1000.0
+      
+    } # ----- End optimization group 2 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 2.23771753989305E8
+    
+  }
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

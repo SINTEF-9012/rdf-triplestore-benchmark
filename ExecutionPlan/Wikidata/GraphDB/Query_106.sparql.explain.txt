@@ -1,0 +1,25 @@
+plan
+"PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?muni ?muniLabel
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?muni wdt:P47 wd:Q213246 . # 	Collection size: 11.0	Predicate collection size: 598599.0	Unique subjects: 128706.0	Unique objects: 130742.0	Current complexity: 11.0
+    ?muni p:P31 ?_anon_93521ea3_d874_4bb7_bcfa_c494c918488a . # 	Collection size: 1.01013746E8	Predicate collection size: 1.01013746E8	Unique subjects: 9.2070357E7	Unique objects: 1.01013746E8	Current complexity: 12.068501113773241
+    ?_anon_93521ea3_d874_4bb7_bcfa_c494c918488a ps:P31 wd:Q2039348 . # 	Collection size: 1647.0	Predicate collection size: 1.01013738E8	Unique subjects: 1.01013738E8	Unique objects: 84429.0	Current complexity: 12.068501113773241
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 12.068501113773241
+  
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

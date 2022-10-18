@@ -1,0 +1,255 @@
+14:47:40 INFO  exec            :: QUERY
+  PREFIX  schema: <http://schema.org/>
+  PREFIX  pq:   <http://www.wikidata.org/prop/qualifier/>
+  PREFIX  bd:   <http://www.bigdata.com/rdf#>
+  PREFIX  pr:   <http://www.wikidata.org/prop/reference/>
+  PREFIX  ps:   <http://www.wikidata.org/prop/statement/>
+  PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
+  PREFIX  geof: <http://www.opengis.net/def/geosparql/function/>
+  PREFIX  wdt:  <http://www.wikidata.org/prop/direct/>
+  PREFIX  wds:  <http://www.wikidata.org/entity/statement/>
+  PREFIX  wdv:  <http://www.wikidata.org/value/>
+  PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>
+  PREFIX  skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX  psn:  <http://www.wikidata.org/prop/statement/value-normalized/>
+  PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX  pqn:  <http://www.wikidata.org/prop/qualifier/value-normalized/>
+  PREFIX  wd:   <http://www.wikidata.org/entity/>
+  PREFIX  geo:  <http://www.opengis.net/ont/geosparql#>
+  PREFIX  psv:  <http://www.wikidata.org/prop/statement/value/>
+  PREFIX  dct:  <http://purl.org/dc/terms/>
+  PREFIX  pqv:  <http://www.wikidata.org/prop/qualifier/value/>
+  PREFIX  ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+  PREFIX  wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+  PREFIX  wdref: <http://www.wikidata.org/reference/>
+  PREFIX  prov: <http://www.w3.org/ns/prov#>
+  PREFIX  cc:   <http://creativecommons.org/ns#>
+  PREFIX  wikibase: <http://wikiba.se/ontology#>
+  PREFIX  prn:  <http://www.wikidata.org/prop/reference/value-normalized/>
+  PREFIX  p:    <http://www.wikidata.org/prop/>
+  PREFIX  wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+  PREFIX  prv:  <http://www.wikidata.org/prop/reference/value/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  hint: <http://www.bigdata.com/queryHints#>
+  PREFIX  wdno: <http://www.wikidata.org/prop/novalue/>
+  
+  SELECT  ?item (SAMPLE(?itemL) AS ?title) (SAMPLE(?y) AS ?year) (SAMPLE(?typeL) AS ?type) (GROUP_CONCAT(DISTINCT ?materialL ; separator=', ') AS ?materials) (SAMPLE(?collectionL) AS ?collection) (SAMPLE(?img) AS ?image)
+  WHERE
+    { SELECT  ?item ?itemL (year(?date) AS ?y) ?typeL ?collectionL ?img ?materialL
+      WHERE
+        { ?item  wdt:P179    wd:Q471379 ;
+                 wdt:P18     ?img ;
+                 wdt:P571    ?date ;
+                 wdt:P31     ?instance ;
+                 rdfs:label  ?itemL
+          FILTER ( lang(?itemL) = "en" )
+          ?instance  rdfs:label  ?typeL
+          FILTER ( lang(?typeL) = "en" )
+          OPTIONAL
+            { ?item     wdt:P195    ?collection .
+              ?collection  rdfs:label  ?collectionL
+              FILTER ( lang(?collectionL) = "en" )
+            }
+          OPTIONAL
+            { ?item     wdt:P186    ?material .
+              ?material  rdfs:label  ?materialL
+              FILTER ( lang(?materialL) = "en" )
+            }
+        }
+    }
+  GROUP BY ?item
+  ORDER BY ?year ?item ?itemLabel
+14:47:40 INFO  exec            :: ALGEBRA
+  (project (?item ?title ?year ?type ?materials ?collection ?image)
+    (order (?year ?item ?itemLabel)
+      (extend ((?title ?.0) (?year ?.1) (?type ?.2) (?materials ?.3) (?collection ?.4) (?image ?.5))
+        (group (?item) ((?.0 (sample ?itemL)) (?.1 (sample ?y)) (?.2 (sample ?typeL)) (?.3 (group_concat distinct(separator ', ') ?materialL)) (?.4 (sample ?collectionL)) (?.5 (sample ?img)))
+          (project (?item ?itemL ?y ?typeL ?collectionL ?img ?materialL)
+            (extend ((?y (year ?/date)))
+              (conditional
+                (conditional
+                  (filter (= (lang ?typeL) "en")
+                    (sequence
+                      (filter (= (lang ?itemL) "en")
+                        (quadpattern
+                          (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P179> <http://www.wikidata.org/entity/Q471379>)
+                          (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P18> ?img)
+                          (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P571> ?/date)
+                          (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P31> ?/instance)
+                          (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.w3.org/2000/01/rdf-schema#label> ?itemL)
+                        ))
+                      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?/instance <http://www.w3.org/2000/01/rdf-schema#label> ?typeL))))
+                  (filter (= (lang ?collectionL) "en")
+                    (quadpattern
+                      (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P195> ?/collection)
+                      (quad <urn:x-arq:DefaultGraphNode> ?/collection <http://www.w3.org/2000/01/rdf-schema#label> ?collectionL)
+                    )))
+                (filter (= (lang ?materialL) "en")
+                  (quadpattern
+                    (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P186> ?/material)
+                    (quad <urn:x-arq:DefaultGraphNode> ?/material <http://www.w3.org/2000/01/rdf-schema#label> ?materialL)
+                  )))))))))
+14:47:40 INFO  exec            :: TDB2
+  (project (?item ?title ?year ?type ?materials ?collection ?image)
+    (order (?year ?item ?itemLabel)
+      (extend ((?title ?.0) (?year ?.1) (?type ?.2) (?materials ?.3) (?collection ?.4) (?image ?.5))
+        (group (?item) ((?.0 (sample ?itemL)) (?.1 (sample ?y)) (?.2 (sample ?typeL)) (?.3 (group_concat distinct(separator ', ') ?materialL)) (?.4 (sample ?collectionL)) (?.5 (sample ?img)))
+          (project (?item ?itemL ?y ?typeL ?collectionL ?img ?materialL)
+            (extend ((?y (year ?/date)))
+              (conditional
+                (conditional
+                  (filter (= (lang ?typeL) "en")
+                    (sequence
+                      (filter (= (lang ?itemL) "en")
+                        (quadpattern
+                          (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P179> <http://www.wikidata.org/entity/Q471379>)
+                          (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P18> ?img)
+                          (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P571> ?/date)
+                          (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P31> ?/instance)
+                          (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.w3.org/2000/01/rdf-schema#label> ?itemL)
+                        ))
+                      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?/instance <http://www.w3.org/2000/01/rdf-schema#label> ?typeL))))
+                  (filter (= (lang ?collectionL) "en")
+                    (quadpattern
+                      (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P195> ?/collection)
+                      (quad <urn:x-arq:DefaultGraphNode> ?/collection <http://www.w3.org/2000/01/rdf-schema#label> ?collectionL)
+                    )))
+                (filter (= (lang ?materialL) "en")
+                  (quadpattern
+                    (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P186> ?/material)
+                    (quad <urn:x-arq:DefaultGraphNode> ?/material <http://www.w3.org/2000/01/rdf-schema#label> ?materialL)
+                  )))))))))
+14:47:40 INFO  exec            :: Execute
+  ?item <http://www.wikidata.org/prop/direct/P179> <http://www.wikidata.org/entity/Q471379>
+  ?item <http://www.wikidata.org/prop/direct/P18> ?img
+  ?item <http://www.wikidata.org/prop/direct/P571> ?/date
+  ?item <http://www.wikidata.org/prop/direct/P31> ?/instance
+  ?item rdfs:label ?itemL
+14:47:40 INFO  exec            :: Execute ::   ?/instance rdfs:label ?typeL
+14:47:40 INFO  exec            :: TDB2
+  (filter (= (lang ?collectionL) "en")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18891157> <http://www.wikidata.org/prop/direct/P195> ?/collection)
+      (quad <urn:x-arq:DefaultGraphNode> ?/collection <http://www.w3.org/2000/01/rdf-schema#label> ?collectionL)
+    ))
+14:47:40 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q18891157> <http://www.wikidata.org/prop/direct/P195> ?/collection
+  ?/collection rdfs:label ?collectionL
+14:47:40 INFO  exec            :: TDB2
+  (filter (= (lang ?materialL) "en")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18891157> <http://www.wikidata.org/prop/direct/P186> ?/material)
+      (quad <urn:x-arq:DefaultGraphNode> ?/material <http://www.w3.org/2000/01/rdf-schema#label> ?materialL)
+    ))
+14:47:40 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q18891157> <http://www.wikidata.org/prop/direct/P186> ?/material
+  ?/material rdfs:label ?materialL
+14:47:40 INFO  exec            :: TDB2
+  (filter (= (lang ?collectionL) "en")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18891158> <http://www.wikidata.org/prop/direct/P195> ?/collection)
+      (quad <urn:x-arq:DefaultGraphNode> ?/collection <http://www.w3.org/2000/01/rdf-schema#label> ?collectionL)
+    ))
+14:47:40 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q18891158> <http://www.wikidata.org/prop/direct/P195> ?/collection
+  ?/collection rdfs:label ?collectionL
+14:47:40 INFO  exec            :: TDB2
+  (filter (= (lang ?materialL) "en")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18891158> <http://www.wikidata.org/prop/direct/P186> ?/material)
+      (quad <urn:x-arq:DefaultGraphNode> ?/material <http://www.w3.org/2000/01/rdf-schema#label> ?materialL)
+    ))
+14:47:40 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q18891158> <http://www.wikidata.org/prop/direct/P186> ?/material
+  ?/material rdfs:label ?materialL
+14:47:40 INFO  exec            :: TDB2
+  (filter (= (lang ?collectionL) "en")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18891158> <http://www.wikidata.org/prop/direct/P195> ?/collection)
+      (quad <urn:x-arq:DefaultGraphNode> ?/collection <http://www.w3.org/2000/01/rdf-schema#label> ?collectionL)
+    ))
+14:47:40 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q18891158> <http://www.wikidata.org/prop/direct/P195> ?/collection
+  ?/collection rdfs:label ?collectionL
+14:47:40 INFO  exec            :: TDB2
+  (filter (= (lang ?materialL) "en")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18891158> <http://www.wikidata.org/prop/direct/P186> ?/material)
+      (quad <urn:x-arq:DefaultGraphNode> ?/material <http://www.w3.org/2000/01/rdf-schema#label> ?materialL)
+    ))
+14:47:40 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q18891158> <http://www.wikidata.org/prop/direct/P186> ?/material
+  ?/material rdfs:label ?materialL
+14:47:40 INFO  exec            :: TDB2
+  (filter (= (lang ?collectionL) "en")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18907540> <http://www.wikidata.org/prop/direct/P195> ?/collection)
+      (quad <urn:x-arq:DefaultGraphNode> ?/collection <http://www.w3.org/2000/01/rdf-schema#label> ?collectionL)
+    ))
+14:47:40 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q18907540> <http://www.wikidata.org/prop/direct/P195> ?/collection
+  ?/collection rdfs:label ?collectionL
+14:47:40 INFO  exec            :: TDB2
+  (filter (= (lang ?materialL) "en")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18907540> <http://www.wikidata.org/prop/direct/P186> ?/material)
+      (quad <urn:x-arq:DefaultGraphNode> ?/material <http://www.w3.org/2000/01/rdf-schema#label> ?materialL)
+    ))
+14:47:40 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q18907540> <http://www.wikidata.org/prop/direct/P186> ?/material
+  ?/material rdfs:label ?materialL
+14:47:40 INFO  exec            :: TDB2
+  (filter (= (lang ?collectionL) "en")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18891155> <http://www.wikidata.org/prop/direct/P195> ?/collection)
+      (quad <urn:x-arq:DefaultGraphNode> ?/collection <http://www.w3.org/2000/01/rdf-schema#label> ?collectionL)
+    ))
+14:47:40 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q18891155> <http://www.wikidata.org/prop/direct/P195> ?/collection
+  ?/collection rdfs:label ?collectionL
+14:47:40 INFO  exec            :: TDB2
+  (filter (= (lang ?materialL) "en")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18891155> <http://www.wikidata.org/prop/direct/P186> ?/material)
+      (quad <urn:x-arq:DefaultGraphNode> ?/material <http://www.w3.org/2000/01/rdf-schema#label> ?materialL)
+    ))
+14:47:40 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q18891155> <http://www.wikidata.org/prop/direct/P186> ?/material
+  ?/material rdfs:label ?materialL
+14:47:40 INFO  exec            :: TDB2
+  (filter (= (lang ?collectionL) "en")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18891155> <http://www.wikidata.org/prop/direct/P195> ?/collection)
+      (quad <urn:x-arq:DefaultGraphNode> ?/collection <http://www.w3.org/2000/01/rdf-schema#label> ?collectionL)
+    ))
+14:47:40 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q18891155> <http://www.wikidata.org/prop/direct/P195> ?/collection
+  ?/collection rdfs:label ?collectionL
+14:47:40 INFO  exec            :: TDB2
+  (filter (= (lang ?materialL) "en")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18891155> <http://www.wikidata.org/prop/direct/P186> ?/material)
+      (quad <urn:x-arq:DefaultGraphNode> ?/material <http://www.w3.org/2000/01/rdf-schema#label> ?materialL)
+    ))
+14:47:40 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q18891155> <http://www.wikidata.org/prop/direct/P186> ?/material
+  ?/material rdfs:label ?materialL
+14:47:40 INFO  exec            :: TDB2
+  (filter (= (lang ?collectionL) "en")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18891156> <http://www.wikidata.org/prop/direct/P195> ?/collection)
+      (quad <urn:x-arq:DefaultGraphNode> ?/collection <http://www.w3.org/2000/01/rdf-schema#label> ?collectionL)
+    ))
+14:47:40 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q18891156> <http://www.wikidata.org/prop/direct/P195> ?/collection
+  ?/collection rdfs:label ?collectionL
+14:47:40 INFO  exec            :: TDB2
+  (filter (= (lang ?materialL) "en")
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q18891156> <http://www.wikidata.org/prop/direct/P186> ?/material)
+      (quad <urn:x-arq:DefaultGraphNode> ?/material <http://www.w3.org/2000/01/rdf-schema#label> ?materialL)
+    ))
+14:47:40 INFO  exec            :: Execute
+  <http://www.wikidata.org/entity/Q18891156> <http://www.wikidata.org/prop/direct/P186> ?/material
+  ?/material rdfs:label ?materialL
+Time: 0.489 sec

@@ -1,0 +1,115 @@
+Picked up _JAVA_OPTIONS: -Djava.io.tmpdir=/data/java/tmp
+12:10:21 INFO  exec            :: QUERY
+  PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  foaf: <http://xmlns.com/foaf/0.1/>
+  PREFIX  dc:   <http://purl.org/dc/elements/1.1/>
+  
+  ASK
+  WHERE
+    { ?erdoes  rdf:type   foaf:Person ;
+               foaf:name  "Paul Erdoes"
+        { ?document  dc:creator  ?erdoes ;
+                    dc:creator  ?author .
+          ?document2  dc:creator  ?author ;
+                    dc:creator  ?author2 .
+          ?author2  foaf:name   ?name
+          FILTER ( ( ( ( ?author != ?erdoes ) && ( ?document2 != ?document ) ) && ( ?author2 != ?erdoes ) ) && ( ?author2 != ?author ) )
+        }
+      UNION
+        { ?document  dc:creator  ?erdoes ;
+                    dc:creator  ?author .
+          ?author   foaf:name   ?name
+          FILTER ( ?author != ?erdoes )
+        }
+    }
+12:10:21 INFO  exec            :: ALGEBRA
+  (sequence
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> ?erdoes <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person>)
+      (quad <urn:x-arq:DefaultGraphNode> ?erdoes <http://xmlns.com/foaf/0.1/name> "Paul Erdoes")
+    )
+    (union
+      (sequence
+        (filter (exprlist (!= ?author2 ?erdoes) (!= ?author2 ?author))
+          (sequence
+            (filter (!= ?document2 ?document)
+              (sequence
+                (filter (!= ?author ?erdoes)
+                  (quadpattern
+                    (quad <urn:x-arq:DefaultGraphNode> ?document <http://purl.org/dc/elements/1.1/creator> ?erdoes)
+                    (quad <urn:x-arq:DefaultGraphNode> ?document <http://purl.org/dc/elements/1.1/creator> ?author)
+                  ))
+                (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?document2 <http://purl.org/dc/elements/1.1/creator> ?author))))
+            (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?document2 <http://purl.org/dc/elements/1.1/creator> ?author2))))
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?author2 <http://xmlns.com/foaf/0.1/name> ?name)))
+      (sequence
+        (filter (!= ?author ?erdoes)
+          (quadpattern
+            (quad <urn:x-arq:DefaultGraphNode> ?document <http://purl.org/dc/elements/1.1/creator> ?erdoes)
+            (quad <urn:x-arq:DefaultGraphNode> ?document <http://purl.org/dc/elements/1.1/creator> ?author)
+          ))
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?author <http://xmlns.com/foaf/0.1/name> ?name)))))
+12:10:21 INFO  exec            :: TDB2
+  (sequence
+    (quadpattern
+      (quad <urn:x-arq:DefaultGraphNode> ?erdoes <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person>)
+      (quad <urn:x-arq:DefaultGraphNode> ?erdoes <http://xmlns.com/foaf/0.1/name> "Paul Erdoes")
+    )
+    (union
+      (sequence
+        (filter (exprlist (!= ?author2 ?erdoes) (!= ?author2 ?author))
+          (sequence
+            (filter (!= ?document2 ?document)
+              (sequence
+                (filter (!= ?author ?erdoes)
+                  (quadpattern
+                    (quad <urn:x-arq:DefaultGraphNode> ?document <http://purl.org/dc/elements/1.1/creator> ?erdoes)
+                    (quad <urn:x-arq:DefaultGraphNode> ?document <http://purl.org/dc/elements/1.1/creator> ?author)
+                  ))
+                (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?document2 <http://purl.org/dc/elements/1.1/creator> ?author))))
+            (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?document2 <http://purl.org/dc/elements/1.1/creator> ?author2))))
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?author2 <http://xmlns.com/foaf/0.1/name> ?name)))
+      (sequence
+        (filter (!= ?author ?erdoes)
+          (quadpattern
+            (quad <urn:x-arq:DefaultGraphNode> ?document <http://purl.org/dc/elements/1.1/creator> ?erdoes)
+            (quad <urn:x-arq:DefaultGraphNode> ?document <http://purl.org/dc/elements/1.1/creator> ?author)
+          ))
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?author <http://xmlns.com/foaf/0.1/name> ?name)))))
+12:10:21 INFO  exec            :: Execute
+  ?erdoes <http://xmlns.com/foaf/0.1/name> "Paul Erdoes"
+  ?erdoes rdf:type <http://xmlns.com/foaf/0.1/Person>
+12:10:21 INFO  exec            :: TDB2
+  (sequence
+    (filter (exprlist (!= ?author2 <http://localhost/persons/Paul_Erdoes>) (!= ?author2 ?author))
+      (sequence
+        (filter (!= ?document2 ?document)
+          (sequence
+            (filter (!= ?author <http://localhost/persons/Paul_Erdoes>)
+              (quadpattern
+                (quad <urn:x-arq:DefaultGraphNode> ?document <http://purl.org/dc/elements/1.1/creator> <http://localhost/persons/Paul_Erdoes>)
+                (quad <urn:x-arq:DefaultGraphNode> ?document <http://purl.org/dc/elements/1.1/creator> ?author)
+              ))
+            (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?document2 <http://purl.org/dc/elements/1.1/creator> ?author))))
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?document2 <http://purl.org/dc/elements/1.1/creator> ?author2))))
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?author2 <http://xmlns.com/foaf/0.1/name> ?name)))
+12:10:21 INFO  exec            :: Execute
+  ?document <http://purl.org/dc/elements/1.1/creator> <http://localhost/persons/Paul_Erdoes>
+  ?document <http://purl.org/dc/elements/1.1/creator> ?author
+12:10:21 INFO  exec            :: Execute ::   ?document2 <http://purl.org/dc/elements/1.1/creator> ?author
+12:10:21 INFO  exec            :: Execute ::   ?document2 <http://purl.org/dc/elements/1.1/creator> ?author2
+12:10:21 INFO  exec            :: Execute ::   ?author2 <http://xmlns.com/foaf/0.1/name> ?name
+12:10:21 INFO  exec            :: TDB2
+  (sequence
+    (filter (!= ?author <http://localhost/persons/Paul_Erdoes>)
+      (quadpattern
+        (quad <urn:x-arq:DefaultGraphNode> ?document <http://purl.org/dc/elements/1.1/creator> <http://localhost/persons/Paul_Erdoes>)
+        (quad <urn:x-arq:DefaultGraphNode> ?document <http://purl.org/dc/elements/1.1/creator> ?author)
+      ))
+    (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?author <http://xmlns.com/foaf/0.1/name> ?name)))
+12:10:21 INFO  exec            :: Execute
+  ?document <http://purl.org/dc/elements/1.1/creator> <http://localhost/persons/Paul_Erdoes>
+  ?document <http://purl.org/dc/elements/1.1/creator> ?author
+12:10:21 INFO  exec            :: Execute ::   ?author <http://xmlns.com/foaf/0.1/name> ?name
+Time: 0.144 sec

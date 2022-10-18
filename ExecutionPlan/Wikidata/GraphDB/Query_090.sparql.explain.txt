@@ -1,0 +1,85 @@
+plan
+"PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT DISTINCT ?country ?countryLabel ?capital ?capitalLabel ?coordinates ?ended
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?country p:P36 ?stat . # 	Collection size: 112024.0	Predicate collection size: 112024.0	Unique subjects: 110372.0	Unique objects: 112024.0	Current complexity: 112024.0
+    ?stat ps:P36 ?capital . # 	Collection size: 111933.0	Predicate collection size: 111933.0	Unique subjects: 111933.0	Unique objects: 87792.0	Current complexity: 112024.0
+    ?capital wdt:P625 ?coordinates . # 	Collection size: 8827101.0	Predicate collection size: 8827101.0	Unique subjects: 8669631.0	Unique objects: 8596918.0	Current complexity: 114058.73703552088
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 114058.73703552088
+  
+  OPTIONAL
+  {
+    {
+      
+      { # ----- Begin optimization group 2 -----
+        
+        ?country wdt:P582 ?ended . # 	Collection size: 556267.0	Predicate collection size: 556267.0	Unique subjects: 554416.0	Unique objects: 37706.0	Current complexity: 1.0033386482352602
+        
+      } # ----- End optimization group 2 -----
+      # ESTIMATED NUMBER OF ITERATIONS: 1.0033386482352602
+      
+    }
+    UNION
+    {
+      
+      { # ----- Begin optimization group 3 -----
+        
+        ?country wdt:P576 ?ended . # 	Collection size: 229927.0	Predicate collection size: 229927.0	Unique subjects: 228829.0	Unique objects: 22549.0	Current complexity: 1.0047983428673812
+        
+      } # ----- End optimization group 3 -----
+      # ESTIMATED NUMBER OF ITERATIONS: 1.0047983428673812
+      
+    }
+  }
+  OPTIONAL
+  {
+    {
+      
+      { # ----- Begin optimization group 4 -----
+        
+        ?capital wdt:P582 ?ended . # 	Collection size: 556267.0	Predicate collection size: 556267.0	Unique subjects: 554416.0	Unique objects: 37706.0	Current complexity: 1.0033386482352602
+        
+      } # ----- End optimization group 4 -----
+      # ESTIMATED NUMBER OF ITERATIONS: 1.0033386482352602
+      
+    }
+    UNION
+    {
+      
+      { # ----- Begin optimization group 5 -----
+        
+        ?capital wdt:P576 ?ended . # 	Collection size: 229927.0	Predicate collection size: 229927.0	Unique subjects: 228829.0	Unique objects: 22549.0	Current complexity: 1.0047983428673812
+        
+      } # ----- End optimization group 5 -----
+      # ESTIMATED NUMBER OF ITERATIONS: 1.0047983428673812
+      
+    }
+  }
+  OPTIONAL
+  {
+    
+    { # ----- Begin optimization group 6 -----
+      
+      ?stat pq:P582 ?ended . # 	Collection size: 3466703.0	Predicate collection size: 3466703.0	Unique subjects: 3463361.0	Unique objects: 144875.0	Current complexity: 1.0009649586052392
+      
+    } # ----- End optimization group 6 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 1.0009649586052392
+    
+  }
+  FILTER (BOUND(?ended))
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

@@ -1,0 +1,42 @@
+plan
+"PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+
+SELECT ?propertyLabel ?propertyDescription ?count
+{
+  {
+    SELECT ?propertyclaim (COUNT(*) AS ?count)
+    {
+      
+      { # ----- Begin optimization group 1 -----
+        
+        ?item wdt:P106 wd:Q1028181 . # 	Collection size: 177940.0	Predicate collection size: 8878333.0	Unique subjects: 6693815.0	Unique objects: 16820.0	Current complexity: 177940.0
+        ?item wdt:P31 wd:Q5 . # 	Collection size: 9398589.0	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 177940.0
+        ?item ?propertyclaim ?_anon_1 . # 	Collection size: 1.6143385121E10	Predicate collection size: 1.6143385121E10	Unique subjects: 9.755125685E9	Unique objects: 4.63666434E9	Current complexity: 294466.1136296513
+        
+      } # ----- End optimization group 1 -----
+      # ESTIMATED NUMBER OF ITERATIONS: 294466.1136296513
+      
+    }
+    GROUP BY ?propertyclaim
+  }
+  
+  { # ----- Begin optimization group 2 -----
+    
+    ?property wdt:P31 wd:Q19595382 . # 	Collection size: 982.0	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 982.0
+    ?property wikibase:propertyType wikibase:ExternalId . # 	Collection size: 6558.0	Predicate collection size: 9346.0	Unique subjects: 9346.0	Unique objects: 17.0	Current complexity: 982.0
+    ?property wikibase:claim ?propertyclaim . # 	Collection size: 9346.0	Predicate collection size: 9346.0	Unique subjects: 9346.0	Unique objects: 9346.0	Current complexity: 982.0
+    
+  } # ----- End optimization group 2 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 982.0
+  
+}
+ORDER BY DESC(?count)
+LIMIT 100
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

@@ -1,0 +1,20 @@
+plan
+"PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT DISTINCT ?compound ?compoundLabel ?cas
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?compound wdt:P231 ?cas . # 	Collection size: 931736.0	Predicate collection size: 931736.0	Unique subjects: 931602.0	Unique objects: 931342.0	Current complexity: 931736.0
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 931736.0
+  
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

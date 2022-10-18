@@ -1,0 +1,68 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT ?item ?itemLabel ?_PubMed_ID
+WHERE
+{
+  ?item wdt:P31 wd:Q13442814 ;
+        rdfs:label ?itemLabel .
+ 
+  FILTER(CONTAINS(LCASE(?itemLabel), "suriname"))
+  OPTIONAL { ?item wdt:P698 ?_PubMed_ID. }
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 9658143 ms and returned 1585 result(s)
+Pre-execution time: 530 ms (0.0%)
+Post-processing time: 61 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Projection(?item, ?itemLabel, ?_PubMed_ID) [#772K], results: 1.6K, wall time: 2 ms (0.0%)
+`─ Filter(CONTAINS(LCASE(?itemLabel), "suriname")) [#772K], results: 1.6K, wall time: 9378903 ms (97.1%)
+   `─ MergeJoinOuter(?item) [#77.2M], results: 77.6M, wall time: 42061 ms (0.4%)
+      +─ MergeJoin(?item) [#77.2M], results: 77.6M, wall time: 31041 ms (0.3%)
+      │  +─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P31>, <http://www.wikidata.org/entity/Q13442814>) [#37.4M], results: 37.3M (with gaps), wall time: 104384 ms (1.1%)
+      │  `─ Scan[PSOC](?item, rdfs:label, ?itemLabel) [#586.7M], results: 84.0M (with gaps), wall time: 77757 ms (0.8%)
+      `─ Scan[PSOC](?item, <http://www.wikidata.org/prop/direct/P698>, ?_PubMed_ID) [#31.9M], results: 31.9M (with gaps), wall time: 18395 ms (0.2%)
+

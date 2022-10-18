@@ -1,0 +1,37 @@
+plan
+"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?s ?desc (COUNT(?label) AS ?labelcount)
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?s wdt:P31 wd:Q7725634 . # 	Collection size: 166268.0	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 166268.0
+    ?s rdfs:label ?label . # 	Collection size: 5.86690314E8	Predicate collection size: 5.86690314E8	Unique subjects: 9.4931813E7	Unique objects: 5.4875668E8	Current complexity: 1027556.7488440571
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 1027556.7488440571
+  
+  OPTIONAL
+  {
+    
+    { # ----- Begin optimization group 2 -----
+      
+      ?s rdfs:label ?desc . # 	Collection size: 5.86690314E8	Predicate collection size: 5.86690314E8	Unique subjects: 9.4931813E7	Unique objects: 5.4875668E8	Current complexity: 6.180123348113029
+      FILTER (LANG(?desc) = ""en"")
+      
+    } # ----- End optimization group 2 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 6.180123348113029
+    
+  }
+}
+GROUP BY ?s ?desc
+ORDER BY DESC(?labelcount)
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

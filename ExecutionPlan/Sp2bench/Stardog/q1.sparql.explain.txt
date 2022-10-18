@@ -1,0 +1,35 @@
+Explaining Query:
+
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dc:      <http://purl.org/dc/elements/1.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX bench:   <http://localhost/vocabulary/bench/>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#> 
+
+SELECT ?yr
+WHERE {
+  ?journal rdf:type bench:Journal .
+  ?journal dc:title "Journal 1 (1940)"^^xsd:string .
+  ?journal dcterms:issued ?yr 
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 774 ms and returned 1 result(s)
+Pre-execution time: 747 ms (96.5%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Projection(?yr) [#149], results: 1, wall time: 0 ms (0.0%)
+`─ NaryJoin(?journal) [#149], results: 1, wall time: 1 ms (0.1%)
+   +─ Scan[POSC](?journal, <http://purl.org/dc/elements/1.1/title>, "Journal 1 (1940)") [#74], results: 1, wall time: 12 ms (1.6%)
+   +─ Scan[PSOC](?journal, <http://purl.org/dc/terms/issued>, ?yr) [#7.9M], results: 2 (with gaps), wall time: 11 ms (1.4%)
+   `─ Scan[POSC](?journal, rdf:type, <http://localhost/vocabulary/bench/Journal>) [#28K], results: 2 (with gaps), wall time: 0 ms (0.0%)
+

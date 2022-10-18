@@ -1,0 +1,45 @@
+Explaining Query:
+
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
+PREFIX bench: <http://localhost/vocabulary/bench/>
+PREFIX dc:    <http://purl.org/dc/elements/1.1/>
+
+ASK {
+  ?article rdf:type bench:Article .
+  ?article dc:creator ?person1 .
+  ?inproc  rdf:type bench:Inproceedings .
+  ?inproc  dc:creator ?person2 .
+  ?person1 foaf:name ?name1 .
+  ?person2 foaf:name ?name2 .
+  FILTER (?name1=?name2)
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 79 ms and returned 1 result(s)
+Pre-execution time: 68 ms (86.1%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Slice(offset=0, limit=1) [#1], results: 1, wall time: 0 ms (0.0%)
+`─ Filter(?name1 = ?name2) [#61668370.4M], results: 1, wall time: 2 ms (2.5%)
+   `─ NestedLoopJoin(_) [#123336740.7M], results: 1, wall time: 1 ms (1.3%)
+      +─ DirectHashJoin(?person2) [#23.2M], results: 1, wall time: 3 ms (3.8%)
+      │  +─ MergeJoin(?inproc) [#23.2M], results: 1, wall time: 0 ms (0.0%)
+      │  │  +─ Scan[POSC](?inproc, rdf:type, <http://localhost/vocabulary/bench/Inproceedings>) [#7.7M], results: 1, wall time: 0 ms (0.0%)
+      │  │  `─ Scan[PSOC](?inproc, <http://purl.org/dc/elements/1.1/creator>, ?person2) [#28.6M], results: 1 (with gaps), wall time: 2 ms (2.5%)
+      │  `─ Scan[PSOC](?person2, <http://xmlns.com/foaf/0.1/name>, ?name2) [#12.6M], results: 1, wall time: 1 ms (1.3%)
+      `─ DirectHashJoin(?person1) [#5.3M], results: 1, wall time: 0 ms (0.0%)
+         +─ MergeJoin(?article) [#5.3M], results: 1, wall time: 0 ms (0.0%)
+         │  +─ Scan[POSC](?article, rdf:type, <http://localhost/vocabulary/bench/Article>) [#1.9M], results: 1, wall time: 0 ms (0.0%)
+         │  `─ Scan[PSOC](?article, <http://purl.org/dc/elements/1.1/creator>, ?person1) [#28.6M], results: 1 (with gaps), wall time: 0 ms (0.0%)
+         `─ Scan[PSOC](?person1, <http://xmlns.com/foaf/0.1/name>, ?name1) [#12.6M], results: 1, wall time: 0 ms (0.0%)
+

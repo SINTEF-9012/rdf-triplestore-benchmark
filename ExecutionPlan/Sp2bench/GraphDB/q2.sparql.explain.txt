@@ -1,0 +1,46 @@
+plan
+"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX swrc: <http://swrc.ontoware.org/ontology#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX bench: <http://localhost/vocabulary/bench/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+SELECT ?inproc ?author ?booktitle ?title ?proc ?ee ?page ?url ?yr ?abstract
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?inproc dcterms:partOf ?proc . # 	Collection size: 6184870.0	Predicate collection size: 6184870.0	Unique subjects: 6184870.0	Unique objects: 122349.0	Current complexity: 6184870.0
+    ?inproc bench:booktitle ?booktitle . # 	Collection size: 7875353.0	Predicate collection size: 7875353.0	Unique subjects: 7875353.0	Unique objects: 7875353.0	Current complexity: 6184870.0
+    ?inproc dc:title ?title . # 	Collection size: 9768483.0	Predicate collection size: 9768483.0	Unique subjects: 9768483.0	Unique objects: 9768483.0	Current complexity: 6184870.0
+    ?inproc rdfs:seeAlso ?ee . # 	Collection size: 6310461.0	Predicate collection size: 6310461.0	Unique subjects: 6310461.0	Unique objects: 6310461.0	Current complexity: 6184870.0
+    ?inproc swrc:pages ?page . # 	Collection size: 9070655.0	Predicate collection size: 9070655.0	Unique subjects: 9070655.0	Unique objects: 200.0	Current complexity: 6184870.0
+    ?inproc foaf:homepage ?url . # 	Collection size: 9733309.0	Predicate collection size: 9733309.0	Unique subjects: 9733309.0	Unique objects: 9733309.0	Current complexity: 6184870.0
+    ?inproc dcterms:issued ?yr . # 	Collection size: 7911213.0	Predicate collection size: 7911213.0	Unique subjects: 7911213.0	Unique objects: 99.0	Current complexity: 6184870.0
+    ?inproc rdf:type bench:Inproceedings . # 	Collection size: 7728863.0	Predicate collection size: 2.2414735E7	Unique subjects: 2.2414726E7	Unique objects: 19.0	Current complexity: 6184870.0
+    ?inproc dc:creator ?author . # 	Collection size: 2.8629088E7	Predicate collection size: 2.8629088E7	Unique subjects: 9617220.0	Unique objects: 1.2446874E7	Current complexity: 1.8411473117861502E7
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 1.8411473117861502E7
+  
+  OPTIONAL
+  {
+    
+    { # ----- Begin optimization group 2 -----
+      
+      ?inproc bench:abstract ?abstract . # 	Collection size: 96082.0	Predicate collection size: 96082.0	Unique subjects: 96082.0	Unique objects: 95611.0	Current complexity: 1.0
+      
+    } # ----- End optimization group 2 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 1.0
+    
+  }
+}
+ORDER BY ASC(?yr)
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

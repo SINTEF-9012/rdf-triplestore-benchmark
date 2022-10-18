@@ -1,0 +1,87 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT ?nominee ?nomineeLabel (SAMPLE(?citizenshipLabel) AS ?country) (COUNT(DISTINCT ?year) as ?timesNominated)
+WHERE
+{
+    BIND( wd:Q37922 as ?prize )
+    ?nominee p:P1411 [ ps:P1411 ?prize; pq:P585 ?time ]
+    BIND( year(?time) as ?year )                   
+    OPTIONAL { 
+      ?nominee wdt:P27 [ rdfs:label ?citizenshipLabel ] filter (lang(?citizenshipLabel) = "en") .
+    }
+    FILTER NOT EXISTS { ?nominee wdt:P166 ?prize . } 
+    #SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
+}
+GROUP BY ?nominee ?nomineeLabel
+ORDER BY DESC(?timesNominated) ?nomineeLabel
+
+The Query Plan:
+
+Profiling results:
+Query executed in 924933 ms and hit an error: RuntimeException: java.io.IOException: Maximum file length exceeded: 10G
+Total used memory: 135G, spilled to disk: 40G
+Pre-execution time: 28 ms (0.0%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+OrderBy(DESC(?timesNominated), ASC(?nomineeLabel)) [#1], results: 0, wall time: 0 ms (0.0%)
+`─ Projection(?nominee, ?nomineeLabel, ?country, ?timesNominated) [#1], results: 0, wall time: 0 ms (0.0%)
+   `─ Group(by=[?nominee, ?nomineeLabel] aggregates=[(SAMPLE(?citizenshipLabel) AS ?country) (COUNT(DISTINCT ?year) AS ?timesNominated)]) [#5], results: 0, wall time: 0 ms (0.0%)
+      `─ HashJoinOuter(?nominee)("en" = Lang(?citizenshipLabel)) [#5], memory: 67G (50.0%), spilled to disk: 20G (50.0%), results: 0, wall time: 772637 ms (83.5%)
+         +─ Projection(?nominee, ?_anon_1, ?prize, ?time, ?year) [#5], results: 0, wall time: 0 ms (0.0%)
+         │  `─ Filter(!(Bound(?_anon_2))) [#5], results: 0, wall time: 0 ms (0.0%)
+         │     `─ MergeJoinOuter(?nominee) [#10], results: 0, wall time: 0 ms (0.0%)
+         │        +─ Sort(?nominee) [#10], results: 0, wall time: 0 ms (0.0%)
+         │        │  `─ Bind(YEAR(?time) AS ?year) sortedBy=?_anon_1 [#10], results: 0, wall time: 0 ms (0.0%)
+         │        │     `─ MergeJoin(?_anon_1) [#10], results: 0, wall time: 0 ms (0.0%)
+         │        │        +─ Scan[POSC](?nominee, <http://www.wikidata.org/prop/P1411>, ?_anon_1) [#66K], results: 0, wall time: 0 ms (0.0%)
+         │        │        `─ MergeJoin(?_anon_1) [#2.0K], results: 0, wall time: 0 ms (0.0%)
+         │        │           +─ Bind(<http://www.wikidata.org/entity/Q37922> AS ?prize) sortedBy=?_anon_1 [#2.0K], results: 0, wall time: 0 ms (0.0%)
+         │        │           │  `─ Scan[POSC](?_anon_1, <http://www.wikidata.org/prop/statement/P1411>, <http://www.wikidata.org/entity/Q37922>) [#2.0K], results: 0, wall time: 0 ms (0.0%)
+         │        │           `─ Scan[PSOC](?_anon_1, <http://www.wikidata.org/prop/qualifier/P585>, ?time) [#9.2M], results: 0, wall time: 0 ms (0.0%)
+         │        `─ Bind("true"^^xsd:boolean AS ?_anon_2) sortedBy=?nominee [#1.2M], results: 0, wall time: 0 ms (0.0%)
+         │           `─ Scan[PSOC](?nominee, <http://www.wikidata.org/prop/direct/P166>, ?prize) [#1.2M], results: 0, wall time: 0 ms (0.0%)
+         `─ MergeJoin(?_anon_2) [#1166.4M], results: 1035.0M, wall time: 150796 ms (16.3%)
+            +─ Scan[PSOC](?_anon_2, rdfs:label, ?citizenshipLabel) [#586.7M], results: 48K (with gaps), wall time: 38 ms (0.0%)
+            `─ Scan[POSC](?nominee, <http://www.wikidata.org/prop/direct/P27>, ?_anon_2) [#4.2M], results: 3.4M (with gaps), wall time: 1431 ms (0.2%)
+

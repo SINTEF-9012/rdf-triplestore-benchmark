@@ -1,0 +1,74 @@
+14:47:12 INFO  exec            :: QUERY
+  PREFIX  schema: <http://schema.org/>
+  PREFIX  pq:   <http://www.wikidata.org/prop/qualifier/>
+  PREFIX  bd:   <http://www.bigdata.com/rdf#>
+  PREFIX  pr:   <http://www.wikidata.org/prop/reference/>
+  PREFIX  ps:   <http://www.wikidata.org/prop/statement/>
+  PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
+  PREFIX  geof: <http://www.opengis.net/def/geosparql/function/>
+  PREFIX  wdt:  <http://www.wikidata.org/prop/direct/>
+  PREFIX  wds:  <http://www.wikidata.org/entity/statement/>
+  PREFIX  wdv:  <http://www.wikidata.org/value/>
+  PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>
+  PREFIX  skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX  psn:  <http://www.wikidata.org/prop/statement/value-normalized/>
+  PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX  pqn:  <http://www.wikidata.org/prop/qualifier/value-normalized/>
+  PREFIX  wd:   <http://www.wikidata.org/entity/>
+  PREFIX  geo:  <http://www.opengis.net/ont/geosparql#>
+  PREFIX  psv:  <http://www.wikidata.org/prop/statement/value/>
+  PREFIX  dct:  <http://purl.org/dc/terms/>
+  PREFIX  pqv:  <http://www.wikidata.org/prop/qualifier/value/>
+  PREFIX  ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+  PREFIX  wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+  PREFIX  wdref: <http://www.wikidata.org/reference/>
+  PREFIX  prov: <http://www.w3.org/ns/prov#>
+  PREFIX  cc:   <http://creativecommons.org/ns#>
+  PREFIX  wikibase: <http://wikiba.se/ontology#>
+  PREFIX  prn:  <http://www.wikidata.org/prop/reference/value-normalized/>
+  PREFIX  p:    <http://www.wikidata.org/prop/>
+  PREFIX  wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+  PREFIX  prv:  <http://www.wikidata.org/prop/reference/value/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  hint: <http://www.bigdata.com/queryHints#>
+  PREFIX  wdno: <http://www.wikidata.org/prop/novalue/>
+  
+  SELECT  ?show ?showLabel ?seasonNumber ?episode ?episodeLabel
+  WHERE
+    { BIND(wd:Q886 AS ?show)
+      ?season   wdt:P361  ?show .
+      ?episode  wdt:P361  ?season .
+      ?season   p:P179    _:b0 .
+      _:b0      pq:P1545  ?seasonNumber
+    }
+  ORDER BY xsd:integer(?seasonNumber)
+14:47:12 INFO  exec            :: ALGEBRA
+  (project (?show ?showLabel ?seasonNumber ?episode ?episodeLabel)
+    (order ((<http://www.w3.org/2001/XMLSchema#integer> ?seasonNumber))
+      (sequence
+        (extend ((?show <http://www.wikidata.org/entity/Q886>))
+          (table unit))
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?season <http://www.wikidata.org/prop/direct/P361> ?show)
+          (quad <urn:x-arq:DefaultGraphNode> ?episode <http://www.wikidata.org/prop/direct/P361> ?season)
+          (quad <urn:x-arq:DefaultGraphNode> ?season <http://www.wikidata.org/prop/P179> ??0)
+          (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.wikidata.org/prop/qualifier/P1545> ?seasonNumber)
+        ))))
+14:47:12 INFO  exec            :: TDB2
+  (project (?show ?showLabel ?seasonNumber ?episode ?episodeLabel)
+    (order ((<http://www.w3.org/2001/XMLSchema#integer> ?seasonNumber))
+      (sequence
+        (extend ((?show <http://www.wikidata.org/entity/Q886>))
+          (table unit))
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?season <http://www.wikidata.org/prop/direct/P361> ?show)
+          (quad <urn:x-arq:DefaultGraphNode> ?episode <http://www.wikidata.org/prop/direct/P361> ?season)
+          (quad <urn:x-arq:DefaultGraphNode> ?season <http://www.wikidata.org/prop/P179> ??0)
+          (quad <urn:x-arq:DefaultGraphNode> ??0 <http://www.wikidata.org/prop/qualifier/P1545> ?seasonNumber)
+        ))))
+14:47:12 INFO  exec            :: Execute
+  ?season <http://www.wikidata.org/prop/direct/P361> ?show
+  ?season <http://www.wikidata.org/prop/P179> ??0
+  ??0 <http://www.wikidata.org/prop/qualifier/P1545> ?seasonNumber
+  ?episode <http://www.wikidata.org/prop/direct/P361> ?season
+Time: 0.250 sec

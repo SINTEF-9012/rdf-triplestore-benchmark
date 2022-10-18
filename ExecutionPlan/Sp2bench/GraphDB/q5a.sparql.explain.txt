@@ -1,0 +1,29 @@
+plan
+"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX bench: <http://localhost/vocabulary/bench/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+
+SELECT DISTINCT ?person ?name
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?article rdf:type bench:Article . # 	Collection size: 1856987.0	Predicate collection size: 2.2414735E7	Unique subjects: 2.2414726E7	Unique objects: 19.0	Current complexity: 1856987.0
+    ?article dc:creator ?person . # 	Collection size: 2.8629088E7	Predicate collection size: 2.8629088E7	Unique subjects: 9617220.0	Unique objects: 1.2446874E7	Current complexity: 5527984.619032943
+    ?person foaf:name ?name . # 	Collection size: 1.2558E7	Predicate collection size: 1.2558E7	Unique subjects: 1.2558E7	Unique objects: 1.2558E7	Current complexity: 5527984.619032943
+    ?inproc rdf:type bench:Inproceedings . # 	Collection size: 7728863.0	Predicate collection size: 2.2414735E7	Unique subjects: 2.2414726E7	Unique objects: 19.0	Current complexity: 4.2725035786612805E13
+    ?inproc dc:creator ?person2 . # 	Collection size: 2.8629088E7	Predicate collection size: 2.8629088E7	Unique subjects: 9617220.0	Unique objects: 1.2446874E7	Current complexity: 1.2718631884661962E14
+    ?person2 foaf:name ?name2 . # 	Collection size: 1.2558E7	Predicate collection size: 1.2558E7	Unique subjects: 1.2558E7	Unique objects: 1.2558E7	Current complexity: 1.2718631884661962E14
+    FILTER (?name = ?name2)
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 1.2718631884661962E14
+  
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

@@ -1,0 +1,84 @@
+Query:
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT ?item ?itemLabel ?reference  ?referenceType
+WHERE
+{
+  ?item wdt:P31 wd:Q13442814 #Scientific article
+  { ?item wdt:P921 wd:Q202864 } #Zika virus
+  UNION
+  { ?item wdt:P921 wd:Q8071861 } #Zika fever
+  ?reference ?referenceType ?item  #find references to item having any property and store reference type
+  #SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
+}
+
+╔════╤════════╤════════╤═══════════════════╤════════════════════════════════════════════════════════╤═══════════╤══════════╤═══════════╤═════════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name              │ Arguments                                              │ Mode      │ Units In │ Units Out │ Ratio   │ Time (ms) ║
+╠════╪════════╪════════╪═══════════════════╪════════════════════════════════════════════════════════╪═══════════╪══════════╪═══════════╪═════════╪═══════════╣
+║ 0  │ 1      │ -      │ SolutionInjection │ solutions=[{}]                                         │ -         │ 0        │ 1         │ 0.00    │ 0         ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼─────────┼───────────╢
+║ 1  │ 2      │ 4      │ Copy              │ -                                                      │ duplicate │ 1        │ 2         │ 2.00    │ 0         ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼─────────┼───────────╢
+║ 2  │ 3      │ -      │ Copy              │ -                                                      │ forward   │ 1        │ 1         │ 1.00    │ 0         ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼─────────┼───────────╢
+║ 3  │ 6      │ -      │ PipelineJoin      │ pattern=distinct(?item, wdt:P921, wd:Q202864)          │ -         │ 1        │ 6458      │ 6458.00 │ 51359     ║
+║    │        │        │                   │ joinType=join                                          │           │          │           │         │           ║
+║    │        │        │                   │ joinProjectionVars=[?item]                             │           │          │           │         │           ║
+║    │        │        │                   │ patternEstimate=14322                                  │           │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼─────────┼───────────╢
+║ 4  │ 5      │ -      │ Copy              │ -                                                      │ forward   │ 1        │ 1         │ 1.00    │ 0         ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼─────────┼───────────╢
+║ 5  │ 6      │ -      │ PipelineJoin      │ pattern=distinct(?item, wdt:P921, wd:Q8071861)         │ -         │ 1        │ 160       │ 160.00  │ 1         ║
+║    │        │        │                   │ joinType=join                                          │           │          │           │         │           ║
+║    │        │        │                   │ joinProjectionVars=[?item]                             │           │          │           │         │           ║
+║    │        │        │                   │ patternEstimate=160                                    │           │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼─────────┼───────────╢
+║ 6  │ 7      │ -      │ Copy              │ -                                                      │ forward   │ 6618     │ 6618      │ 1.00    │ 685506    ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼─────────┼───────────╢
+║ 7  │ 8      │ -      │ PipelineJoin      │ pattern=distinct(?item, wdt:P31, wd:Q13442814)         │ -         │ 6618     │ 6593      │ 1.00    │ 2611010   ║
+║    │        │        │                   │ joinType=join                                          │           │          │           │         │           ║
+║    │        │        │                   │ joinProjectionVars=[?item]                             │           │          │           │         │           ║
+║    │        │        │                   │ patternEstimate=114918584                              │           │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼─────────┼───────────╢
+║ 8  │ 9      │ -      │ PipelineJoin      │ pattern=distinct(?reference, ?referenceType, ?item)    │ -         │ 6593     │ 212041    │ 32.16   │ 3823315   ║
+║    │        │        │                   │ joinType=join                                          │           │          │           │         │           ║
+║    │        │        │                   │ joinProjectionVars=[?reference, ?referenceType, ?item] │           │          │           │         │           ║
+║    │        │        │                   │ patternEstimate=7215876192                             │           │          │           │         │           ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼─────────┼───────────╢
+║ 9  │ 10     │ -      │ Projection        │ vars=[?item, ?itemLabel, ?reference, ?referenceType]   │ retain    │ 212041   │ 212041    │ 1.00    │ 98222     ║
+╟────┼────────┼────────┼───────────────────┼────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼─────────┼───────────╢
+║ 10 │ -      │ -      │ TermResolution    │ vars=[?item, ?itemLabel, ?reference, ?referenceType]   │ id2value  │ 212041   │ 212041    │ 1.00    │ 622468    ║
+╚════╧════════╧════════╧═══════════════════╧════════════════════════════════════════════════════════╧═══════════╧══════════╧═══════════╧═════════╧═══════════╝
+

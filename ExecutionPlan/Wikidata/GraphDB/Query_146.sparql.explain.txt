@@ -1,0 +1,26 @@
+plan
+"PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+
+SELECT ?year ?population
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    wd:Q730 p:P1082 ?p . # 	Collection size: 55.0	Predicate collection size: 1903222.0	Unique subjects: 591473.0	Unique objects: 1903222.0	Current complexity: 55.0
+    ?p pq:P585 ?year . # 	Collection size: 9198688.0	Predicate collection size: 9198688.0	Unique subjects: 9115227.0	Unique objects: 51836.0	Current complexity: 55.503591956623794
+    ?p ps:P1082 ?population . # 	Collection size: 1902986.0	Predicate collection size: 1902986.0	Unique subjects: 1902986.0	Unique objects: 140862.0	Current complexity: 55.503591956623794
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 55.503591956623794
+  
+}
+ORDER BY ASC(?year)
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

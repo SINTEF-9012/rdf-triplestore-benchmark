@@ -1,0 +1,79 @@
+12:24:25 INFO  exec            :: QUERY
+  PREFIX  schema: <http://schema.org/>
+  PREFIX  pq:   <http://www.wikidata.org/prop/qualifier/>
+  PREFIX  bd:   <http://www.bigdata.com/rdf#>
+  PREFIX  pr:   <http://www.wikidata.org/prop/reference/>
+  PREFIX  ps:   <http://www.wikidata.org/prop/statement/>
+  PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
+  PREFIX  geof: <http://www.opengis.net/def/geosparql/function/>
+  PREFIX  wdt:  <http://www.wikidata.org/prop/direct/>
+  PREFIX  wds:  <http://www.wikidata.org/entity/statement/>
+  PREFIX  wdv:  <http://www.wikidata.org/value/>
+  PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>
+  PREFIX  skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX  psn:  <http://www.wikidata.org/prop/statement/value-normalized/>
+  PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX  pqn:  <http://www.wikidata.org/prop/qualifier/value-normalized/>
+  PREFIX  wd:   <http://www.wikidata.org/entity/>
+  PREFIX  geo:  <http://www.opengis.net/ont/geosparql#>
+  PREFIX  psv:  <http://www.wikidata.org/prop/statement/value/>
+  PREFIX  dct:  <http://purl.org/dc/terms/>
+  PREFIX  pqv:  <http://www.wikidata.org/prop/qualifier/value/>
+  PREFIX  ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+  PREFIX  wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+  PREFIX  wdref: <http://www.wikidata.org/reference/>
+  PREFIX  prov: <http://www.w3.org/ns/prov#>
+  PREFIX  cc:   <http://creativecommons.org/ns#>
+  PREFIX  wikibase: <http://wikiba.se/ontology#>
+  PREFIX  prn:  <http://www.wikidata.org/prop/reference/value-normalized/>
+  PREFIX  p:    <http://www.wikidata.org/prop/>
+  PREFIX  wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+  PREFIX  prv:  <http://www.wikidata.org/prop/reference/value/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  hint: <http://www.bigdata.com/queryHints#>
+  PREFIX  wdno: <http://www.wikidata.org/prop/novalue/>
+  
+  SELECT  ?elevation ?unit ?unitLabel ?item ?itemLabel ?itemDescription ?coord
+  WHERE
+    { ?psv_triples  wikibase:quantityAmount  ?elevation
+      FILTER ( ?elevation > 8000 )
+      ?psv_triples  wikibase:quantityUnit  ?unit .
+      ?p_triples  psv:P2044           ?psv_triples ;
+                rdf:type              wikibase:BestRank .
+      ?item     p:P2044               ?p_triples ;
+                wdt:P625              ?coord
+    }
+  ORDER BY DESC(?elevation)
+12:24:25 INFO  exec            :: ALGEBRA
+  (project (?elevation ?unit ?unitLabel ?item ?itemLabel ?itemDescription ?coord)
+    (order ((desc ?elevation))
+      (sequence
+        (filter (> ?elevation 8000)
+          (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?psv_triples <http://wikiba.se/ontology#quantityAmount> ?elevation)))
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?psv_triples <http://wikiba.se/ontology#quantityUnit> ?unit)
+          (quad <urn:x-arq:DefaultGraphNode> ?p_triples <http://www.wikidata.org/prop/statement/value/P2044> ?psv_triples)
+          (quad <urn:x-arq:DefaultGraphNode> ?p_triples <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://wikiba.se/ontology#BestRank>)
+          (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/P2044> ?p_triples)
+          (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P625> ?coord)
+        ))))
+12:24:25 INFO  exec            :: TDB2
+  (project (?elevation ?unit ?unitLabel ?item ?itemLabel ?itemDescription ?coord)
+    (order ((desc ?elevation))
+      (sequence
+        (filter (> ?elevation 8000)
+          (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?psv_triples <http://wikiba.se/ontology#quantityAmount> ?elevation)))
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?psv_triples <http://wikiba.se/ontology#quantityUnit> ?unit)
+          (quad <urn:x-arq:DefaultGraphNode> ?p_triples <http://www.wikidata.org/prop/statement/value/P2044> ?psv_triples)
+          (quad <urn:x-arq:DefaultGraphNode> ?p_triples <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://wikiba.se/ontology#BestRank>)
+          (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/P2044> ?p_triples)
+          (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P625> ?coord)
+        ))))
+12:24:25 INFO  exec            :: Execute ::   ?psv_triples <http://wikiba.se/ontology#quantityAmount> ?elevation
+12:24:25 INFO  exec            :: Execute
+  ?psv_triples <http://wikiba.se/ontology#quantityUnit> ?unit
+  ?p_triples <http://www.wikidata.org/prop/statement/value/P2044> ?psv_triples
+  ?p_triples rdf:type <http://wikiba.se/ontology#BestRank>
+  ?item <http://www.wikidata.org/prop/P2044> ?p_triples
+  ?item <http://www.wikidata.org/prop/direct/P625> ?coord

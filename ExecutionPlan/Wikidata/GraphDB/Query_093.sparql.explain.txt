@@ -1,0 +1,27 @@
+plan
+"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT DISTINCT ?settlement ?name ?coor
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ArbitraryLengthPath ( min=1, from subclass_settlement, to __const_798ccc3d_uri) over {
+	 [ subclass_settlement http://www.wikidata.org/prop/direct/P279 http://www.wikidata.org/entity/Q486972 ]
+	 }  # Collection size: 500.0
+    ?settlement wdt:P31 ?subclass_settlement . # 	Collection size: 9.768112E7	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 4.884056E10
+    ?settlement wdt:P625 ?coor . # 	Collection size: 8827101.0	Predicate collection size: 8827101.0	Unique subjects: 8669631.0	Unique objects: 8596918.0	Current complexity: 4.972767076436817E10
+    ?settlement rdfs:label ?name . # 	Collection size: 5.86690314E8	Predicate collection size: 5.86690314E8	Unique subjects: 9.4931813E7	Unique objects: 5.4875668E8	Current complexity: 3.073231391381494E11
+    FILTER (REGEX(?name, ""Antwerp"", ""i""))
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 3.073231391381494E11
+  
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

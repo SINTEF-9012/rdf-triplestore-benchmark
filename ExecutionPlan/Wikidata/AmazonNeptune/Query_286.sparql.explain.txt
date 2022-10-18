@@ -1,0 +1,97 @@
+Query:
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+select distinct ?item ?authorLabel ?itemLabel ?image where {
+  ?item wdt:P31/wdt:P279* wd:Q234460.
+
+  ?author ?label 'Bram Stoker'.
+  ?item wdt:P50 ?author.
+
+  ?item rdfs:label ?itemLabel.
+  filter contains(lcase(?itemLabel), 'dracula').
+
+  optional {?item wdt:P18 ?image.}
+
+#  service wikibase:label {bd:serviceParam wikibase:language "[AUTO_LANGUAGE]".}
+} limit 50
+
+╔════╤════════╤════════╤════════════════════╤════════════════════════════════════════════════════════════════════════════════════╤══════════╤══════════╤═══════════╤═════════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name               │ Arguments                                                                          │ Mode     │ Units In │ Units Out │ Ratio   │ Time (ms) ║
+╠════╪════════╪════════╪════════════════════╪════════════════════════════════════════════════════════════════════════════════════╪══════════╪══════════╪═══════════╪═════════╪═══════════╣
+║ 0  │ 1      │ -      │ SolutionInjection  │ solutions=[{}]                                                                     │ -        │ 0        │ 1         │ 0.00    │ 0         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 1  │ 2      │ -      │ HashIndexBuild     │ solutionSet=solutionSet1                                                           │ -        │ 2        │ 13172     │ 6586.00 │ 403730    ║
+║    │        │        │                    │ joinVars=[]                                                                        │          │          │           │         │           ║
+║    │        │        │                    │ sourceType=pipeline                                                                │          │          │           │         │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 2  │ 3      │ -      │ PipelineJoin       │ pattern=distinct(?item, wdt:P31, ?_internalVar1)                                   │ -        │ 13172    │ 50741742  │ 3852.24 │ 4020848   ║
+║    │        │        │                    │ joinType=join                                                                      │          │          │           │         │           ║
+║    │        │        │                    │ joinProjectionVars=[?item, ?_internalVar1]                                         │          │          │           │         │           ║
+║    │        │        │                    │ patternEstimate=188115136                                                          │          │          │           │         │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 3  │ 4      │ -      │ PipelineJoin       │ pattern=distinct(?item, wdt:P50, ?author)                                          │ -        │ 50741742 │ 22198951  │ 0.44    │ 25534383  ║
+║    │        │        │                    │ joinType=join                                                                      │          │          │           │         │           ║
+║    │        │        │                    │ joinProjectionVars=[?item, ?author]                                                │          │          │           │         │           ║
+║    │        │        │                    │ patternEstimate=26658920                                                           │          │          │           │         │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 4  │ 5      │ -      │ PipelineJoin       │ pattern=distinct(?author, ?label, "Bram Stoker"^^xsd:string)                       │ -        │ 22198951 │ 0         │ 0.00    │ 2113238   ║
+║    │        │        │                    │ joinType=join                                                                      │          │          │           │         │           ║
+║    │        │        │                    │ joinProjectionVars=[?author, ?label]                                               │          │          │           │         │           ║
+║    │        │        │                    │ patternEstimate=4277000                                                            │          │          │           │         │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 5  │ 6      │ -      │ PipelineJoin       │ pattern=distinct(?item, rdfs:label, ?itemLabel)                                    │ -        │ 0        │ 0         │ 0.00    │ 0         ║
+║    │        │        │                    │ joinType=join                                                                      │          │          │           │         │           ║
+║    │        │        │                    │ joinProjectionVars=[?item, ?itemLabel]                                             │          │          │           │         │           ║
+║    │        │        │                    │ constraints=[CONTAINS(LCASE(?itemLabel), "dracula"^^xsd:string)]                   │          │          │           │         │           ║
+║    │        │        │                    │ patternEstimate=1348326274                                                         │          │          │           │         │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 6  │ 7      │ 8      │ ConditionalRouting │ condition=needsMaterialization(CONTAINS(LCASE(?itemLabel), "dracula"^^xsd:string)) │ -        │ 0        │ 0         │ 0.00    │ 0         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 7  │ 8      │ -      │ TermResolution     │ vars=[?itemLabel]                                                                  │ id2value │ 0        │ 0         │ 0.00    │ 0         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 8  │ 9      │ -      │ Filter             │ condition=CONTAINS(LCASE(?itemLabel), "dracula"^^xsd:string)                       │ -        │ 0        │ 0         │ 0.00    │ 0         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 9  │ 10     │ -      │ PipelineJoin       │ pattern=distinct(?item, wdt:P18, ?image)                                           │ -        │ 0        │ 0         │ 0.00    │ 0         ║
+║    │        │        │                    │ joinType=optional                                                                  │          │          │           │         │           ║
+║    │        │        │                    │ joinProjectionVars=[?item, ?image]                                                 │          │          │           │         │           ║
+║    │        │        │                    │ patternEstimate=6873696                                                            │          │          │           │         │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 10 │ 11     │ -      │ Distinct           │ vars=[?item, ?authorLabel, ?itemLabel, ?image]                                     │ -        │ 0        │ 0         │ 0.00    │ 0         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 11 │ 12     │ -      │ Projection         │ vars=[?item, ?authorLabel, ?itemLabel, ?image]                                     │ retain   │ 0        │ 0         │ 0.00    │ 0         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼─────────┼───────────╢
+║ 12 │ -      │ -      │ Slice              │ limit=50                                                                           │ -        │ 0        │ 0         │ 0.00    │ 0         ║
+╚════╧════════╧════════╧════════════════════╧════════════════════════════════════════════════════════════════════════════════════╧══════════╧══════════╧═══════════╧═════════╧═══════════╝
+

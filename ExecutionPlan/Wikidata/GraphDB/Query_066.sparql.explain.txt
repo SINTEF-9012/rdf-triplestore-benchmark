@@ -1,0 +1,33 @@
+plan
+"PREFIX schema: <http://schema.org/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?director ?director_label ?films ?sitelinks ?rank
+{
+  {
+    SELECT ?director (COUNT(?film) AS ?films) (COUNT(?sitelink) AS ?sitelinks)
+    {
+      
+      { # ----- Begin optimization group 1 -----
+        
+        ?director wdt:P106 wd:Q2526255 . # 	Collection size: 67457.0	Predicate collection size: 8878333.0	Unique subjects: 6693815.0	Unique objects: 16820.0	Current complexity: 67457.0
+        ?sitelink schema:about ?director . # 	Collection size: 1.79121248E8	Predicate collection size: 1.79121248E8	Unique subjects: 1.79116782E8	Unique objects: 9.8768707E7	Current complexity: 122336.13654916025
+        ?film wdt:P57 ?director . # 	Collection size: 323157.0	Predicate collection size: 323157.0	Unique subjects: 301696.0	Unique objects: 67679.0	Current complexity: 584136.5693762759
+        
+      } # ----- End optimization group 1 -----
+      # ESTIMATED NUMBER OF ITERATIONS: 584136.5693762759
+      
+    }
+    GROUP BY ?director
+  }
+  BIND ((?films * ?sitelinks) AS ?rank)
+}
+ORDER BY DESC(?rank)
+LIMIT 100
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

@@ -1,0 +1,149 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT
+  ?item
+  (SAMPLE (?titleL) AS ?title)
+  (group_concat(distinct ?creatorL ; separator = ", ") as ?creator)
+  (group_concat(distinct ?genreL ; separator = ", ") as ?genre)
+  (group_concat(distinct ?placeL ; separator = ", ") as ?place)
+  (group_concat(distinct ?arr ; separator = ", ") as ?arrondissement)
+  (SAMPLE (?img) AS ?image)
+  (SAMPLE (?coord) AS ?coordinates) {
+
+    {
+      SELECT DISTINCT ?item { {
+        ?item wdt:P136 wd:Q557141 ;     # genre: public art
+              wdt:P131 wd:Q90           # located in: Paris
+      } UNION { # or
+        ?item wdt:P136 wd:Q557141 ;     # genre: public art
+              wdt:P131/wdt:P131* wd:Q90 # located in an arrondissement of Paris
+      } }
+    }
+   
+    # title
+    OPTIONAL { ?item rdfs:label ?titleL filter (lang(?titleL) = "fr") }
+   
+    # creators
+    OPTIONAL { ?item wdt:P170 [rdfs:label ?creatorL] filter (lang(?creatorL) = "fr") }
+   
+    #genre
+    OPTIONAL {
+      {
+        ?item wdt:P136 ?g filter (STR(?g) != 'http://www.wikidata.org/entity/Q557141')
+      } UNION {
+        ?item wdt:P31 ?g .
+      }
+      ?g rdfs:label ?genreL filter (lang(?genreL) = "fr") .
+    }
+   
+    # place
+    OPTIONAL {
+      ?item wdt:P276 [rdfs:label ?placeL] filter (lang(?placeL) = "fr") .
+    }
+   
+    # arrondissement
+    OPTIONAL {
+      ?item wdt:P131 [wdt:P131 wd:Q90 ; rdfs:label ?arrL] filter (lang(?arrL) = "fr").
+      BIND(REPLACE(?arrL, '^([0-9]+).*$', "$1", "si") AS ?arr)
+    }
+   
+    # image
+    OPTIONAL { ?item wdt:P18 ?img }
+   
+    # coordinates
+    OPTIONAL { ?item wdt:P625 ?coord }
+
+} GROUP BY ?item
+
+The Query Plan:
+
+Profiling results:
+Query executed in 664304 ms and hit an error: RuntimeException: java.io.IOException: Maximum file length exceeded: 10G
+Total used memory: 135G, spilled to disk: 40G
+Pre-execution time: 64 ms (0.0%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Projection(?item, ?title, ?creator, ?genre, ?place, ?arrondissement, ?image, ?coordinates) [#4], results: 0, wall time: 0 ms (0.0%)
+`─ Group(by=[?item] aggregates=[(GROUP_CONCAT(DISTINCT ?genreL) AS ?genre) (GROUP_CONCAT(DISTINCT ?placeL) AS ?place) (GROUP_CONCAT(DISTINCT ?arr) AS ?arrondissement) (SAMPLE(?img) AS ?image) (SAMPLE(?coord) AS ?coordinates) (SAMPLE(?titleL) AS ?title) (GROUP_CONCAT(DISTINCT ?creatorL) AS ?creator)]) [#4], results: 0, wall time: 0 ms (0.0%)
+   `─ DirectHashJoinOuter(?item) [#4], results: 0, wall time: 0 ms (0.0%)
+      +─ DirectHashJoinOuter(?item) [#4], results: 0, wall time: 0 ms (0.0%)
+      │  +─ HashJoinOuter(?item)("fr" = Lang(?arrL)) [#4], memory: 45M (0.0%), results: 0, wall time: 420 ms (0.1%)
+      │  │  +─ HashJoinOuter(?item)("fr" = Lang(?placeL)) [#4], memory: 4.2G (3.1%), results: 0, wall time: 36458 ms (5.5%)
+      │  │  │  +─ HashJoinOuter(?item)("fr" = Lang(?genreL)) [#4], memory: 63G (46.9%), spilled to disk: 20G (50.0%), results: 0, wall time: 486003 ms (73.2%)
+      │  │  │  │  +─ HashJoinOuter(?item)("fr" = Lang(?creatorL)) [#4], results: 0, wall time: 0 ms (0.0%)
+      │  │  │  │  │  +─ DirectHashJoinOuter(?item)("fr" = Lang(?titleL)) [#4], results: 0, wall time: 0 ms (0.0%)
+      │  │  │  │  │  │  +─ Distinct [#4], results: 0, wall time: 0 ms (0.0%)
+      │  │  │  │  │  │  │  `─ Projection(?item) [#6.6K], results: 0, wall time: 0 ms (0.0%)
+      │  │  │  │  │  │  │     `─ Union [#6.6K], results: 0, wall time: 0 ms (0.0%)
+      │  │  │  │  │  │  │        +─ MergeJoin(?item) [#6.6K], results: 0, wall time: 0 ms (0.0%)
+      │  │  │  │  │  │  │        │  +─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P136>, <http://www.wikidata.org/entity/Q557141>) [#15K], results: 0, wall time: 0 ms (0.0%)
+      │  │  │  │  │  │  │        │  `─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P131>, <http://www.wikidata.org/entity/Q90>) [#6.6K], results: 0, wall time: 0 ms (0.0%)
+      │  │  │  │  │  │  │        `─ HashJoin(?qrltuabu) [#11], results: 0, wall time: 0 ms (0.0%)
+      │  │  │  │  │  │  │           +─ PropertyPath(?qrltuabu -> <http://www.wikidata.org/entity/Q90>, minLength=0, reversed) [#74K], results: 0, wall time: 0 ms (0.0%)
+      │  │  │  │  │  │  │           │  `─ Scan[POSC](?qrltuabu, <http://www.wikidata.org/prop/direct/P131>, <http://www.wikidata.org/entity/Q90>) [#6.6K]
+      │  │  │  │  │  │  │           `─ MergeJoin(?item) [#11], results: 0, wall time: 0 ms (0.0%)
+      │  │  │  │  │  │  │              +─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P136>, <http://www.wikidata.org/entity/Q557141>) [#15K], results: 0, wall time: 0 ms (0.0%)
+      │  │  │  │  │  │  │              `─ Scan[PSOC](?item, <http://www.wikidata.org/prop/direct/P131>, ?qrltuabu) [#10.8M], results: 0, wall time: 0 ms (0.0%)
+      │  │  │  │  │  │  `─ Scan[PSOC](?item, rdfs:label, ?titleL) [#586.7M], results: 0, wall time: 0 ms (0.0%)
+      │  │  │  │  │  `─ MergeJoin(?_anon_1) [#25.4M], results: 0, wall time: 0 ms (0.0%)
+      │  │  │  │  │     +─ Scan[PSOC](?_anon_1, rdfs:label, ?creatorL) [#586.7M], results: 0, wall time: 0 ms (0.0%)
+      │  │  │  │  │     `─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P170>, ?_anon_1) [#893K], results: 0, wall time: 0 ms (0.0%)
+      │  │  │  │  `─ MergeJoin(?g) [#11146.1M], results: 943.8M, wall time: 112388 ms (16.9%)
+      │  │  │  │     +─ Union [#99.1M], results: 3.6M, wall time: 466 ms (0.1%)
+      │  │  │  │     │  +─ Filter("http://www.wikidata.org/entity/Q557141" != Str(?g)) [#1.5M], results: 29, wall time: 5 ms (0.0%)
+      │  │  │  │     │  │  `─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P136>, ?g) [#1.5M], results: 29, wall time: 3 ms (0.0%)
+      │  │  │  │     │  `─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P31>, ?g) [#97.7M], results: 3.6M, wall time: 1217 ms (0.2%)
+      │  │  │  │     `─ Scan[PSOC](?g, rdfs:label, ?genreL) [#586.7M], results: 11K (with gaps), wall time: 2 ms (0.0%)
+      │  │  │  `─ MergeJoin(?_anon_2) [#88.0M], results: 88.0M, wall time: 10966 ms (1.7%)
+      │  │  │     +─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P276>, ?_anon_2) [#2.4M], results: 2.4M (with gaps), wall time: 925 ms (0.1%)
+      │  │  │     `─ Scan[PSOC](?_anon_2, rdfs:label, ?placeL) [#586.7M], results: 3.7M (with gaps), wall time: 11228 ms (1.7%)
+      │  │  `─ Bind(REPLACE(?arrL, "^([0-9]+).*$", "$1", "si") AS ?arr) sortedBy=?_anon_3 [#48K], results: 794K, wall time: 1818 ms (0.3%)
+      │  │     `─ MergeJoin(?_anon_3) [#48K], results: 794K, wall time: 131 ms (0.0%)
+      │  │        +─ MergeJoin(?_anon_3) [#43K], results: 3.8K (with gaps), wall time: 3 ms (0.0%)
+      │  │        │  +─ Scan[POSC](?_anon_3, <http://www.wikidata.org/prop/direct/P131>, <http://www.wikidata.org/entity/Q90>) [#6.6K], results: 2.8K (with gaps), wall time: 11 ms (0.0%)
+      │  │        │  `─ Scan[PSOC](?_anon_3, rdfs:label, ?arrL) [#586.7M], results: 3.8K (with gaps), wall time: 1899 ms (0.3%)
+      │  │        `─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P131>, ?_anon_3) [#10.8M], results: 20K (with gaps), wall time: 294 ms (0.0%)
+      │  `─ Scan[PSOC](?item, <http://www.wikidata.org/prop/direct/P18>, ?img) [#4.1M], results: 0, wall time: 0 ms (0.0%)
+      `─ Scan[PSOC](?item, <http://www.wikidata.org/prop/direct/P625>, ?coord) [#8.8M], results: 0, wall time: 0 ms (0.0%)
+

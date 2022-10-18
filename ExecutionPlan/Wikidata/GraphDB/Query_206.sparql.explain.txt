@@ -1,0 +1,23 @@
+plan
+"PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?personLabel ?image ?Erdos
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?person wdt:P485 wd:Q964035 . # 	Collection size: 204.0	Predicate collection size: 69818.0	Unique subjects: 67139.0	Unique objects: 4295.0	Current complexity: 204.0
+    ?person wdt:P18 ?image . # 	Collection size: 4084993.0	Predicate collection size: 4084993.0	Unique subjects: 3952654.0	Unique objects: 3821255.0	Current complexity: 210.83013387966668
+    ?person wdt:P2021 ?Erdos . # 	Collection size: 2324.0	Predicate collection size: 2324.0	Unique subjects: 2309.0	Unique objects: 13.0	Current complexity: 212.19975363202482
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 212.19975363202482
+  
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

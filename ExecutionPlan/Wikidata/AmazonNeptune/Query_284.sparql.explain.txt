@@ -1,0 +1,121 @@
+Query:
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT ?item ?label ?coord ?place
+WHERE
+{
+  VALUES ?type {wd:Q571 wd:Q7725634}  # book or literary work
+  ?item wdt:P31 ?type .
+  ?item wdt:P577 ?date FILTER (?date < "1830-01-01T00:00:00Z"^^xsd:dateTime) .
+  ?item rdfs:label ?label filter (lang(?label) = "en")
+
+  OPTIONAL {
+    ?item (wdt:P291|wdt:P840) ?place .  # publication or narration place is ?place
+    ?place wdt:P625 ?coord
+  }
+}
+
+╔════╤════════╤════════╤════════════════════╤════════════════════════════════════════════════════════════════════════════════════╤═══════════╤══════════╤═══════════╤══════════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name               │ Arguments                                                                          │ Mode      │ Units In │ Units Out │ Ratio    │ Time (ms) ║
+╠════╪════════╪════════╪════════════════════╪════════════════════════════════════════════════════════════════════════════════════╪═══════════╪══════════╪═══════════╪══════════╪═══════════╣
+║ 0  │ 1      │ -      │ SolutionInjection  │ solutions=[{}]                                                                     │ -         │ 0        │ 1         │ 0.00     │ 0         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 1  │ 2      │ -      │ PipelineJoin       │ pattern=distinct(?item, wdt:P577, ?date)                                           │ -         │ 1        │ 46436     │ 46436.00 │ 2592      ║
+║    │        │        │                    │ joinType=join                                                                      │           │          │           │          │           ║
+║    │        │        │                    │ joinProjectionVars=[?item, ?date]                                                  │           │          │           │          │           ║
+║    │        │        │                    │ constraints=[(?date < "1830-01-01T00:00:00.000Z"^^xsd:dateTime)]                   │           │          │           │          │           ║
+║    │        │        │                    │ patternEstimate=113736                                                             │           │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 2  │ 3      │ 4      │ ConditionalRouting │ condition=needsMaterialization((?date < "1830-01-01T00:00:00.000Z"^^xsd:dateTime)) │ -         │ 46436    │ 46436     │ 1.00     │ 38722     ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 3  │ 4      │ -      │ TermResolution     │ vars=[?date]                                                                       │ id2value  │ 0        │ 0         │ 0.00     │ 0         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 4  │ 5      │ -      │ Filter             │ condition=(?date < "1830-01-01T00:00:00.000Z"^^xsd:dateTime)                       │ -         │ 46436    │ 46436     │ 1.00     │ 59647     ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 5  │ 6      │ -      │ PipelineJoin       │ pattern=distinct(?item, wdt:P31, ?type)                                            │ -         │ 46436    │ 3816      │ 0.08     │ 159231    ║
+║    │        │        │                    │ inlineFilters=[                                                                    │           │          │           │          │           ║
+║    │        │        │                    │ ?type IN (wd:Q571, wd:Q7725634)                                                    │           │          │           │          │           ║
+║    │        │        │                    │ ]                                                                                  │           │          │           │          │           ║
+║    │        │        │                    │ joinType=join                                                                      │           │          │           │          │           ║
+║    │        │        │                    │ joinProjectionVars=[?item, ?type]                                                  │           │          │           │          │           ║
+║    │        │        │                    │ patternEstimate=490004                                                             │           │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 6  │ 7      │ -      │ PipelineJoin       │ pattern=distinct(?item, rdfs:label, ?label)                                        │ -         │ 3816     │ 21186     │ 5.55     │ 11630     ║
+║    │        │        │                    │ joinType=join                                                                      │           │          │           │          │           ║
+║    │        │        │                    │ joinProjectionVars=[?item, ?label]                                                 │           │          │           │          │           ║
+║    │        │        │                    │ constraints=[(lang(?label) = "en"^^xsd:string)]                                    │           │          │           │          │           ║
+║    │        │        │                    │ patternEstimate=965498808                                                          │           │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 7  │ 8      │ 9      │ ConditionalRouting │ condition=needsMaterialization((lang(?label) = "en"^^xsd:string))                  │ -         │ 21186    │ 21186     │ 1.00     │ 64        ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 8  │ 9      │ -      │ TermResolution     │ vars=[?label]                                                                      │ id2value  │ 21186    │ 21186     │ 1.00     │ 24204     ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 9  │ 10     │ -      │ Filter             │ condition=(lang(?label) = "en"^^xsd:string)                                        │ -         │ 21186    │ 2669      │ 0.13     │ 48        ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 10 │ 11     │ -      │ HashIndexBuild     │ solutionSet=solutionSet1                                                           │ -         │ 2669     │ 2566      │ 0.96     │ 52        ║
+║    │        │        │                    │ joinVars=[?item]                                                                   │           │          │           │          │           ║
+║    │        │        │                    │ sourceType=pipeline                                                                │           │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 11 │ 12     │ 14     │ Copy               │ -                                                                                  │ duplicate │ 2566     │ 5132      │ 2.00     │ 2         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 12 │ 13     │ -      │ Copy               │ -                                                                                  │ forward   │ 2566     │ 2566      │ 1.00     │ 0         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 13 │ 16     │ -      │ PipelineJoin       │ pattern=distinct(?item, wdt:P291, ?place)                                          │ -         │ 2566     │ 668       │ 0.26     │ 201       ║
+║    │        │        │                    │ joinType=join                                                                      │           │          │           │          │           ║
+║    │        │        │                    │ joinProjectionVars=[?item, ?place]                                                 │           │          │           │          │           ║
+║    │        │        │                    │ patternEstimate=451764                                                             │           │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 14 │ 15     │ -      │ Copy               │ -                                                                                  │ forward   │ 2566     │ 2566      │ 1.00     │ 0         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 15 │ 16     │ -      │ PipelineJoin       │ pattern=distinct(?item, wdt:P840, ?place)                                          │ -         │ 2566     │ 164       │ 0.06     │ 56        ║
+║    │        │        │                    │ joinType=join                                                                      │           │          │           │          │           ║
+║    │        │        │                    │ joinProjectionVars=[?item, ?place]                                                 │           │          │           │          │           ║
+║    │        │        │                    │ patternEstimate=193362                                                             │           │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 16 │ 17     │ -      │ Copy               │ -                                                                                  │ forward   │ 832      │ 832       │ 1.00     │ 0         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 17 │ 18     │ -      │ PipelineJoin       │ pattern=distinct(?place, wdt:P625, ?coord)                                         │ -         │ 832      │ 813       │ 0.98     │ 578       ║
+║    │        │        │                    │ joinType=join                                                                      │           │          │           │          │           ║
+║    │        │        │                    │ joinProjectionVars=[?place, ?coord]                                                │           │          │           │          │           ║
+║    │        │        │                    │ patternEstimate=20139212                                                           │           │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 18 │ 19     │ -      │ HashIndexJoin      │ solutionSet=solutionSet1                                                           │ -         │ 813      │ 2759      │ 3.39     │ 17        ║
+║    │        │        │                    │ joinType=optional                                                                  │           │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 19 │ 20     │ -      │ Projection         │ vars=[?item, ?label, ?coord, ?place]                                               │ retain    │ 2759     │ 2759      │ 1.00     │ 2         ║
+╟────┼────────┼────────┼────────────────────┼────────────────────────────────────────────────────────────────────────────────────┼───────────┼──────────┼───────────┼──────────┼───────────╢
+║ 20 │ -      │ -      │ TermResolution     │ vars=[?item, ?label, ?coord, ?place]                                               │ id2value  │ 2759     │ 2759      │ 1.00     │ 4269      ║
+╚════╧════════╧════════╧════════════════════╧════════════════════════════════════════════════════════════════════════════════════╧═══════════╧══════════╧═══════════╧══════════╧═══════════╝
+

@@ -1,0 +1,79 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+#Wikisource pages for authors of scientific articles, ordered by Wikisource language
+#added in 2017-09
+SELECT DISTINCT ?item ?wikisourceSitelink ?wikisourceLanguage WHERE {
+  ?wikisourceSitelink schema:isPartOf [ wikibase:wikiGroup "wikisource" ];
+                      schema:inLanguage ?wikisourceLanguage;
+                      schema:about ?item.
+  ?paper wdt:P31 wd:Q13442814;
+         wdt:P50 ?item.
+}
+ORDER BY ?wikisourceLanguage
+LIMIT 300
+
+The Query Plan:
+
+Profiling results:
+Query executed in 37365 ms and returned 300 result(s)
+Total used memory: 705K
+Pre-execution time: 77 ms (0.2%)
+Post-processing time: 108 ms (0.3%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Slice(offset=0, limit=300) [#1], results: 300, wall time: 1 ms (0.0%)
+`─ OrderBy(ASC(?wikisourceLanguage), offset=0, limit=300) [#1], results: 300, wall time: 24 ms (0.1%)
+   `─ Distinct [#1], memory: 352K (50.0%), results: 2.4K, wall time: 21 ms (0.1%)
+      `─ Projection(?item, ?wikisourceSitelink, ?wikisourceLanguage) [#1], results: 40K, wall time: 8 ms (0.0%)
+         `─ DirectHashJoin(?paper) [#1], results: 40K, wall time: 363 ms (1.0%)
+            +─ DirectHashJoin(?item) [#1], results: 1.7M, wall time: 898 ms (2.4%)
+            │  +─ DirectHashJoin(?wikisourceSitelink) [#1], results: 1.7M, wall time: 1342 ms (3.6%)
+            │  │  +─ MergeJoin(?_anon_1) [#1], results: 1.7M, wall time: 409 ms (1.1%)
+            │  │  │  +─ Scan[POSC](?_anon_1, <http://wikiba.se/ontology#wikiGroup>, "wikisource") [#1], results: 74 (with gaps), wall time: 1 ms (0.0%)
+            │  │  │  `─ Scan[POSC](?wikisourceSitelink, <http://schema.org/isPartOf>, ?_anon_1) [#80.3M], results: 1.7M (with gaps), wall time: 629 ms (1.7%)
+            │  │  `─ MergeJoin(?wikisourceSitelink) [#80.4M], results: 3.4M (with gaps), wall time: 2504 ms (6.7%)
+            │  │     +─ Scan[PSOC](?wikisourceSitelink, <http://schema.org/inLanguage>, ?wikisourceLanguage) [#80.3M], results: 4.6M (with gaps), wall time: 12567 ms (33.6%)
+            │  │     `─ Scan[PSOC](?wikisourceSitelink, <http://schema.org/about>, ?item) [#179.1M], results: 4.9M (with gaps), wall time: 10942 ms (29.3%)
+            │  `─ Scan[POSC](?paper, <http://www.wikidata.org/prop/direct/P50>, ?item) [#21.6M], results: 3.4M (with gaps), wall time: 4503 ms (12.1%)
+            `─ Scan[POSC](?paper, <http://www.wikidata.org/prop/direct/P31>, <http://www.wikidata.org/entity/Q13442814>) [#37.4M], results: 1.7M (with gaps), wall time: 2967 ms (7.9%)
+

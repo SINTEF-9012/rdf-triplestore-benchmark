@@ -1,0 +1,24 @@
+plan
+"PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT DISTINCT ?subProperties ?subPropertiesLabel
+{
+  { # Arbitrary length path '*'
+    
+    { # ----- Begin optimization group 1 -----
+      
+      ?subProperties wdt:P1647 wd:P276 . # 	Collection size: 20.0	Predicate collection size: 740.0	Unique subjects: 691.0	Unique objects: 215.0	Current complexity: 20.0
+      
+    } # ----- End optimization group 1 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 20.0
+    
+  } # Traverse this arbitrary length path 0 or more times.
+  # WARNING: Arbitrary length paths (property paths that use '+' and/or '*') are not interpreted by GraphDB's query model, i.e. they are evaluated by Sesame. They may fragment query groups and suppress optimization. If the following statement patterns (if any) are isolated in separate groups, you'd better surround the arbitrary length path with brackets.
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

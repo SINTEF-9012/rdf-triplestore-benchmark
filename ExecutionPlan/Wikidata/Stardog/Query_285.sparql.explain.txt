@@ -1,0 +1,82 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT distinct ?book ?bookLabel ?authorLabel (GROUP_CONCAT(?genre_label) as ?genres) (MIN(?publicationDate) as ?firstPublication)
+WHERE
+{
+  ?author rdfs:label "Ernest Hemingway"@en .
+  ?book wdt:P50 ?author .
+  OPTIONAL {
+    ?book wdt:P136 ?genre .
+    ?genre rdfs:label ?genre_label filter (lang(?genre_label) = "en").
+  }
+
+  OPTIONAL {
+    ?book wdt:P577 ?publicationDate .
+  }
+  #SERVICE wikibase:label {
+#    bd:serviceParam wikibase:language "en" .
+#  }
+} group by ?book ?bookLabel ?authorLabel
+
+The Query Plan:
+
+Profiling results:
+Query executed in 67783 ms and returned 75 result(s)
+Total used memory: 9.9G
+Pre-execution time: 13 ms (0.0%)
+Post-processing time: 16 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Distinct [#1], results: 75, wall time: 0 ms (0.0%)
+`─ Projection(?book, ?bookLabel, ?authorLabel, ?genres, ?firstPublication) [#1], results: 75, wall time: 0 ms (0.0%)
+   `─ Group(by=[?book, ?bookLabel, ?authorLabel] aggregates=[(MIN(?publicationDate) AS ?firstPublication) (GROUP_CONCAT(?genre_label) AS ?genres)]) [#1], memory: 352K (0.0%), results: 75, wall time: 10 ms (0.0%)
+      `─ DirectHashJoinOuter(?book) [#1], results: 80, wall time: 1 ms (0.0%)
+         +─ HashJoinOuter(?book)("en" = Lang(?genre_label)) [#1], memory: 5.0G (50.0%), results: 78, wall time: 53046 ms (78.3%)
+         │  +─ MergeJoin(?author) [#1], results: 75, wall time: 0 ms (0.0%)
+         │  │  +─ Scan[POSC](?author, rdfs:label, "Ernest Hemingway"@en) [#1], results: 2 (with gaps), wall time: 2 ms (0.0%)
+         │  │  `─ Scan[POSC](?book, <http://www.wikidata.org/prop/direct/P50>, ?author) [#21.6M], results: 77 (with gaps), wall time: 0 ms (0.0%)
+         │  `─ MergeJoin(?genre) [#106.9M], results: 106.9M, wall time: 13780 ms (20.3%)
+         │     +─ Scan[PSOC](?genre, rdfs:label, ?genre_label) [#586.7M], results: 272K (with gaps), wall time: 173 ms (0.3%)
+         │     `─ Scan[POSC](?book, <http://www.wikidata.org/prop/direct/P136>, ?genre) [#1.5M], results: 1.5M (with gaps), wall time: 676 ms (1.0%)
+         `─ Scan[PSOC](?book, <http://www.wikidata.org/prop/direct/P577>, ?publicationDate) [#39.8M], results: 139 (with gaps), wall time: 51 ms (0.1%)
+

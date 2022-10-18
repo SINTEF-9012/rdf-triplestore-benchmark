@@ -1,0 +1,72 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT ?work ?title
+WHERE
+{
+  ?work wdt:P31/wdt:P279* wd:Q838948;
+        wdt:P1476 ?title.
+  FILTER(REGEX(?title, "^\\w*(\\w{3})(\\W+\\w*\\1)+$", "i") && !REGEX(?title, "^(\\w+)(\\W+\\1)+$", "i")).
+}
+ORDER BY STR(?title)
+
+The Query Plan:
+
+Profiling results:
+Query executed in 659210 ms and hit an error: IllegalStateException: Cannot create a reader outside of a transaction!
+Total used memory: 513K
+Pre-execution time: 20 ms (0.0%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+OrderBy(ASC(?lxghuizg)) [#69.6M], memory: 256K (50.0%), results: 0, wall time: 28 ms (0.0%)
+`─ Bind(Str(?title) AS ?lxghuizg) sortedBy=?title [#69.6M], results: 261, wall time: 32 ms (0.0%)
+   `─ Projection(?work, ?title) [#69.6M], results: 261, wall time: 0 ms (0.0%)
+      `─ Filter(!(Regex(?title, "^(\\w+)(\\W+\\1)+$", "i"))) [#69.6M], results: 261, wall time: 2 ms (0.0%)
+         `─ BindJoin(?work) [#70.3M], results: 416, wall time: 2025 ms (0.3%)
+            +─ Filter(Regex(?title, "^\\w*(\\w{3})(\\W+\\w*\\1)+$", "i")) [#414K], results: 692, wall time: 654456 ms (99.3%)
+            │  `─ Scan[POSC](?work, <http://www.wikidata.org/prop/direct/P1476>, ?title) [#41.4M], results: 3.6M, wall time: 2645 ms (0.4%)
+            `─ DirectHashJoin(?kkbpnsjm) [#15823.2M]
+               +─ PropertyPath(?kkbpnsjm -> <http://www.wikidata.org/entity/Q838948>, minLength=0, reversed) [#480K]
+               │  `─ Scan[POSC](?kkbpnsjm, <http://www.wikidata.org/prop/direct/P279>, <http://www.wikidata.org/entity/Q838948>) [#226]
+               `─ Scan[POSC](?work, <http://www.wikidata.org/prop/direct/P31>, ?kkbpnsjm) [#97.7M]
+

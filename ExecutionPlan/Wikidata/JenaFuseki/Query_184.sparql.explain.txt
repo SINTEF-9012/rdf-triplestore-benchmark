@@ -1,0 +1,864 @@
+10:16:11 INFO  exec            :: QUERY
+  PREFIX  schema: <http://schema.org/>
+  PREFIX  pq:   <http://www.wikidata.org/prop/qualifier/>
+  PREFIX  bd:   <http://www.bigdata.com/rdf#>
+  PREFIX  pr:   <http://www.wikidata.org/prop/reference/>
+  PREFIX  ps:   <http://www.wikidata.org/prop/statement/>
+  PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
+  PREFIX  geof: <http://www.opengis.net/def/geosparql/function/>
+  PREFIX  wdt:  <http://www.wikidata.org/prop/direct/>
+  PREFIX  wds:  <http://www.wikidata.org/entity/statement/>
+  PREFIX  wdv:  <http://www.wikidata.org/value/>
+  PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>
+  PREFIX  skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX  psn:  <http://www.wikidata.org/prop/statement/value-normalized/>
+  PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX  pqn:  <http://www.wikidata.org/prop/qualifier/value-normalized/>
+  PREFIX  wd:   <http://www.wikidata.org/entity/>
+  PREFIX  geo:  <http://www.opengis.net/ont/geosparql#>
+  PREFIX  psv:  <http://www.wikidata.org/prop/statement/value/>
+  PREFIX  dct:  <http://purl.org/dc/terms/>
+  PREFIX  pqv:  <http://www.wikidata.org/prop/qualifier/value/>
+  PREFIX  ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+  PREFIX  wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+  PREFIX  wdref: <http://www.wikidata.org/reference/>
+  PREFIX  prov: <http://www.w3.org/ns/prov#>
+  PREFIX  cc:   <http://creativecommons.org/ns#>
+  PREFIX  wikibase: <http://wikiba.se/ontology#>
+  PREFIX  prn:  <http://www.wikidata.org/prop/reference/value-normalized/>
+  PREFIX  p:    <http://www.wikidata.org/prop/>
+  PREFIX  wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+  PREFIX  prv:  <http://www.wikidata.org/prop/reference/value/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  hint: <http://www.bigdata.com/queryHints#>
+  PREFIX  wdno: <http://www.wikidata.org/prop/novalue/>
+  
+  SELECT DISTINCT  ?pathway ?pathwayLabel ?pwpart ?pwpartLabel ?variant ?variantLabel ?disease ?diseaseLabel
+  WHERE
+    { VALUES ?predictor { p:P3354 p:P3355 p:P3356 p:P3357 p:P3358 p:P3359 }
+      VALUES ?predictorQualifier { pq:P2175 }
+      VALUES ?wpID { "WP2828" }
+      ?pathway  wdt:P2410  ?wpID ;
+                wdt:P527   ?pwpart .
+      ?disease (wdt:P279)+ wd:Q504775 .
+      ?variant  wdt:P3329   ?civicID ;
+                ?predictor  ?node ;
+                wdt:P3433   ?pwpart
+        { ?node  ?predictorStatement  ?drug_label ;
+                 ?predictorQualifier  ?disease
+        }
+      UNION
+        { ?node  ?predictorStatement  ?disease }
+    }
+10:16:11 INFO  exec            :: ALGEBRA
+  (distinct
+    (project (?pathway ?pathwayLabel ?pwpart ?pwpartLabel ?variant ?variantLabel ?disease ?diseaseLabel)
+      (join
+        (sequence
+          (table (vars ?wpID)
+            (row [?wpID "WP2828"])
+          )
+          (sequence
+            (table (vars ?predictorQualifier)
+              (row [?predictorQualifier <http://www.wikidata.org/prop/qualifier/P2175>])
+            )
+            (table (vars ?predictor)
+              (row [?predictor <http://www.wikidata.org/prop/P3354>])
+              (row [?predictor <http://www.wikidata.org/prop/P3355>])
+              (row [?predictor <http://www.wikidata.org/prop/P3356>])
+              (row [?predictor <http://www.wikidata.org/prop/P3357>])
+              (row [?predictor <http://www.wikidata.org/prop/P3358>])
+              (row [?predictor <http://www.wikidata.org/prop/P3359>])
+            ))
+          (sequence
+            (quadpattern
+              (quad <urn:x-arq:DefaultGraphNode> ?pathway <http://www.wikidata.org/prop/direct/P2410> ?wpID)
+              (quad <urn:x-arq:DefaultGraphNode> ?pathway <http://www.wikidata.org/prop/direct/P527> ?pwpart)
+            )
+            (graph <urn:x-arq:DefaultGraphNode>(path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>))
+            (quadpattern
+              (quad <urn:x-arq:DefaultGraphNode> ?variant <http://www.wikidata.org/prop/direct/P3329> ?civicID)
+              (quad <urn:x-arq:DefaultGraphNode> ?variant ?predictor ?node)
+              (quad <urn:x-arq:DefaultGraphNode> ?variant <http://www.wikidata.org/prop/direct/P3433> ?pwpart)
+            )))
+        (union
+          (quadpattern
+            (quad <urn:x-arq:DefaultGraphNode> ?node ?predictorStatement ?drug_label)
+            (quad <urn:x-arq:DefaultGraphNode> ?node ?predictorQualifier ?disease)
+          )
+          (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?node ?predictorStatement ?disease))))))
+10:16:11 INFO  exec            :: TDB2
+  (distinct
+    (project (?pathway ?pathwayLabel ?pwpart ?pwpartLabel ?variant ?variantLabel ?disease ?diseaseLabel)
+      (join
+        (sequence
+          (table (vars ?wpID)
+            (row [?wpID "WP2828"])
+          )
+          (sequence
+            (table (vars ?predictorQualifier)
+              (row [?predictorQualifier <http://www.wikidata.org/prop/qualifier/P2175>])
+            )
+            (table (vars ?predictor)
+              (row [?predictor <http://www.wikidata.org/prop/P3354>])
+              (row [?predictor <http://www.wikidata.org/prop/P3355>])
+              (row [?predictor <http://www.wikidata.org/prop/P3356>])
+              (row [?predictor <http://www.wikidata.org/prop/P3357>])
+              (row [?predictor <http://www.wikidata.org/prop/P3358>])
+              (row [?predictor <http://www.wikidata.org/prop/P3359>])
+            ))
+          (sequence
+            (quadpattern
+              (quad <urn:x-arq:DefaultGraphNode> ?pathway <http://www.wikidata.org/prop/direct/P2410> ?wpID)
+              (quad <urn:x-arq:DefaultGraphNode> ?pathway <http://www.wikidata.org/prop/direct/P527> ?pwpart)
+            )
+            (graph <urn:x-arq:DefaultGraphNode>(path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>))
+            (quadpattern
+              (quad <urn:x-arq:DefaultGraphNode> ?variant <http://www.wikidata.org/prop/direct/P3329> ?civicID)
+              (quad <urn:x-arq:DefaultGraphNode> ?variant ?predictor ?node)
+              (quad <urn:x-arq:DefaultGraphNode> ?variant <http://www.wikidata.org/prop/direct/P3433> ?pwpart)
+            )))
+        (union
+          (quadpattern
+            (quad <urn:x-arq:DefaultGraphNode> ?node ?predictorStatement ?drug_label)
+            (quad <urn:x-arq:DefaultGraphNode> ?node ?predictorQualifier ?disease)
+          )
+          (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?node ?predictorStatement ?disease))))))
+10:16:11 INFO  exec            :: Execute
+  ?pathway <http://www.wikidata.org/prop/direct/P2410> ?wpID
+  ?pathway <http://www.wikidata.org/prop/direct/P527> ?pwpart
+10:16:11 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:11 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: Execute
+  ?variant <http://www.wikidata.org/prop/direct/P3433> ?pwpart
+  ?variant <http://www.wikidata.org/prop/direct/P3329> ?civicID
+  ?variant ?predictor ?node
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (quadpattern
+    (quad <urn:x-arq:DefaultGraphNode> ?node ?predictorStatement ?drug_label)
+    (quad <urn:x-arq:DefaultGraphNode> ?node ?predictorQualifier ?disease)
+  )
+10:16:12 INFO  exec            :: Execute
+  ?node ?predictorStatement ?drug_label
+  ?node ?predictorQualifier ?disease
+10:16:12 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?node ?predictorStatement ?disease))
+10:16:12 INFO  exec            :: Execute ::   ?node ?predictorStatement ?disease
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:12 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:12 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:13 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:13 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:14 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:14 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:15 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:15 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:15 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:15 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:15 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:15 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:15 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:15 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:15 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:15 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:15 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:15 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:15 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:15 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:15 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:15 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775
+10:16:15 INFO  exec            :: TDB2
+  (path ?disease (path+ <http://www.wikidata.org/prop/direct/P279>) <http://www.wikidata.org/entity/Q504775>)
+10:16:15 INFO  exec            :: Path :: ?disease (<http://www.wikidata.org/prop/direct/P279>)+ http://www.wikidata.org/entity/Q504775

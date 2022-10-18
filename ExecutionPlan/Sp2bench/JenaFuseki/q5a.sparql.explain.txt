@@ -1,0 +1,48 @@
+Picked up _JAVA_OPTIONS: -Djava.io.tmpdir=/data/java/tmp
+12:13:43 INFO  exec            :: QUERY
+  PREFIX  bench: <http://localhost/vocabulary/bench/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  foaf: <http://xmlns.com/foaf/0.1/>
+  PREFIX  dc:   <http://purl.org/dc/elements/1.1/>
+  
+  SELECT DISTINCT  ?person ?name
+  WHERE
+    { ?article  rdf:type    bench:Article ;
+                dc:creator  ?person .
+      ?inproc   rdf:type    bench:Inproceedings ;
+                dc:creator  ?person2 .
+      ?person   foaf:name   ?name .
+      ?person2  foaf:name   ?name2
+      FILTER ( ?name = ?name2 )
+    }
+12:13:43 INFO  exec            :: ALGEBRA
+  (distinct
+    (project (?person ?name)
+      (filter (= ?name ?name2)
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?article <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost/vocabulary/bench/Article>)
+          (quad <urn:x-arq:DefaultGraphNode> ?article <http://purl.org/dc/elements/1.1/creator> ?person)
+          (quad <urn:x-arq:DefaultGraphNode> ?inproc <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost/vocabulary/bench/Inproceedings>)
+          (quad <urn:x-arq:DefaultGraphNode> ?inproc <http://purl.org/dc/elements/1.1/creator> ?person2)
+          (quad <urn:x-arq:DefaultGraphNode> ?person <http://xmlns.com/foaf/0.1/name> ?name)
+          (quad <urn:x-arq:DefaultGraphNode> ?person2 <http://xmlns.com/foaf/0.1/name> ?name2)
+        ))))
+12:13:43 INFO  exec            :: TDB2
+  (distinct
+    (project (?person ?name)
+      (filter (= ?name ?name2)
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?article <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost/vocabulary/bench/Article>)
+          (quad <urn:x-arq:DefaultGraphNode> ?article <http://purl.org/dc/elements/1.1/creator> ?person)
+          (quad <urn:x-arq:DefaultGraphNode> ?inproc <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost/vocabulary/bench/Inproceedings>)
+          (quad <urn:x-arq:DefaultGraphNode> ?inproc <http://purl.org/dc/elements/1.1/creator> ?person2)
+          (quad <urn:x-arq:DefaultGraphNode> ?person <http://xmlns.com/foaf/0.1/name> ?name)
+          (quad <urn:x-arq:DefaultGraphNode> ?person2 <http://xmlns.com/foaf/0.1/name> ?name2)
+        ))))
+12:13:43 INFO  exec            :: Execute
+  ?article rdf:type <http://localhost/vocabulary/bench/Article>
+  ?article <http://purl.org/dc/elements/1.1/creator> ?person
+  ?person <http://xmlns.com/foaf/0.1/name> ?name
+  ?inproc rdf:type <http://localhost/vocabulary/bench/Inproceedings>
+  ?inproc <http://purl.org/dc/elements/1.1/creator> ?person2
+  ?person2 <http://xmlns.com/foaf/0.1/name> ?name2

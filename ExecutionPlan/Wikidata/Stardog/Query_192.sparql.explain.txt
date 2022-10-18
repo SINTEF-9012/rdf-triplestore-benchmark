@@ -1,0 +1,84 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT * WHERE {
+  {
+    SELECT ?cell_line ?cell_line_name WHERE {
+      ?cell_line wdt:P31 wd:Q21014462;
+                 rdfs:label ?cell_line_name.
+          FILTER(LANG(?cell_line_name) = "en").
+          Filter REGEX(STR(?cell_line_name), "^[\\w\\-\\.]+\\.[A-z]+$")
+    }
+  }
+  ?tld wdt:P31/wdt:P279* wd:Q14296;
+       rdfs:label ?tld_name.
+  FILTER(LANG(?tld_name) = "en").
+  FILTER REGEX(STR(?cell_line_name), CONCAT(REPLACE(?tld_name, "\\.", "\\\\."), "$"), "i")
+  BIND(URI(CONCAT("http://", ?cell_line_name)) as ?url)
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 49892 ms and returned 143 result(s)
+Pre-execution time: 46 ms (0.1%)
+Post-processing time: 14 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Projection(?cell_line, ?cell_line_name, ?tld, ?tld_name, ?url) [#1], results: 143, wall time: 1 ms (0.0%)
+`─ Filter(Regex(Str(?cell_line_name), CONCAT(REPLACE(?tld_name, "\\.", "\\\\."), "$"), "i")) [#1], results: 143, wall time: 1282 ms (2.6%)
+   `─ Bind(IRI(CONCAT("http://", ?cell_line_name)) AS ?url) sortedBy=?cell_line [#1], results: 736K, wall time: 675 ms (1.4%)
+      `─ NestedLoopJoin(_) [#1], results: 736K, wall time: 202 ms (0.4%)
+         +─ Projection(?cell_line, ?cell_line_name) [#1], results: 434, wall time: 1 ms (0.0%)
+         │  `─ Filter(Regex(Str(?cell_line_name), "^[\\w\\-\\.]+\\.[A-z]+$")) [#1], results: 434, wall time: 191 ms (0.4%)
+         │     `─ Filter("en" = Lang(?cell_line_name)) [#1], results: 131K, wall time: 24163 ms (48.4%)
+         │        `─ MergeJoin(?cell_line) [#1.7M], results: 1.1M, wall time: 587 ms (1.2%)
+         │           +─ Scan[POSC](?cell_line, <http://www.wikidata.org/prop/direct/P31>, <http://www.wikidata.org/entity/Q21014462>) [#129K], results: 131K (with gaps), wall time: 528 ms (1.1%)
+         │           `─ Scan[PSOC](?cell_line, rdfs:label, ?cell_line_name) [#586.7M], results: 1.1M (with gaps), wall time: 1164 ms (2.3%)
+         `─ Filter("en" = Lang(?tld_name)) [#1], results: 736K, wall time: 8264 ms (16.6%)
+            `─ DirectHashJoin(?tld) [#4.1K], results: 16.6M, wall time: 4633 ms (9.3%)
+               +─ DirectHashJoin(?cdibfvqc) [#645], results: 736K, wall time: 256 ms (0.5%)
+               │  +─ PropertyPath(?cdibfvqc -> <http://www.wikidata.org/entity/Q14296>, minLength=0, reversed) [#106K], results: 3.9K, wall time: 49 ms (0.1%)
+               │  │  `─ Scan[POSC](?cdibfvqc, <http://www.wikidata.org/prop/direct/P279>, <http://www.wikidata.org/entity/Q14296>) [#165]
+               │  `─ Scan[POSC](?tld, <http://www.wikidata.org/prop/direct/P31>, ?cdibfvqc) [#97.7M], results: 741K (with gaps), wall time: 327 ms (0.7%)
+               `─ Scan[PSOC](?tld, rdfs:label, ?tld_name) [#586.7M], results: 17.3M (with gaps), wall time: 7508 ms (15.0%)
+

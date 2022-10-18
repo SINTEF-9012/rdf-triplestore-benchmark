@@ -1,0 +1,26 @@
+Explaining Query:
+
+PREFIX person: <http://localhost/persons/>
+
+SELECT ?subject ?predicate
+WHERE {
+  ?subject ?predicate person:Paul_Erdoes
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 300 ms and returned 656 result(s)
+Pre-execution time: 132 ms (44.0%)
+Post-processing time: 163 ms (54.3%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Projection(?subject, ?predicate) [#100], results: 656, wall time: 1 ms (0.3%)
+`─ Scan[OSPC](?subject, ?predicate, <http://localhost/persons/Paul_Erdoes>) [#100], results: 656, wall time: 2 ms (0.7%)
+

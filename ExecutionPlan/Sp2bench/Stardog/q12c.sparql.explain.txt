@@ -1,0 +1,27 @@
+Explaining Query:
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX person: <http://localhost/persons/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+ASK {
+  person:John_Q_Public rdf:type foaf:Person .
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 110 ms and returned 1 result(s)
+Pre-execution time: 110 ms (100.0%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Slice(offset=0, limit=1) [#1], results: 0, wall time: 0 ms (0.0%)
+`─ Scan[SPOC](<http://localhost/persons/John_Q_Public>, rdf:type, <http://xmlns.com/foaf/0.1/Person>) [#1], results: 0, wall time: 0 ms (0.0%)
+

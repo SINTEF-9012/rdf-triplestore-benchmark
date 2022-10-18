@@ -1,0 +1,55 @@
+plan
+"PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?country ?countryLabel ?wikiPersons ?population ?wikiPersonsPerM
+{
+  {
+    SELECT ?country (COUNT(*) AS ?wikiPersons)
+    {
+      {
+        SELECT DISTINCT ?person ?country
+        {
+          
+          { # ----- Begin optimization group 1 -----
+            
+            wd:Q458 wdt:P150 ?country . # 	Collection size: 27.0	Predicate collection size: 1031409.0	Unique subjects: 78170.0	Unique objects: 1000916.0	Current complexity: 27.0
+            ?person wdt:P27 ?country . # 	Collection size: 4232771.0	Predicate collection size: 4232771.0	Unique subjects: 3917145.0	Unique objects: 4425.0	Current complexity: 25827.077288135595
+            FILTER (!(EXISTS {
+            PREFIX wd: <http://www.wikidata.org/entity/>
+              PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+              
+              { # ----- Begin optimization group 2 -----
+              
+              ?person wdt:P570 ?date . # 	Collection size: 2718997.0	Predicate collection size: 2718997.0	Unique subjects: 2665536.0	Unique objects: 197741.0	Current complexity: 2718997.0
+              
+              } # ----- End optimization group 2 -----
+              # ESTIMATED NUMBER OF ITERATIONS: 2718997.0            
+            }))
+            ?person wdt:P31 wd:Q5 . # 	Collection size: 9398589.0	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 25827.077288135595
+            
+          } # ----- End optimization group 1 -----
+          # ESTIMATED NUMBER OF ITERATIONS: 25827.077288135595
+          
+        }
+      }
+    }
+    GROUP BY ?country
+  }
+  
+  { # ----- Begin optimization group 4 -----
+    
+    ?country wdt:P1082 ?population . # 	Collection size: 707068.0	Predicate collection size: 707068.0	Unique subjects: 591421.0	Unique objects: 70108.0	Current complexity: 707068.0
+    
+  } # ----- End optimization group 4 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 707068.0
+  
+  BIND (numeric-round(((?wikiPersons / ?population) * 1000000)) AS ?wikiPersonsPerM)
+}
+ORDER BY DESC(?wikiPersonsPerM)
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

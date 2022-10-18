@@ -1,0 +1,36 @@
+plan
+"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT DISTINCT ?predicate
+{
+  {
+    
+    { # ----- Begin optimization group 1 -----
+      
+      ?person rdf:type foaf:Person . # 	Collection size: 1.2558E7	Predicate collection size: 2.2414735E7	Unique subjects: 2.2414726E7	Unique objects: 19.0	Current complexity: 1.2558E7
+      ?subject ?predicate ?person . # 	Collection size: 1.25000246E8	Predicate collection size: 1.25000246E8	Unique subjects: 1.0583023E8	Unique objects: 6.0077553E7	Current complexity: 2.6128778734846275E7
+      
+    } # ----- End optimization group 1 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 2.6128778734846275E7
+    
+  }
+  UNION
+  {
+    
+    { # ----- Begin optimization group 2 -----
+      
+      ?person rdf:type foaf:Person . # 	Collection size: 1.2558E7	Predicate collection size: 2.2414735E7	Unique subjects: 2.2414726E7	Unique objects: 19.0	Current complexity: 1.2558E7
+      ?person ?predicate ?object . # 	Collection size: 1.25000246E8	Predicate collection size: 1.25000246E8	Unique subjects: 1.0583023E8	Unique objects: 6.0077553E7	Current complexity: 1.483274759270579E7
+      
+    } # ----- End optimization group 2 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 1.483274759270579E7
+    
+  }
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

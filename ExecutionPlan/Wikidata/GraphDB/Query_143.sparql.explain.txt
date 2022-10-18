@@ -1,0 +1,47 @@
+plan
+"PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+
+SELECT ?occ ?occLabel ?avgAge ?avgBirthYear ?count
+{
+  {
+    SELECT ?occ (COUNT(?p) AS ?count) (numeric-round(?_anon_d7dd66af_5dff_4919_81e3_d83556ac3023) AS ?avgBirthYear) (AVG((?deathYear - ?birthYear)) AS ?avgAge)
+    {
+      {
+        SELECT ?p ?occ (AVG(year-from-dateTime(?birth)) AS ?birthYear) (AVG(year-from-dateTime(?death)) AS ?deathYear)
+        {
+          
+          { # ----- Begin optimization group 1 -----
+            
+            ?_anon_7f72f7bb_a9f7_4047_a332_e96c924d53da wikibase:timePrecision 9 . # 	Collection size: 23335.0	Predicate collection size: 359716.0	Unique subjects: 359716.0	Unique objects: 13.0	Current complexity: 23335.0
+            ?_anon_7f72f7bb_a9f7_4047_a332_e96c924d53da wikibase:timeValue ?death . # 	Collection size: 359716.0	Predicate collection size: 359716.0	Unique subjects: 359716.0	Unique objects: 269997.0	Current complexity: 23335.0
+            ?_anon_c0aa574b_163b_4f5b_9f8d_0438c30f8792 psv:P570 ?_anon_7f72f7bb_a9f7_4047_a332_e96c924d53da . # 	Collection size: 2738785.0	Predicate collection size: 2738785.0	Unique subjects: 2738785.0	Unique objects: 206300.0	Current complexity: 309789.3745758604
+            ?p p:P570 ?_anon_c0aa574b_163b_4f5b_9f8d_0438c30f8792 . # 	Collection size: 2758278.0	Predicate collection size: 2758278.0	Unique subjects: 2665954.0	Unique objects: 2758278.0	Current complexity: 309789.3745758604
+            ?p wdt:P31 wd:Q5 . # 	Collection size: 9398589.0	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 309789.3745758604
+            ?p p:P569 ?_anon_5472f840_6aa3_46a5_8152_39fc5563011a . # 	Collection size: 5395617.0	Predicate collection size: 5395617.0	Unique subjects: 5262224.0	Unique objects: 5395617.0	Current complexity: 317642.2774630803
+            ?_anon_5472f840_6aa3_46a5_8152_39fc5563011a psv:P569 ?_anon_fecdfac1_1b59_4d95_8aa5_f11933c09305 . # 	Collection size: 5377162.0	Predicate collection size: 5377162.0	Unique subjects: 5377162.0	Unique objects: 189578.0	Current complexity: 317642.2774630803
+            ?_anon_fecdfac1_1b59_4d95_8aa5_f11933c09305 wikibase:timePrecision 9 . # 	Collection size: 23335.0	Predicate collection size: 359716.0	Unique subjects: 359716.0	Unique objects: 13.0	Current complexity: 317642.2774630803
+            ?_anon_fecdfac1_1b59_4d95_8aa5_f11933c09305 wikibase:timeValue ?birth . # 	Collection size: 359716.0	Predicate collection size: 359716.0	Unique subjects: 359716.0	Unique objects: 269997.0	Current complexity: 317642.2774630803
+            ?p wdt:P106 ?occ . # 	Collection size: 8878333.0	Predicate collection size: 8878333.0	Unique subjects: 6693815.0	Unique objects: 16820.0	Current complexity: 421304.43016360956
+            
+          } # ----- End optimization group 1 -----
+          # ESTIMATED NUMBER OF ITERATIONS: 421304.43016360956
+          
+        }
+        GROUP BY ?p ?occ
+      }
+    }
+    GROUP BY ?occ
+  }
+  FILTER (?count > 300)
+}
+ORDER BY ASC(?avgAge)
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

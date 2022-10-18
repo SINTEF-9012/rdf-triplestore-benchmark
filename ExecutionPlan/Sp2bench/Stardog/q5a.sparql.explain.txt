@@ -1,0 +1,48 @@
+Explaining Query:
+
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
+PREFIX bench: <http://localhost/vocabulary/bench/>
+PREFIX dc:    <http://purl.org/dc/elements/1.1/>
+
+SELECT DISTINCT ?person ?name
+WHERE {
+  ?article rdf:type bench:Article .
+  ?article dc:creator ?person .
+  ?inproc rdf:type bench:Inproceedings .
+  ?inproc dc:creator ?person2 .
+  ?person foaf:name ?name .
+  ?person2 foaf:name ?name2 .
+  FILTER (?name=?name2)
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 448609 ms and hit an error: OperatorException.Cancelled: Query execution cancelled: Execution time exceeded query timeout 300000
+Total used memory: 2.9G
+Pre-execution time: 11 ms (0.0%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Distinct [#61668370.4M], memory: 224K (0.0%), results: 12, wall time: 1 ms (0.0%)
+`─ Projection(?person, ?name) [#61668370.4M], results: 1.0K, wall time: 0 ms (0.0%)
+   `─ Filter(?name = ?name2) [#61668370.4M], results: 1.0K, wall time: 112092 ms (25.0%)
+      `─ NestedLoopJoin(_) [#123336740.7M], results: 137.3M, wall time: 21674 ms (4.8%)
+         +─ HashJoin(?person2) [#23.2M], memory: 940M (31.7%), results: 26, wall time: 6083 ms (1.4%)
+         │  +─ MergeJoin(?inproc) [#23.2M], results: 26, wall time: 0 ms (0.0%)
+         │  │  +─ Scan[POSC](?inproc, rdf:type, <http://localhost/vocabulary/bench/Inproceedings>) [#7.7M], results: 11 (with gaps), wall time: 0 ms (0.0%)
+         │  │  `─ Scan[PSOC](?inproc, <http://purl.org/dc/elements/1.1/creator>, ?person2) [#28.6M], results: 26 (with gaps), wall time: 0 ms (0.0%)
+         │  `─ Scan[POSC](?person2, <http://xmlns.com/foaf/0.1/name>, ?name2) [#12.6M], results: 12.6M, wall time: 2969 ms (0.7%)
+         `─ HashJoin(?person) [#5.3M], memory: 543M (18.3%), results: 137.3M, wall time: 214799 ms (47.9%)
+            +─ Scan[POSC](?person, <http://xmlns.com/foaf/0.1/name>, ?name) [#12.6M], results: 324.1M, wall time: 85616 ms (19.1%)
+            `─ MergeJoin(?article) [#5.3M], results: 5.3M, wall time: 1277 ms (0.3%)
+               +─ Scan[POSC](?article, rdf:type, <http://localhost/vocabulary/bench/Article>) [#1.9M], results: 1.9M (with gaps), wall time: 2366 ms (0.5%)
+               `─ Scan[PSOC](?article, <http://purl.org/dc/elements/1.1/creator>, ?person) [#28.6M], results: 5.3M (with gaps), wall time: 1720 ms (0.4%)
+

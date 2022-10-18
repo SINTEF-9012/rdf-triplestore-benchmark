@@ -1,0 +1,65 @@
+Explaining Query:
+
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX swrc:    <http://swrc.ontoware.org/ontology#>
+PREFIX foaf:    <http://xmlns.com/foaf/0.1/>
+PREFIX bench:   <http://localhost/vocabulary/bench/>
+PREFIX dc:      <http://purl.org/dc/elements/1.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+SELECT ?inproc ?author ?booktitle ?title 
+       ?proc ?ee ?page ?url ?yr ?abstract
+WHERE {
+  ?inproc rdf:type bench:Inproceedings .
+  ?inproc dc:creator ?author .
+  ?inproc bench:booktitle ?booktitle .
+  ?inproc dc:title ?title .
+  ?inproc dcterms:partOf ?proc .
+  ?inproc rdfs:seeAlso ?ee .
+  ?inproc swrc:pages ?page .
+  ?inproc foaf:homepage ?url .
+  ?inproc dcterms:issued ?yr .
+  OPTIONAL {
+    ?inproc bench:abstract ?abstract
+  }
+}
+ORDER BY ?yr
+
+The Query Plan:
+
+Profiling results:
+Query executed in 284711 ms and returned 11496005 result(s)
+Total used memory: 5.0G
+Pre-execution time: 372 ms (0.1%)
+Post-processing time: 155130 ms (54.5%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+OrderBy(ASC(?yr)) [#11.5M], memory: 2.5G (50.0%), results: 11.5M, wall time: 43820 ms (15.4%)
+`─ Projection(?inproc, ?author, ?booktitle, ?title, ?proc, ?ee, ?page, ?url, ?yr, ?abstract) [#11.5M], results: 11.5M, wall time: 2509 ms (0.9%)
+   `─ MergeJoinOuter(?inproc) [#11.5M], results: 11.5M, wall time: 2788 ms (1.0%)
+      +─ MergeJoin(?inproc) [#11.5M], results: 11.5M, wall time: 4625 ms (1.6%)
+      │  +─ MergeJoin(?inproc) [#4.8M], results: 4.7M (with gaps), wall time: 2748 ms (1.0%)
+      │  │  +─ MergeJoin(?inproc) [#7.4M], results: 6.3M (with gaps), wall time: 3236 ms (1.1%)
+      │  │  │  +─ Scan[PSOC](?inproc, <http://purl.org/dc/terms/issued>, ?yr) [#7.9M], results: 6.7M (with gaps), wall time: 5683 ms (2.0%)
+      │  │  │  `─ Scan[PSOC](?inproc, <http://swrc.ontoware.org/ontology#pages>, ?page) [#9.1M], results: 6.3M (with gaps), wall time: 5515 ms (1.9%)
+      │  │  `─ MergeJoin(?inproc) [#7.7M], results: 4.9M (with gaps), wall time: 2180 ms (0.8%)
+      │  │     +─ Scan[POSC](?inproc, rdf:type, <http://localhost/vocabulary/bench/Inproceedings>) [#7.7M], results: 5.2M (with gaps), wall time: 7369 ms (2.6%)
+      │  │     `─ MergeJoin(?inproc) [#5.1M], results: 4.9M (with gaps), wall time: 2742 ms (1.0%)
+      │  │        +─ Scan[PSOC](?inproc, <http://xmlns.com/foaf/0.1/homepage>, ?url) [#9.7M], results: 6.6M (with gaps), wall time: 6116 ms (2.1%)
+      │  │        `─ MergeJoin(?inproc) [#5.1M], results: 4.9M (with gaps), wall time: 2562 ms (0.9%)
+      │  │           +─ Scan[PSOC](?inproc, rdfs:seeAlso, ?ee) [#6.3M], results: 4.9M (with gaps), wall time: 3490 ms (1.2%)
+      │  │           `─ Scan[PSOC](?inproc, <http://localhost/vocabulary/bench/booktitle>, ?booktitle) [#7.9M], results: 6.2M (with gaps), wall time: 5406 ms (1.9%)
+      │  `─ MergeJoin(?inproc) [#18.6M], results: 13.1M (with gaps), wall time: 5483 ms (1.9%)
+      │     +─ Scan[PSOC](?inproc, <http://purl.org/dc/elements/1.1/creator>, ?author) [#28.6M], results: 14.2M (with gaps), wall time: 9858 ms (3.5%)
+      │     `─ MergeJoin(?inproc) [#6.2M], results: 5.4M (with gaps), wall time: 2812 ms (1.0%)
+      │        +─ Scan[PSOC](?inproc, <http://purl.org/dc/terms/partOf>, ?proc) [#6.2M], results: 5.4M (with gaps), wall time: 2430 ms (0.9%)
+      │        `─ Scan[PSOC](?inproc, <http://purl.org/dc/elements/1.1/title>, ?title) [#9.8M], results: 6.2M (with gaps), wall time: 5597 ms (2.0%)
+      `─ Scan[PSOC](?inproc, <http://localhost/vocabulary/bench/abstract>, ?abstract) [#96K], results: 90K (with gaps), wall time: 126 ms (0.0%)
+

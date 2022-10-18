@@ -1,0 +1,35 @@
+plan
+"SELECT DISTINCT ?Person ?PersonLabel ?NobelPrizeLabel ?AcademyAwardLabel
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ArbitraryLengthPath ( min=0, from _anon_3f890f50_d11a_481b_bf40_a5a0981a48f0, to __const_c763f90d_uri) over {
+	 [ _anon_3f890f50_d11a_481b_bf40_a5a0981a48f0 http://www.wikidata.org/prop/direct/P31 http://www.wikidata.org/entity/Q7191 ]
+	 }  # Collection size: 500.0
+    ArbitraryLengthPath ( min=0, from NobelPrize, to _anon_3f890f50_d11a_481b_bf40_a5a0981a48f0) over {
+	 [ NobelPrize http://www.wikidata.org/prop/direct/P279 _anon_3f890f50_d11a_481b_bf40_a5a0981a48f0 ]
+	 }  # Collection size: 3.029014414E9
+    ArbitraryLengthPath ( min=0, from AcademyAward, to _anon_2d6f1408_d04f_40d9_ab08_bd3f7380730f) over {
+	 [ AcademyAward http://www.wikidata.org/prop/direct/P279 _anon_2d6f1408_d04f_40d9_ab08_bd3f7380730f ]
+	 }  # Collection size: 3.029014414E9
+    ArbitraryLengthPath ( min=0, from _anon_2d6f1408_d04f_40d9_ab08_bd3f7380730f, to __const_24ca1d0b_uri) over {
+	 [ _anon_2d6f1408_d04f_40d9_ab08_bd3f7380730f http://www.wikidata.org/prop/direct/P31 http://www.wikidata.org/entity/Q19020 ]
+	 }  # Collection size: 500.0
+    ArbitraryLengthPath ( min=0, from Person, to NobelPrize) over {
+	 [ Person http://www.wikidata.org/prop/direct/P166 NobelPrize ]
+	 }  # Collection size: 3.029014414E9
+    ArbitraryLengthPath ( min=0, from Person, to AcademyAward) over {
+	 [ Person http://www.wikidata.org/prop/direct/P166 AcademyAward ]
+	 }  # Collection size: 3.029014414E9
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 2.104482742029266E43
+  
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

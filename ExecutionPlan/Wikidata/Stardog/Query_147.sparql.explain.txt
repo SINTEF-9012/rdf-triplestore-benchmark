@@ -1,0 +1,80 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT  ?yearmonth (COUNT(?person) as ?count)
+WHERE
+{
+  ?person wdt:P31 wd:Q5;
+          p:P570/psv:P570 [
+                wikibase:timePrecision ?precision ;
+                wikibase:timeValue ?date ;
+              ] .
+  BIND(CONCAT(STR(YEAR(?date)),"-",STR(MONTH(?date))) as ?yearmonth).
+  FILTER( ?date >= "2000-01-01T00:00:00"^^xsd:dateTime )
+  FILTER( ?precision >= "10"^^xsd:integer ) # precision of at least month
+}
+GROUP BY ?yearmonth
+
+The Query Plan:
+
+Profiling results:
+Query executed in 18097 ms and returned 263 result(s)
+Total used memory: 561M
+Pre-execution time: 12 ms (0.1%)
+Post-processing time: 97 ms (0.5%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Projection(?yearmonth, ?count) [#93K], results: 263, wall time: 0 ms (0.0%)
+`─ Group(by=[?yearmonth] aggregates=[(COUNT(*) AS ?count)]) [#93K], memory: 352K (0.1%), results: 263, wall time: 289 ms (1.6%)
+   `─ Bind(CONCAT(Str(YEAR(?date)), "-", Str(MONTH(?date))) AS ?yearmonth) sortedBy=?person [#93K], results: 437K, wall time: 1621 ms (9.0%)
+      `─ HashJoin(?person) [#93K], memory: 66M (11.8%), results: 437K, wall time: 4521 ms (25.0%)
+         +─ Scan[POSC](?person, <http://www.wikidata.org/prop/direct/P31>, <http://www.wikidata.org/entity/Q5>) [#9.4M], results: 9.4M, wall time: 2469 ms (13.6%)
+         `─ HashJoin(?nhkyqlcj) [#27K], memory: 214M (38.2%), results: 438K, wall time: 1654 ms (9.1%)
+            +─ Filter("2000-01-01T00:00:00"^^xsd:dateTime <= ?date) [#273], results: 438K, wall time: 3610 ms (19.9%)
+            │  `─ Filter("10"^^xsd:integer <= ?precision) [#27K], results: 1.9M, wall time: 833 ms (4.6%)
+            │     `─ MergeJoin(?_anon_1) [#2.7M], results: 2.7M, wall time: 814 ms (4.5%)
+            │        +─ MergeJoin(?_anon_1) [#360K], results: 256K (with gaps), wall time: 112 ms (0.6%)
+            │        │  +─ Scan[PSOC](?_anon_1, <http://wikiba.se/ontology#timeValue>, ?date) [#360K], results: 256K (with gaps), wall time: 87 ms (0.5%)
+            │        │  `─ Scan[PSOC](?_anon_1, <http://wikiba.se/ontology#timePrecision>, ?precision) [#360K], results: 256K (with gaps), wall time: 105 ms (0.6%)
+            │        `─ Scan[POSC](?nhkyqlcj, <http://www.wikidata.org/prop/statement/value/P570>, ?_anon_1) [#2.7M], results: 2.7M (with gaps), wall time: 1165 ms (6.4%)
+            `─ Scan[POSC](?person, <http://www.wikidata.org/prop/P570>, ?nhkyqlcj) [#2.8M], results: 2.8M, wall time: 706 ms (3.9%)
+

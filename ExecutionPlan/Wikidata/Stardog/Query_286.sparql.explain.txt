@@ -1,0 +1,82 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+select distinct ?item ?authorLabel ?itemLabel ?image where {
+  ?item wdt:P31/wdt:P279* wd:Q234460.
+
+  ?author ?label 'Bram Stoker'.
+  ?item wdt:P50 ?author.
+
+  ?item rdfs:label ?itemLabel.
+  filter contains(lcase(?itemLabel), 'dracula').
+
+  optional {?item wdt:P18 ?image.}
+
+#  service wikibase:label {bd:serviceParam wikibase:language "[AUTO_LANGUAGE]".}
+} limit 50
+
+The Query Plan:
+
+Profiling results:
+Query executed in 1025 ms and returned 0 result(s)
+Total used memory: 384K
+Pre-execution time: 613 ms (59.8%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Slice(offset=0, limit=50) [#50], results: 0, wall time: 1 ms (0.1%)
+`─ Distinct [#59], memory: 192K (50.0%), results: 0, wall time: 75 ms (7.3%)
+   `─ Projection(?item, ?authorLabel, ?itemLabel, ?image) [#59], results: 0, wall time: 0 ms (0.0%)
+      `─ DirectHashJoinOuter(?item) [#59], results: 0, wall time: 0 ms (0.0%)
+         +─ Filter(CONTAINS(LCASE(?itemLabel), "dracula")) [#59], results: 0, wall time: 0 ms (0.0%)
+         │  `─ DirectHashJoin(?item) [#5.9K], results: 0, wall time: 0 ms (0.0%)
+         │     +─ BindJoin(?item) [#5.9K], results: 0, wall time: 308 ms (30.0%)
+         │     │  +─ MergeJoin(?author) [#7], results: 34, wall time: 2 ms (0.2%)
+         │     │  │  +─ Scan[OSC](?author, _, "Bram Stoker") [#94], results: 7 (with gaps), wall time: 8 ms (0.8%)
+         │     │  │  `─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P50>, ?author) [#21.6M], results: 41 (with gaps), wall time: 14 ms (1.4%)
+         │     │  `─ DirectHashJoin(?yrllnegr) [#5.9K]
+         │     │     +─ PropertyPath(?yrllnegr -> <http://www.wikidata.org/entity/Q234460>, minLength=0, reversed) [#895K]
+         │     │     │  `─ Scan[POSC](?yrllnegr, <http://www.wikidata.org/prop/direct/P279>, <http://www.wikidata.org/entity/Q234460>) [#151]
+         │     │     `─ Scan[POSC](?item, <http://www.wikidata.org/prop/direct/P31>, ?yrllnegr) [#97.7M]
+         │     `─ Scan[PSOC](?item, rdfs:label, ?itemLabel) [#586.7M], results: 0, wall time: 0 ms (0.0%)
+         `─ Scan[PSOC](?item, <http://www.wikidata.org/prop/direct/P18>, ?image) [#4.1M], results: 0, wall time: 0 ms (0.0%)
+

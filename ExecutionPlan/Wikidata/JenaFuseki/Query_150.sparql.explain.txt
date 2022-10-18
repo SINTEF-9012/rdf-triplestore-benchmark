@@ -1,0 +1,116 @@
+14:47:30 INFO  exec            :: QUERY
+  PREFIX  schema: <http://schema.org/>
+  PREFIX  pq:   <http://www.wikidata.org/prop/qualifier/>
+  PREFIX  bd:   <http://www.bigdata.com/rdf#>
+  PREFIX  pr:   <http://www.wikidata.org/prop/reference/>
+  PREFIX  ps:   <http://www.wikidata.org/prop/statement/>
+  PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
+  PREFIX  geof: <http://www.opengis.net/def/geosparql/function/>
+  PREFIX  wdt:  <http://www.wikidata.org/prop/direct/>
+  PREFIX  wds:  <http://www.wikidata.org/entity/statement/>
+  PREFIX  wdv:  <http://www.wikidata.org/value/>
+  PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>
+  PREFIX  skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX  psn:  <http://www.wikidata.org/prop/statement/value-normalized/>
+  PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX  pqn:  <http://www.wikidata.org/prop/qualifier/value-normalized/>
+  PREFIX  wd:   <http://www.wikidata.org/entity/>
+  PREFIX  geo:  <http://www.opengis.net/ont/geosparql#>
+  PREFIX  psv:  <http://www.wikidata.org/prop/statement/value/>
+  PREFIX  dct:  <http://purl.org/dc/terms/>
+  PREFIX  pqv:  <http://www.wikidata.org/prop/qualifier/value/>
+  PREFIX  ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+  PREFIX  wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+  PREFIX  wdref: <http://www.wikidata.org/reference/>
+  PREFIX  prov: <http://www.w3.org/ns/prov#>
+  PREFIX  cc:   <http://creativecommons.org/ns#>
+  PREFIX  wikibase: <http://wikiba.se/ontology#>
+  PREFIX  prn:  <http://www.wikidata.org/prop/reference/value-normalized/>
+  PREFIX  p:    <http://www.wikidata.org/prop/>
+  PREFIX  wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+  PREFIX  prv:  <http://www.wikidata.org/prop/reference/value/>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  hint: <http://www.bigdata.com/queryHints#>
+  PREFIX  wdno: <http://www.wikidata.org/prop/novalue/>
+  
+  SELECT  ?item ?itemLabel ?twitter ?LinkedIN ?politieke_partij ?politieke_partijLabel ?positie_op_lijst
+  WHERE
+    { ?item  p:P3602   ?node ;
+             wdt:P551  wd:Q12892
+      OPTIONAL
+        { ?item  wdt:P2002  ?twitter }
+      OPTIONAL
+        { ?item  wdt:P2035  ?LinkedIN }
+      ?node  ps:P3602  wd:Q16061881
+      OPTIONAL
+        { ?node  pq:P1545  ?positie_op_lijst }
+      OPTIONAL
+        { ?node  pq:P1268  ?politieke_partij }
+    }
+14:47:30 INFO  exec            :: ALGEBRA
+  (project (?item ?itemLabel ?twitter ?LinkedIN ?politieke_partij ?politieke_partijLabel ?positie_op_lijst)
+    (conditional
+      (conditional
+        (sequence
+          (conditional
+            (conditional
+              (quadpattern
+                (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/P3602> ?node)
+                (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P551> <http://www.wikidata.org/entity/Q12892>)
+              )
+              (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P2002> ?twitter)))
+            (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P2035> ?LinkedIN)))
+          (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?node <http://www.wikidata.org/prop/statement/P3602> <http://www.wikidata.org/entity/Q16061881>)))
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?node <http://www.wikidata.org/prop/qualifier/P1545> ?positie_op_lijst)))
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?node <http://www.wikidata.org/prop/qualifier/P1268> ?politieke_partij))))
+14:47:30 INFO  exec            :: TDB2
+  (project (?item ?itemLabel ?twitter ?LinkedIN ?politieke_partij ?politieke_partijLabel ?positie_op_lijst)
+    (conditional
+      (conditional
+        (sequence
+          (conditional
+            (conditional
+              (quadpattern
+                (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/P3602> ?node)
+                (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P551> <http://www.wikidata.org/entity/Q12892>)
+              )
+              (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P2002> ?twitter)))
+            (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?item <http://www.wikidata.org/prop/direct/P2035> ?LinkedIN)))
+          (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?node <http://www.wikidata.org/prop/statement/P3602> <http://www.wikidata.org/entity/Q16061881>)))
+        (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?node <http://www.wikidata.org/prop/qualifier/P1545> ?positie_op_lijst)))
+      (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?node <http://www.wikidata.org/prop/qualifier/P1268> ?politieke_partij))))
+14:47:30 INFO  exec            :: Execute
+  ?item <http://www.wikidata.org/prop/direct/P551> <http://www.wikidata.org/entity/Q12892>
+  ?item <http://www.wikidata.org/prop/P3602> ?node
+14:47:30 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q28861811> <http://www.wikidata.org/prop/direct/P2002> ?twitter))
+14:47:30 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q28861811> <http://www.wikidata.org/prop/direct/P2002> ?twitter
+14:47:30 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q28861811> <http://www.wikidata.org/prop/direct/P2035> ?LinkedIN))
+14:47:30 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q28861811> <http://www.wikidata.org/prop/direct/P2035> ?LinkedIN
+14:47:30 INFO  exec            :: Execute ::   ?node <http://www.wikidata.org/prop/statement/P3602> <http://www.wikidata.org/entity/Q16061881>
+14:47:30 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q28861811> <http://www.wikidata.org/prop/direct/P2002> ?twitter))
+14:47:30 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q28861811> <http://www.wikidata.org/prop/direct/P2002> ?twitter
+14:47:30 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q28861811> <http://www.wikidata.org/prop/direct/P2035> ?LinkedIN))
+14:47:30 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q28861811> <http://www.wikidata.org/prop/direct/P2035> ?LinkedIN
+14:47:30 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/statement/Q28861811-CD69EF33-F654-4C7A-86CD-85E8CFA13D65> <http://www.wikidata.org/prop/qualifier/P1545> ?positie_op_lijst))
+14:47:30 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/statement/Q28861811-CD69EF33-F654-4C7A-86CD-85E8CFA13D65> <http://www.wikidata.org/prop/qualifier/P1545> ?positie_op_lijst
+14:47:30 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/statement/Q28861811-CD69EF33-F654-4C7A-86CD-85E8CFA13D65> <http://www.wikidata.org/prop/qualifier/P1268> ?politieke_partij))
+14:47:30 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/statement/Q28861811-CD69EF33-F654-4C7A-86CD-85E8CFA13D65> <http://www.wikidata.org/prop/qualifier/P1268> ?politieke_partij
+14:47:31 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2230281> <http://www.wikidata.org/prop/direct/P2002> ?twitter))
+14:47:31 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q2230281> <http://www.wikidata.org/prop/direct/P2002> ?twitter
+14:47:31 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/Q2230281> <http://www.wikidata.org/prop/direct/P2035> ?LinkedIN))
+14:47:31 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/Q2230281> <http://www.wikidata.org/prop/direct/P2035> ?LinkedIN
+14:47:31 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/statement/Q2230281-445b41e5-4aaf-9e23-d7de-7f0a8b59cf11> <http://www.wikidata.org/prop/qualifier/P1545> ?positie_op_lijst))
+14:47:31 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/statement/Q2230281-445b41e5-4aaf-9e23-d7de-7f0a8b59cf11> <http://www.wikidata.org/prop/qualifier/P1545> ?positie_op_lijst
+14:47:31 INFO  exec            :: TDB2
+  (quadpattern (quad <urn:x-arq:DefaultGraphNode> <http://www.wikidata.org/entity/statement/Q2230281-445b41e5-4aaf-9e23-d7de-7f0a8b59cf11> <http://www.wikidata.org/prop/qualifier/P1268> ?politieke_partij))
+14:47:31 INFO  exec            :: Execute ::   <http://www.wikidata.org/entity/statement/Q2230281-445b41e5-4aaf-9e23-d7de-7f0a8b59cf11> <http://www.wikidata.org/prop/qualifier/P1268> ?politieke_partij
+Time: 0.260 sec

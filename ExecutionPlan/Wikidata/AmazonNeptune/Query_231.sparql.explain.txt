@@ -1,0 +1,157 @@
+Query:
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+# Finds authors who have published scientific articles together,
+# but whose Erdos numbers are more than one apart.
+# These would appear to violate the definition of the Erdos number.
+
+SELECT
+  # Q#s
+  ?paper
+  ?author1
+  ?author2
+  # title (either from title statement or label)
+  (IF(BOUND(?title), ?title, ?paperLabel) AS ?title)
+  # author labels (should be names) and their Erdos numbers
+  ?author1Label
+  ?erdos1
+  ?author2Label
+  ?erdos2
+  # distance between Erdos numbers
+  ?distance
+WHERE
+{
+  # paper, instance of or subclass of scientific article; also has two authors
+  ?paper wdt:P31/wdt:P279* wd:Q13442814;
+           wdt:P50 ?author1, ?author2.
+  # if it has a title, we’ll grab that as well, but it’s also okay if there’s no title
+  OPTIONAL { ?paper wdt:P1476 ?title. }
+  # grab Erdos numbers of the two authors
+  ?author1 wdt:P2021 ?erdos1.
+  ?author2 wdt:P2021 ?erdos2.
+  # introduce a new variable for the difference of the Erdos numbers
+  BIND(?erdos2 - ?erdos1 AS ?distance).
+  # select those cases where the distance is > 1
+  # (note: by *not* taking the absolute value of the distance, we avoid getting duplicated cases because the author variables might be swapped)
+  FILTER(?distance > 1).
+  # get *Label variables automagically
+  #SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+# sort by distance first (descending), then by first author, then by second author
+ORDER BY DESC(?distance) ?author1Label ?author2Label
+
+╔════╤════════╤════════╤════════════════════╤══════════════════════════════════════════════════════════════════════════════════════════════════════╤══════════╤══════════╤═══════════╤══════════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name               │ Arguments                                                                                            │ Mode     │ Units In │ Units Out │ Ratio    │ Time (ms) ║
+╠════╪════════╪════════╪════════════════════╪══════════════════════════════════════════════════════════════════════════════════════════════════════╪══════════╪══════════╪═══════════╪══════════╪═══════════╣
+║ 0  │ 1      │ -      │ SolutionInjection  │ solutions=[{}]                                                                                       │ -        │ 0        │ 1         │ 0.00     │ 0         ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 1  │ 2      │ -      │ HashIndexBuild     │ solutionSet=solutionSet1                                                                             │ -        │ 1        │ 1         │ 1.00     │ 1         ║
+║    │        │        │                    │ joinVars=[]                                                                                          │          │          │           │          │           ║
+║    │        │        │                    │ sourceType=pipeline                                                                                  │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 2  │ 3      │ -      │ PropertyPath       │ iterationTemplate=subQuery1                                                                          │ -        │ 1        │ 1175      │ 1175.00  │ 577       ║
+║    │        │        │                    │ leftTerm=?_internalVar1                                                                              │          │          │           │          │           ║
+║    │        │        │                    │ rightTerm=wd:Q13442814                                                                               │          │          │           │          │           ║
+║    │        │        │                    │ lowerBound=0                                                                                         │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 3  │ 4      │ -      │ Distinct           │ vars=[?_internalVar1]                                                                                │ -        │ 1175     │ 808       │ 0.69     │ 6         ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 4  │ 5      │ -      │ HashIndexJoin      │ solutionSet=solutionSet1                                                                             │ -        │ 808      │ 808       │ 1.00     │ 5         ║
+║    │        │        │                    │ joinType=join                                                                                        │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 5  │ 6      │ -      │ PipelineJoin       │ pattern=distinct(?paper, wdt:P31, ?_internalVar1)                                                    │ -        │ 808      │ 39753221  │ 49199.53 │ 1499967   ║
+║    │        │        │                    │ joinType=join                                                                                        │          │          │           │          │           ║
+║    │        │        │                    │ joinProjectionVars=[?paper, ?_internalVar1]                                                          │          │          │           │          │           ║
+║    │        │        │                    │ patternEstimate=188115136                                                                            │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 6  │ 7      │ -      │ PipelineJoin       │ pattern=distinct(?paper, wdt:P50, ?author1)                                                          │ -        │ 39753221 │ 21089450  │ 0.53     │ 29927802  ║
+║    │        │        │                    │ joinType=join                                                                                        │          │          │           │          │           ║
+║    │        │        │                    │ joinProjectionVars=[?paper, ?author1]                                                                │          │          │           │          │           ║
+║    │        │        │                    │ patternEstimate=26658920                                                                             │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 7  │ 8      │ -      │ PipelineJoin       │ pattern=distinct(?author1, wdt:P2021, ?erdos1)                                                       │ -        │ 21089450 │ 40454     │ 0.00     │ 2007580   ║
+║    │        │        │                    │ joinType=join                                                                                        │          │          │           │          │           ║
+║    │        │        │                    │ joinProjectionVars=[?author1, ?erdos1]                                                               │          │          │           │          │           ║
+║    │        │        │                    │ patternEstimate=4156                                                                                 │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 8  │ 9      │ -      │ PipelineJoin       │ pattern=distinct(?paper, wdt:P50, ?author2)                                                          │ -        │ 40454    │ 199643    │ 4.94     │ 2552      ║
+║    │        │        │                    │ joinType=join                                                                                        │          │          │           │          │           ║
+║    │        │        │                    │ joinProjectionVars=[?paper, ?author2]                                                                │          │          │           │          │           ║
+║    │        │        │                    │ patternEstimate=26658920                                                                             │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 9  │ 10     │ -      │ PipelineJoin       │ pattern=distinct(?author2, wdt:P2021, ?erdos2)                                                       │ -        │ 199643   │ 50606     │ 0.25     │ 5035      ║
+║    │        │        │                    │ joinType=join                                                                                        │          │          │           │          │           ║
+║    │        │        │                    │ joinProjectionVars=[?author2, ?erdos2]                                                               │          │          │           │          │           ║
+║    │        │        │                    │ patternEstimate=4156                                                                                 │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 10 │ 11     │ -      │ PipelineJoin       │ pattern=distinct(?paper, wdt:P1476, ?title)                                                          │ -        │ 50606    │ 50756     │ 1.00     │ 2300      ║
+║    │        │        │                    │ joinType=optional                                                                                    │          │          │           │          │           ║
+║    │        │        │                    │ joinProjectionVars=[?paper, ?title]                                                                  │          │          │           │          │           ║
+║    │        │        │                    │ patternEstimate=81130544                                                                             │          │          │           │          │           ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 11 │ 12     │ 13     │ ConditionalRouting │ condition=needsMaterialization((?erdos2 - ?erdos1))                                                  │ -        │ 50756    │ 50756     │ 1.00     │ 681       ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 12 │ 13     │ -      │ TermResolution     │ vars=[?erdos2, ?erdos1]                                                                              │ id2value │ 0        │ 0         │ 0.00     │ 0         ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 13 │ 14     │ -      │ Filter             │ condition=BIND((?erdos2 - ?erdos1) AS ?distance)                                                     │ -        │ 50756    │ 50756     │ 1.00     │ 802       ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 14 │ 15     │ 16     │ ConditionalRouting │ condition=needsMaterialization((?distance > "1"^^xsd:integer))                                       │ -        │ 50756    │ 50756     │ 1.00     │ 811       ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 15 │ 16     │ -      │ TermResolution     │ vars=[?distance]                                                                                     │ id2value │ 0        │ 0         │ 0.00     │ 0         ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 16 │ 17     │ -      │ Filter             │ condition=(?distance > "1"^^xsd:integer)                                                             │ -        │ 50756    │ 148       │ 0.00     │ 204       ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 17 │ 18     │ -      │ Filter             │ condition=BIND(IF(bound(?title), ?title, ?paperLabel) AS ?title)                                     │ -        │ 148      │ 148       │ 1.00     │ 4         ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 18 │ 19     │ -      │ TermResolution     │ vars=[?distance, ?author1Label, ?author2Label]                                                       │ id2value │ 148      │ 148       │ 1.00     │ 15        ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 19 │ 20     │ -      │ Sort               │ sortOrder=[DESC(?distance), ASC(?author1Label), ASC(?author2Label)]                                  │ -        │ 148      │ 148       │ 1.00     │ 7         ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 20 │ 21     │ -      │ Projection         │ vars=[?paper, ?author1, ?author2, ?title, ?author1Label, ?erdos1, ?author2Label, ?erdos2, ?distance] │ retain   │ 148      │ 148       │ 1.00     │ 1         ║
+╟────┼────────┼────────┼────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼──────────┼───────────╢
+║ 21 │ -      │ -      │ TermResolution     │ vars=[?paper, ?author1, ?author2, ?title, ?author1Label, ?erdos1, ?author2Label, ?erdos2, ?distance] │ id2value │ 148      │ 148       │ 1.00     │ 941       ║
+╚════╧════════╧════════╧════════════════════╧══════════════════════════════════════════════════════════════════════════════════════════════════════╧══════════╧══════════╧═══════════╧══════════╧═══════════╝
+
+
+subQuery1
+╔════╤════════╤════════╤══════════════╤════════════════════════════════════════════════════════════╤══════╤══════════╤═══════════╤═══════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name         │ Arguments                                                  │ Mode │ Units In │ Units Out │ Ratio │ Time (ms) ║
+╠════╪════════╪════════╪══════════════╪════════════════════════════════════════════════════════════╪══════╪══════════╪═══════════╪═══════╪═══════════╣
+║ 0  │ -      │ -      │ PipelineJoin │ pattern=distinct(?_internalVar2, wdt:P279, ?_internalVar3) │ -    │ 1097     │ 1153      │ 1.05  │ 563       ║
+║    │        │        │              │ joinType=join                                              │      │          │           │       │           ║
+║    │        │        │              │ joinProjectionVars=[?_internalVar2, ?_internalVar3]        │      │          │           │       │           ║
+║    │        │        │              │ patternEstimate=21                                         │      │          │           │       │           ║
+╚════╧════════╧════════╧══════════════╧════════════════════════════════════════════════════════════╧══════╧══════════╧═══════════╧═══════╧═══════════╝
+

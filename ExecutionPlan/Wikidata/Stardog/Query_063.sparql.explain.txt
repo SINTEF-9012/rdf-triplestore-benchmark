@@ -1,0 +1,115 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT ?human ?humanLabel ?awardEditionLabel ?awardLabel ?awardWork ?awardWorkLabel ?director ?directorLabel ?time
+WHERE
+{
+  {
+    SELECT (SAMPLE(?human) AS ?human) ?award ?awardWork (SAMPLE(?director) AS ?director) (SAMPLE(?awardEdition) AS ?awardEdition) (SAMPLE(?time) AS ?time) WHERE {
+      ?award wdt:P31 wd:Q19020 .      # All items that are instance of(P31) of Academy awards (Q19020)
+      {
+        ?human p:P166 ?awardStat .              # Humans with an awarded(P166) statement
+        ?awardStat ps:P166 ?award .        # ... that has any of the values of ?award
+        ?awardStat pq:P805 ?awardEdition . # Get the award edition (which is "subject of" XXth Academy Awards)
+        ?awardStat pq:P1686 ?awardWork . # The work they have been awarded for
+        ?human wdt:P31 wd:Q5 .        # Humans
+      } UNION {
+        ?awardWork wdt:P31 wd:Q11424 . # Films
+        ?awardWork p:P166 ?awardStat . # ... with an awarded(P166) statement
+        ?awardStat ps:P166 ?award .        # ... that has any of the values of ?award
+        ?awardStat pq:P805 ?awardEdition . # Get the award edition (which is "subject of" XXth Academy Awards)
+      }
+      OPTIONAL {
+        ?awardEdition wdt:P585 ?time . # the "point of time" of the Academy Award
+        ?awardWork wdt:P57 ?director .
+      }
+    }
+    GROUP BY ?awardWork ?award # We only want every movie once for a category (a 'random' person is selected)
+  }
+
+  #SERVICE wikibase:label {            # ... include the labels
+#    bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en" .
+#  }
+}
+ORDER BY DESC(?time)
+
+The Query Plan:
+
+Profiling results:
+Query executed in 627159 ms and returned 1978 result(s)
+Total used memory: 6.0M
+Pre-execution time: 818 ms (0.1%)
+Post-processing time: 341 ms (0.1%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+OrderBy(DESC(?time)) [#1], memory: 705K (11.5%), results: 2.0K, wall time: 107 ms (0.0%)
+`─ Projection(?human, ?humanLabel, ?awardEditionLabel, ?awardLabel, ?awardWork, ?awardWorkLabel, ?director, ?directorLabel, ?time) [#1], results: 2.0K, wall time: 3 ms (0.0%)
+   `─ Projection(?human, ?award, ?awardWork, ?director, ?awardEdition, ?time) [#1], results: 2.0K, wall time: 3 ms (0.0%)
+      `─ Group(by=[?award, ?awardWork] aggregates=[(SAMPLE(?human) AS ?human) (SAMPLE(?awardEdition) AS ?awardEdition) (SAMPLE(?time) AS ?time) (SAMPLE(?director) AS ?director)]) [#2], memory: 352K (5.7%), results: 2.0K, wall time: 29593 ms (4.7%)
+         `─ MergeJoinOuter(?awardWork) [#2], results: 4.8K, wall time: 201276 ms (32.1%)
+            +─ Sort(?awardWork) [#2], memory: 545K (8.9%), results: 4.3K, wall time: 25 ms (0.0%)
+            │  `─ MergeJoin(?awardStat) [#2], results: 4.3K, wall time: 5 ms (0.0%)
+            │     +─ Scan[PSOC](?awardStat, <http://www.wikidata.org/prop/qualifier/P805>, ?awardEdition) [#429K], results: 7.1K (with gaps), wall time: 49 ms (0.0%)
+            │     `─ Sort(?awardStat) [#2], memory: 513K (8.3%), results: 4.3K (with gaps), wall time: 4 ms (0.0%)
+            │        `─ Union [#2], results: 4.3K, wall time: 2 ms (0.0%)
+            │           +─ DirectHashJoin(?human) [#1], results: 2.7K, wall time: 3 ms (0.0%)
+            │           │  +─ MergeJoin(?awardStat) [#1], results: 2.7K, wall time: 4 ms (0.0%)
+            │           │  │  +─ Scan[POSC](?human, <http://www.wikidata.org/prop/P166>, ?awardStat) [#1.2M], results: 4.7K (with gaps), wall time: 94 ms (0.0%)
+            │           │  │  `─ MergeJoin(?awardStat) [#1], results: 2.7K (with gaps), wall time: 3 ms (0.0%)
+            │           │  │     +─ Scan[PSOC](?awardStat, <http://www.wikidata.org/prop/qualifier/P1686>, ?awardWork) [#62K], results: 5.7K (with gaps), wall time: 18 ms (0.0%)
+            │           │  │     `─ Sort(?awardStat) [#1], memory: 449K (7.3%), results: 3.9K (with gaps), wall time: 5 ms (0.0%)
+            │           │  │        `─ MergeJoin(?award) [#1], results: 5.0K, wall time: 2 ms (0.0%)
+            │           │  │           +─ Scan[POSC](?award, <http://www.wikidata.org/prop/direct/P31>, <http://www.wikidata.org/entity/Q19020>) [#1], results: 62 (with gaps), wall time: 0 ms (0.0%)
+            │           │  │           `─ Scan[POSC](?awardStat, <http://www.wikidata.org/prop/statement/P166>, ?award) [#1.2M], results: 5.0K (with gaps), wall time: 39 ms (0.0%)
+            │           │  `─ Scan[POSC](?human, <http://www.wikidata.org/prop/direct/P31>, <http://www.wikidata.org/entity/Q5>) [#9.4M], results: 5.4K (with gaps), wall time: 172 ms (0.0%)
+            │           `─ MergeJoin(?awardWork) [#1], results: 1.6K, wall time: 3 ms (0.0%)
+            │              +─ Scan[POSC](?awardWork, <http://www.wikidata.org/prop/direct/P31>, <http://www.wikidata.org/entity/Q11424>) [#264K], results: 2.4K (with gaps), wall time: 20 ms (0.0%)
+            │              `─ Sort(?awardWork) [#1], memory: 513K (8.3%), results: 3.2K (with gaps), wall time: 5 ms (0.0%)
+            │                 `─ DirectHashJoin(?awardStat) [#1], results: 5.0K, wall time: 3 ms (0.0%)
+            │                    +─ MergeJoin(?award) [#1], results: 5.0K, wall time: 2 ms (0.0%)
+            │                    │  +─ Scan[POSC](?award, <http://www.wikidata.org/prop/direct/P31>, <http://www.wikidata.org/entity/Q19020>) [#1], results: 62 (with gaps), wall time: 0 ms (0.0%)
+            │                    │  `─ Scan[POSC](?awardStat, <http://www.wikidata.org/prop/statement/P166>, ?award) [#1.2M], results: 5.0K (with gaps), wall time: 1 ms (0.0%)
+            │                    `─ Scan[POSC](?awardWork, <http://www.wikidata.org/prop/P166>, ?awardStat) [#1.2M], results: 9.9K (with gaps), wall time: 25 ms (0.0%)
+            `─ NestedLoopJoin(_) [#268014.8M], results: 1113.0M (with gaps), wall time: 148981 ms (23.8%)
+               +─ Scan[PSOC](?awardWork, <http://www.wikidata.org/prop/direct/P57>, ?director) [#323K], results: 2.4K (with gaps), wall time: 62 ms (0.0%)
+               `─ Scan[POSC](?awardEdition, <http://www.wikidata.org/prop/direct/P585>, ?time) [#829K], results: 1113.0M, wall time: 245489 ms (39.1%)
+

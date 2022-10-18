@@ -1,0 +1,35 @@
+plan
+"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT DISTINCT ?depicts (SAMPLE(?dL) AS ?depictsLabel) (COUNT(?item) AS ?count)
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?item wdt:P180 ?depicts . # 	Collection size: 595108.0	Predicate collection size: 595108.0	Unique subjects: 229607.0	Unique objects: 74639.0	Current complexity: 595108.0
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 595108.0
+  
+  OPTIONAL
+  {
+    
+    { # ----- Begin optimization group 2 -----
+      
+      ?depicts rdfs:label ?dL . # 	Collection size: 5.86690314E8	Predicate collection size: 5.86690314E8	Unique subjects: 9.4931813E7	Unique objects: 5.4875668E8	Current complexity: 6.180123348113029
+      FILTER (LANG(?dL) = ""en"")
+      
+    } # ----- End optimization group 2 -----
+    # ESTIMATED NUMBER OF ITERATIONS: 6.180123348113029
+    
+  }
+}
+GROUP BY ?depicts
+ORDER BY DESC(?count) ASC(?depictsLabel)
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

@@ -1,0 +1,178 @@
+Query:
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+#Largest cities per country
+SELECT DISTINCT ?city ?cityLabel ?population ?country ?countryLabel ?loc WHERE {
+  {
+    SELECT (MAX(?population) AS ?population) ?country WHERE {
+      ?city wdt:P31/wdt:P279* wd:Q515 .
+      ?city wdt:P1082 ?population .
+      ?city wdt:P17 ?country .
+    }
+    GROUP BY ?country
+    ORDER BY DESC(?population)
+  }
+  ?city wdt:P31/wdt:P279* wd:Q515 .
+  ?city wdt:P1082 ?population .
+  ?city wdt:P17 ?country .
+  ?city wdt:P625 ?loc .
+  #SERVICE wikibase:label {
+#    bd:serviceParam wikibase:language "en" .
+#  }
+}
+
+╔════╤════════╤════════╤═══════════════════╤══════════════════════════════════════════════════════════════════════╤══════════╤══════════╤═══════════╤════════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name              │ Arguments                                                            │ Mode     │ Units In │ Units Out │ Ratio  │ Time (ms) ║
+╠════╪════════╪════════╪═══════════════════╪══════════════════════════════════════════════════════════════════════╪══════════╪══════════╪═══════════╪════════╪═══════════╣
+║ 0  │ 1      │ -      │ SolutionInjection │ solutions=[{}]                                                       │ -        │ 0        │ 1         │ 0.00   │ 0         ║
+╟────┼────────┼────────┼───────────────────┼──────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 1  │ 2      │ -      │ NamedSubquery     │ subQuery=subQuery2                                                   │ -        │ 1        │ 1         │ 1.00   │ 4622      ║
+║    │        │        │                   │ solutionSet=solutionSet1                                             │          │          │           │        │           ║
+║    │        │        │                   │ joinVars=[?country]                                                  │          │          │           │        │           ║
+╟────┼────────┼────────┼───────────────────┼──────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 2  │ 3      │ -      │ HashIndexBuild    │ solutionSet=solutionSet2                                             │ -        │ 1        │ 1         │ 1.00   │ 2         ║
+║    │        │        │                   │ joinVars=[]                                                          │          │          │           │        │           ║
+║    │        │        │                   │ sourceType=pipeline                                                  │          │          │           │        │           ║
+╟────┼────────┼────────┼───────────────────┼──────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 3  │ 4      │ -      │ PropertyPath      │ iterationTemplate=subQuery1                                          │ -        │ 1        │ 426       │ 426.00 │ 18        ║
+║    │        │        │                   │ leftTerm=?_internalVar1                                              │          │          │           │        │           ║
+║    │        │        │                   │ rightTerm=wd:Q515                                                    │          │          │           │        │           ║
+║    │        │        │                   │ lowerBound=0                                                         │          │          │           │        │           ║
+╟────┼────────┼────────┼───────────────────┼──────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 4  │ 5      │ -      │ Distinct          │ vars=[?_internalVar1]                                                │ -        │ 426      │ 247       │ 0.58   │ 2         ║
+╟────┼────────┼────────┼───────────────────┼──────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 5  │ 6      │ -      │ HashIndexJoin     │ solutionSet=solutionSet2                                             │ -        │ 247      │ 247       │ 1.00   │ 1         ║
+║    │        │        │                   │ joinType=join                                                        │          │          │           │        │           ║
+╟────┼────────┼────────┼───────────────────┼──────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 6  │ 7      │ -      │ PipelineJoin      │ pattern=distinct(?city, wdt:P31, ?_internalVar1)                     │ -        │ 247      │ 38405     │ 155.49 │ 104       ║
+║    │        │        │                   │ joinType=join                                                        │          │          │           │        │           ║
+║    │        │        │                   │ joinProjectionVars=[?city, ?_internalVar1]                           │          │          │           │        │           ║
+║    │        │        │                   │ patternEstimate=188115136                                            │          │          │           │        │           ║
+╟────┼────────┼────────┼───────────────────┼──────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 7  │ 8      │ -      │ PipelineJoin      │ pattern=distinct(?city, wdt:P1082, ?population)                      │ -        │ 38405    │ 30548     │ 0.80   │ 4866      ║
+║    │        │        │                   │ joinType=join                                                        │          │          │           │        │           ║
+║    │        │        │                   │ joinProjectionVars=[?city, ?population]                              │          │          │           │        │           ║
+║    │        │        │                   │ patternEstimate=1752782                                              │          │          │           │        │           ║
+╟────┼────────┼────────┼───────────────────┼──────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 8  │ 9      │ -      │ PipelineJoin      │ pattern=distinct(?city, wdt:P625, ?loc)                              │ -        │ 30548    │ 30869     │ 1.01   │ 6345      ║
+║    │        │        │                   │ joinType=join                                                        │          │          │           │        │           ║
+║    │        │        │                   │ joinProjectionVars=[?city, ?loc]                                     │          │          │           │        │           ║
+║    │        │        │                   │ patternEstimate=20139212                                             │          │          │           │        │           ║
+╟────┼────────┼────────┼───────────────────┼──────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 9  │ 10     │ -      │ PipelineJoin      │ pattern=distinct(?city, wdt:P17, ?country)                           │ -        │ 30869    │ 31109     │ 1.01   │ 4748      ║
+║    │        │        │                   │ joinType=join                                                        │          │          │           │        │           ║
+║    │        │        │                   │ joinProjectionVars=[?city, ?country]                                 │          │          │           │        │           ║
+║    │        │        │                   │ patternEstimate=30923522                                             │          │          │           │        │           ║
+╟────┼────────┼────────┼───────────────────┼──────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 10 │ 11     │ -      │ HashIndexJoin     │ solutionSet=solutionSet1                                             │ -        │ 31109    │ 607       │ 0.02   │ 100       ║
+║    │        │        │                   │ joinType=join                                                        │          │          │           │        │           ║
+╟────┼────────┼────────┼───────────────────┼──────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 11 │ 12     │ -      │ Distinct          │ vars=[?city, ?cityLabel, ?population, ?country, ?countryLabel, ?loc] │ -        │ 607      │ 290       │ 0.48   │ 10        ║
+╟────┼────────┼────────┼───────────────────┼──────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 12 │ 13     │ -      │ Projection        │ vars=[?city, ?cityLabel, ?population, ?country, ?countryLabel, ?loc] │ retain   │ 290      │ 290       │ 1.00   │ 2         ║
+╟────┼────────┼────────┼───────────────────┼──────────────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 13 │ -      │ -      │ TermResolution    │ vars=[?city, ?cityLabel, ?population, ?country, ?countryLabel, ?loc] │ id2value │ 290      │ 290       │ 1.00   │ 1390      ║
+╚════╧════════╧════════╧═══════════════════╧══════════════════════════════════════════════════════════════════════╧══════════╧══════════╧═══════════╧════════╧═══════════╝
+
+
+subQuery1
+╔════╤════════╤════════╤══════════════╤════════════════════════════════════════════════════════════╤══════╤══════════╤═══════════╤═══════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name         │ Arguments                                                  │ Mode │ Units In │ Units Out │ Ratio │ Time (ms) ║
+╠════╪════════╪════════╪══════════════╪════════════════════════════════════════════════════════════╪══════╪══════════╪═══════════╪═══════╪═══════════╣
+║ 0  │ -      │ -      │ PipelineJoin │ pattern=distinct(?_internalVar2, wdt:P279, ?_internalVar3) │ -    │ 287      │ 294       │ 1.02  │ 9         ║
+║    │        │        │              │ joinType=join                                              │      │          │           │       │           ║
+║    │        │        │              │ joinProjectionVars=[?_internalVar2, ?_internalVar3]        │      │          │           │       │           ║
+║    │        │        │              │ patternEstimate=131                                        │      │          │           │       │           ║
+╚════╧════════╧════════╧══════════════╧════════════════════════════════════════════════════════════╧══════╧══════════╧═══════════╧═══════╧═══════════╝
+
+
+subQuery2
+╔════╤════════╤════════╤════════════════╤══════════════════════════════════════════════════════════════╤══════════╤══════════╤═══════════╤════════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name           │ Arguments                                                    │ Mode     │ Units In │ Units Out │ Ratio  │ Time (ms) ║
+╠════╪════════╪════════╪════════════════╪══════════════════════════════════════════════════════════════╪══════════╪══════════╪═══════════╪════════╪═══════════╣
+║ 0  │ 1      │ -      │ Distinct       │ vars=[?population, ?country]                                 │ -        │ 1        │ 1         │ 1.00   │ 5         ║
+╟────┼────────┼────────┼────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 1  │ 2      │ -      │ HashIndexBuild │ solutionSet=solutionSet3                                     │ -        │ 1        │ 1         │ 1.00   │ 22        ║
+║    │        │        │                │ joinVars=[]                                                  │          │          │           │        │           ║
+║    │        │        │                │ sourceType=pipeline                                          │          │          │           │        │           ║
+╟────┼────────┼────────┼────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 2  │ 3      │ -      │ PropertyPath   │ iterationTemplate=subQuery3                                  │ -        │ 1        │ 426       │ 426.00 │ 500       ║
+║    │        │        │                │ leftTerm=?_internalVar4                                      │          │          │           │        │           ║
+║    │        │        │                │ rightTerm=wd:Q515                                            │          │          │           │        │           ║
+║    │        │        │                │ lowerBound=0                                                 │          │          │           │        │           ║
+╟────┼────────┼────────┼────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 3  │ 4      │ -      │ Distinct       │ vars=[?_internalVar4]                                        │ -        │ 426      │ 247       │ 0.58   │ 14        ║
+╟────┼────────┼────────┼────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 4  │ 5      │ -      │ HashIndexJoin  │ solutionSet=solutionSet3                                     │ -        │ 247      │ 247       │ 1.00   │ 4         ║
+║    │        │        │                │ joinType=join                                                │          │          │           │        │           ║
+╟────┼────────┼────────┼────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 5  │ 6      │ -      │ PipelineJoin   │ pattern=distinct(?city, wdt:P31, ?_internalVar4)             │ -        │ 247      │ 38405     │ 155.49 │ 3287      ║
+║    │        │        │                │ joinType=join                                                │          │          │           │        │           ║
+║    │        │        │                │ joinProjectionVars=[?city, ?_internalVar4]                   │          │          │           │        │           ║
+║    │        │        │                │ patternEstimate=188115136                                    │          │          │           │        │           ║
+╟────┼────────┼────────┼────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 6  │ 7      │ -      │ PipelineJoin   │ pattern=distinct(?city, wdt:P1082, ?population)              │ -        │ 38405    │ 30548     │ 0.80   │ 66123     ║
+║    │        │        │                │ joinType=join                                                │          │          │           │        │           ║
+║    │        │        │                │ joinProjectionVars=[?city, ?population]                      │          │          │           │        │           ║
+║    │        │        │                │ patternEstimate=1752782                                      │          │          │           │        │           ║
+╟────┼────────┼────────┼────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 7  │ 8      │ -      │ PipelineJoin   │ pattern=distinct(?city, wdt:P17, ?country)                   │ -        │ 30548    │ 30778     │ 1.01   │ 2927      ║
+║    │        │        │                │ joinType=join                                                │          │          │           │        │           ║
+║    │        │        │                │ joinProjectionVars=[?city, ?country]                         │          │          │           │        │           ║
+║    │        │        │                │ patternEstimate=30923522                                     │          │          │           │        │           ║
+╟────┼────────┼────────┼────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 8  │ 9      │ -      │ TermResolution │ vars=[?population]                                           │ id2value │ 30778    │ 30778     │ 1.00   │ 50        ║
+╟────┼────────┼────────┼────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 9  │ 10     │ -      │ Aggregate      │ groupBy=[?country]                                           │ -        │ 30778    │ 285       │ 0.01   │ 81        ║
+║    │        │        │                │ aggregates=[BIND(MAX(?population) AS ?population), ?country] │          │          │           │        │           ║
+╟────┼────────┼────────┼────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 10 │ 11     │ -      │ TermResolution │ vars=[?population]                                           │ id2value │ 285      │ 285       │ 1.00   │ 2         ║
+╟────┼────────┼────────┼────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 11 │ 12     │ -      │ Sort           │ sortOrder=[DESC(?population)]                                │ -        │ 285      │ 285       │ 1.00   │ 4         ║
+╟────┼────────┼────────┼────────────────┼──────────────────────────────────────────────────────────────┼──────────┼──────────┼───────────┼────────┼───────────╢
+║ 12 │ -      │ -      │ Projection     │ vars=[?population, ?country]                                 │ retain   │ 285      │ 285       │ 1.00   │ 0         ║
+╚════╧════════╧════════╧════════════════╧══════════════════════════════════════════════════════════════╧══════════╧══════════╧═══════════╧════════╧═══════════╝
+
+
+subQuery3
+╔════╤════════╤════════╤══════════════╤════════════════════════════════════════════════════════════╤══════╤══════════╤═══════════╤═══════╤═══════════╗
+║ ID │ Out #1 │ Out #2 │ Name         │ Arguments                                                  │ Mode │ Units In │ Units Out │ Ratio │ Time (ms) ║
+╠════╪════════╪════════╪══════════════╪════════════════════════════════════════════════════════════╪══════╪══════════╪═══════════╪═══════╪═══════════╣
+║ 0  │ -      │ -      │ PipelineJoin │ pattern=distinct(?_internalVar5, wdt:P279, ?_internalVar6) │ -    │ 287      │ 294       │ 1.02  │ 468       ║
+║    │        │        │              │ joinType=join                                              │      │          │           │       │           ║
+║    │        │        │              │ joinProjectionVars=[?_internalVar5, ?_internalVar6]        │      │          │           │       │           ║
+║    │        │        │              │ patternEstimate=131                                        │      │          │           │       │           ║
+╚════╧════════╧════════╧══════════════╧════════════════════════════════════════════════════════════╧══════╧══════════╧═══════════╧═══════╧═══════════╝
+

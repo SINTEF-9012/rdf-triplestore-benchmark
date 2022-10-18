@@ -1,0 +1,21 @@
+plan
+"PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT DISTINCT ?pmid ?doi
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?item wdt:P356 ?doi . # 	Collection size: 2.7160717E7	Predicate collection size: 2.7160717E7	Unique subjects: 2.7156808E7	Unique objects: 2.7127917E7	Current complexity: 2.7160717E7
+    ?item wdt:P698 ?pmid . # 	Collection size: 3.1946329E7	Predicate collection size: 3.1946329E7	Unique subjects: 3.1944138E7	Unique objects: 3.1941564E7	Current complexity: 2.716257991240499E7
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 2.716257991240499E7
+  
+}
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

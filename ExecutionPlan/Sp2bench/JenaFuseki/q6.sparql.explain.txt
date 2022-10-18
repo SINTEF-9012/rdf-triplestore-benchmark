@@ -1,0 +1,44 @@
+Picked up _JAVA_OPTIONS: -Djava.io.tmpdir=/data/java/tmp
+12:15:43 INFO  exec            :: QUERY
+  PREFIX  dcterms: <http://purl.org/dc/terms/>
+  PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX  foaf: <http://xmlns.com/foaf/0.1/>
+  PREFIX  dc:   <http://purl.org/dc/elements/1.1/>
+  
+  SELECT  ?yr ?name ?document
+  WHERE
+    { ?class    rdfs:subClassOf  foaf:Document .
+      ?document  rdf:type        ?class ;
+                dcterms:issued   ?yr ;
+                dc:creator       ?author .
+      ?author   foaf:name        ?name
+      OPTIONAL
+        { ?class2   rdfs:subClassOf  foaf:Document .
+          ?document2  rdf:type       ?class2 ;
+                    dcterms:issued   ?yr2 ;
+                    dc:creator       ?author2
+          FILTER ( ( ?author = ?author2 ) && ( ?yr2 < ?yr ) )
+        }
+      FILTER ( ! bound(?author2) )
+    }
+12:15:43 INFO  exec            :: ALGEBRA
+  (project (?yr ?name ?document)
+    (filter (! (bound ?author2))
+      (conditional
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?class <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://xmlns.com/foaf/0.1/Document>)
+          (quad <urn:x-arq:DefaultGraphNode> ?document <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?class)
+          (quad <urn:x-arq:DefaultGraphNode> ?document <http://purl.org/dc/terms/issued> ?yr)
+          (quad <urn:x-arq:DefaultGraphNode> ?document <http://purl.org/dc/elements/1.1/creator> ?author)
+          (quad <urn:x-arq:DefaultGraphNode> ?author <http://xmlns.com/foaf/0.1/name> ?name)
+        )
+        (filter (< ?yr2 ?yr)
+          (assign ((?author2 ?author))
+            (quadpattern
+              (quad <urn:x-arq:DefaultGraphNode> ?class2 <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://xmlns.com/foaf/0.1/Document>)
+              (quad <urn:x-arq:DefaultGraphNode> ?document2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?class2)
+              (quad <urn:x-arq:DefaultGraphNode> ?document2 <http://purl.org/dc/terms/issued> ?yr2)
+              (quad <urn:x-arq:DefaultGraphNode> ?document2 <http://purl.org/dc/elements/1.1/creator> ?author)
+            ))))))
+

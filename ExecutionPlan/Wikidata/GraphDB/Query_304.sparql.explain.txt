@@ -1,0 +1,36 @@
+plan
+"PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+
+SELECT ?age (COUNT(?a) AS ?count)
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ?_anon_db20039a_67d0_4d19_9963_bc70223ba38c wdt:P279 wd:Q639669 . # 	Collection size: 123.0	Predicate collection size: 3229760.0	Unique subjects: 2616496.0	Unique objects: 136237.0	Current complexity: 123.0
+    ?a wdt:P106 ?_anon_db20039a_67d0_4d19_9963_bc70223ba38c . # 	Collection size: 8878333.0	Predicate collection size: 8878333.0	Unique subjects: 6693815.0	Unique objects: 16820.0	Current complexity: 64924.78947681332
+    ?a wdt:P31 wd:Q5 . # 	Collection size: 9398589.0	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 64924.78947681332
+    ?a p:P569 ?_anon_25645a1c_36f2_4c2d_bc7c_d5d5ebde5a30 . # 	Collection size: 5395617.0	Predicate collection size: 5395617.0	Unique subjects: 5262224.0	Unique objects: 5395617.0	Current complexity: 66570.57886979252
+    ?_anon_25645a1c_36f2_4c2d_bc7c_d5d5ebde5a30 psv:P569 ?birth_date_node . # 	Collection size: 5377162.0	Predicate collection size: 5377162.0	Unique subjects: 5377162.0	Unique objects: 189578.0	Current complexity: 66570.57886979252
+    ?birth_date_node wikibase:timeValue ?birth_date . # 	Collection size: 359716.0	Predicate collection size: 359716.0	Unique subjects: 359716.0	Unique objects: 269997.0	Current complexity: 66570.57886979252
+    ?a p:P570 ?_anon_581ebf26_eb8e_4b18_90c3_be3f4a4faa63 . # 	Collection size: 2758278.0	Predicate collection size: 2758278.0	Unique subjects: 2665954.0	Unique objects: 2758278.0	Current complexity: 68875.96828145332
+    ?_anon_581ebf26_eb8e_4b18_90c3_be3f4a4faa63 psv:P570 ?death_date_node . # 	Collection size: 2738785.0	Predicate collection size: 2738785.0	Unique subjects: 2738785.0	Unique objects: 206300.0	Current complexity: 68875.96828145332
+    ?death_date_node wikibase:timeValue ?death_date . # 	Collection size: 359716.0	Predicate collection size: 359716.0	Unique subjects: 359716.0	Unique objects: 269997.0	Current complexity: 68875.96828145332
+    BIND (((year-from-dateTime(?death_date) - year-from-dateTime(?birth_date)) - IF(month-from-dateTime(?death_date) < month-from-dateTime(?birth_date) || month-from-dateTime(?death_date) = month-from-dateTime(?birth_date) && day-from-dateTime(?death_date) < day-from-dateTime(?birth_date), 1, 0)) AS ?age) # Should be after ?birth_date, ?death_date
+    FILTER ((?age > 10 && ?age < 100))
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 68875.96828145332
+  
+}
+GROUP BY ?age
+ORDER BY ASC(?age)
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

@@ -1,0 +1,26 @@
+plan
+"PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?work ?title
+{
+  
+  { # ----- Begin optimization group 1 -----
+    
+    ArbitraryLengthPath ( min=0, from _anon_6a747f39_5495_4300_956b_0c279025e536, to __const_801aa19b_uri) over {
+	 [ _anon_6a747f39_5495_4300_956b_0c279025e536 http://www.wikidata.org/prop/direct/P279 http://www.wikidata.org/entity/Q838948 ]
+	 }  # Collection size: 500.0
+    ?work wdt:P31 ?_anon_6a747f39_5495_4300_956b_0c279025e536 . # 	Collection size: 9.768112E7	Predicate collection size: 9.768112E7	Unique subjects: 9.2065124E7	Unique objects: 84237.0	Current complexity: 4.884056E10
+    ?work wdt:P1476 ?title . # 	Collection size: 4.1414563E7	Predicate collection size: 4.1414563E7	Unique subjects: 4.0902334E7	Unique objects: 3.9746874E7	Current complexity: 4.945220116473744E10
+    FILTER (REGEX(STR(?title), ""^(\\p{L})\\w+(?:\\W+\\1\\w+){2,}$"", ""i""))
+    
+  } # ----- End optimization group 1 -----
+  # ESTIMATED NUMBER OF ITERATIONS: 4.945220116473744E10
+  
+}
+ORDER BY ASC(STR(?title))
+
+# NOTE: Optimization groups are evaluated one after another exactly in the given order.
+# If there are too many optimization groups consisting of a single statement pattern,
+# then one should try to relocate the following clauses by hand:
+# VALUES, BIND, OPTIONAL, property paths with '*' and/or '+' (the latter can be also surrounded with brackets).
+# Sub-SELECTs will always be evaluated first."

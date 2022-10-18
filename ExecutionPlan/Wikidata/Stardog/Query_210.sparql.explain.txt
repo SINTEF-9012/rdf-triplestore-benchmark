@@ -1,0 +1,79 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+SELECT ?compound ?compoundLabel ?pKa ?source ?sourceLabel ?doi
+WHERE
+{
+  ?compound wdt:P31 wd:Q11173 ; p:P1117 ?statement .
+  ?statement rdf:type wikibase:BestRank ;
+    ps:P1117 ?pKa .
+  OPTIONAL {
+    ?statement prov:wasDerivedFrom/pr:P248 ?source .
+    OPTIONAL { ?source wdt:P356 ?doi . }
+  }
+  #SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } #English label
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 1485225 ms and hit an error: RuntimeException: java.io.IOException: Maximum file length exceeded: 10G
+Total used memory: 151G, spilled to disk: 40G
+Pre-execution time: 8 ms (0.0%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Projection(?compound, ?compoundLabel, ?pKa, ?source, ?sourceLabel, ?doi) [#1], results: 0, wall time: 0 ms (0.0%)
+`─ HashJoinOuter(?statement) [#1], memory: 73G (48.7%), spilled to disk: 20G (50.0%), results: 0, wall time: 823004 ms (55.4%)
+   +─ DirectHashJoin(?compound) [#1], results: 1, wall time: 0 ms (0.0%)
+   │  +─ MergeJoin(?statement) [#1], results: 1, wall time: 0 ms (0.0%)
+   │  │  +─ Scan[POSC](?compound, <http://www.wikidata.org/prop/P1117>, ?statement) [#1], results: 1, wall time: 4 ms (0.0%)
+   │  │  `─ MergeJoin(?statement) [#1312.8M], results: 1 (with gaps), wall time: 2 ms (0.0%)
+   │  │     +─ Scan[POSC](?statement, rdf:type, <http://wikiba.se/ontology#BestRank>) [#1312.8M], results: 2 (with gaps), wall time: 4 ms (0.0%)
+   │  │     `─ Scan[PSOC](?statement, <http://www.wikidata.org/prop/statement/P1117>, ?pKa) [#1], results: 1 (with gaps), wall time: 0 ms (0.0%)
+   │  `─ Scan[POSC](?compound, <http://www.wikidata.org/prop/direct/P31>, <http://www.wikidata.org/entity/Q11173>) [#1.2M], results: 2 (with gaps), wall time: 0 ms (0.0%)
+   `─ HashJoinOuter(?source) [#949.0M], memory: 1.9G (1.3%), results: 486.2M, wall time: 359398 ms (24.2%)
+      +─ MergeJoin(?uyzngzdd) [#949.0M], results: 486.2M, wall time: 107026 ms (7.2%)
+      │  +─ Scan[POSC](?statement, <http://www.w3.org/ns/prov#wasDerivedFrom>, ?uyzngzdd) [#1052.1M], results: 487.7M (with gaps), wall time: 166427 ms (11.2%)
+      │  `─ Scan[PSOC](?uyzngzdd, <http://www.wikidata.org/prop/reference/P248>, ?source) [#80.1M], results: 32.6M (with gaps), wall time: 18275 ms (1.2%)
+      `─ Scan[POSC](?source, <http://www.wikidata.org/prop/direct/P356>, ?doi) [#27.2M], results: 27.2M, wall time: 11074 ms (0.7%)
+

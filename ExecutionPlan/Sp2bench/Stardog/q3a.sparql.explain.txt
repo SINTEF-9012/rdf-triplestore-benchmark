@@ -1,0 +1,33 @@
+Explaining Query:
+
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX bench: <http://localhost/vocabulary/bench/>
+PREFIX swrc:  <http://swrc.ontoware.org/ontology#>
+
+SELECT ?article
+WHERE {
+  ?article rdf:type bench:Article .
+  ?article ?property ?value .
+  FILTER (?property=swrc:pages) 
+}
+
+The Query Plan:
+
+Profiling results:
+Query executed in 10825 ms and returned 1719323 result(s)
+Pre-execution time: 26 ms (0.2%)
+Post-processing time: 5745 ms (53.1%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Projection(?article) [#1.7M], results: 1.7M, wall time: 240 ms (2.2%)
+`─ Bind(<http://swrc.ontoware.org/ontology#pages> AS ?property) sortedBy=?property [#1.7M], results: 1.7M, wall time: 393 ms (3.6%)
+   `─ MergeJoin(?article) [#1.7M], results: 1.7M, wall time: 600 ms (5.5%)
+      +─ Scan[POSC](?article, rdf:type, <http://localhost/vocabulary/bench/Article>) [#1.9M], results: 1.7M (with gaps), wall time: 2668 ms (24.6%)
+      `─ Scan[PSOC](?article, <http://swrc.ontoware.org/ontology#pages>, ?value) [#9.1M], results: 1.7M (with gaps), wall time: 707 ms (6.5%)
+

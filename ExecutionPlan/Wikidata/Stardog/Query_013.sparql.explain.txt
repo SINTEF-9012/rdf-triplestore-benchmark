@@ -1,0 +1,91 @@
+Explaining Query:
+
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ontolex: <http://www.w3.org/ns/lemon/ontolex#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX pqn: <http://www.wikidata.org/prop/qualifier/value-normalized/>
+PREFIX pqv: <http://www.wikidata.org/prop/qualifier/value/>
+PREFIX pr: <http://www.wikidata.org/prop/reference/>
+PREFIX prn: <http://www.wikidata.org/prop/reference/value-normalized/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX prv: <http://www.wikidata.org/prop/reference/value/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdata: <http://www.wikidata.org/wiki/Special:EntityData/>
+PREFIX wdno: <http://www.wikidata.org/prop/novalue/>
+PREFIX wdref: <http://www.wikidata.org/reference/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wdtn: <http://www.wikidata.org/prop/direct-normalized/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX hint: <http://www.bigdata.com/queryHints#>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+
+#title: Recent events
+SELECT ?event ?eventLabel ?date
+WHERE
+{
+  # find events
+  ?event wdt:P31/wdt:P279* wd:Q1190554.
+  # with a point in time or start date
+  OPTIONAL { ?event wdt:P585 ?date. }
+  OPTIONAL { ?event wdt:P580 ?date. }
+  # but at least one of those
+  FILTER(BOUND(?date) && DATATYPE(?date) = xsd:dateTime).
+  # not in the future, and not more than 31 days ago
+  BIND(NOW() - ?date AS ?distance).
+  FILTER(0 <= ?distance && ?distance < 31).
+  # and get a label as well
+  OPTIONAL {
+    ?event rdfs:label ?eventLabel.
+    FILTER(LANG(?eventLabel) = "en").
+  }
+}
+# limit to 10 results so we don't timeout
+LIMIT 10
+
+The Query Plan:
+
+Profiling results:
+Query executed in 54061 ms and hit an error: IllegalArgumentException: Year = 0, Month = 1, Day = 1, Hour = 0, Minute = 0, Second = 0, fractionalSecond = -2,147,483,648, Timezone = 0 , is not a valid representation of an XML Gregorian Calendar value.
+Pre-execution time: 385 ms (0.7%)
+Post-processing time: 0 ms (0.0%)
+
+prefix : <http://api.stardog.com/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix stardog: <tag:stardog:api:>
+
+Slice(offset=0, limit=10) [#6], results: 0, wall time: 0 ms (0.0%)
+`─ Projection(?event, ?eventLabel, ?date) [#6], results: 0, wall time: 0 ms (0.0%)
+   `─ DirectHashJoinOuter(?event)("en" = Lang(?eventLabel)) [#6], results: 0, wall time: 0 ms (0.0%)
+      +─ Filter(Datatype(?date) = xsd:dateTime) [#1], results: 0, wall time: 0 ms (0.0%)
+      │  `─ Filter("0"^^xsd:integer <= ?distance) [#1], results: 0, wall time: 0 ms (0.0%)
+      │     `─ Filter("31"^^xsd:integer > ?distance) [#1], results: 0, wall time: 36 ms (0.1%)
+      │        `─ Bind((NOW() - ?date) AS ?distance) [#1], results: 84K, wall time: 704 ms (1.3%)
+      │           `─ Filter(Bound(?date)) [#1], results: 84K, wall time: 95 ms (0.2%)
+      │              `─ BindJoinOuter(?event) [#1], results: 366K, wall time: 37026 ms (68.5%)
+      │                 +─ BindJoinOuter(?event) [#1], results: 366K, wall time: 14865 ms (27.5%)
+      │                 │  +─ DirectHashJoin(?wiewelrh) [#1], results: 365K, wall time: 171 ms (0.3%)
+      │                 │  │  +─ PropertyPath(?wiewelrh -> <http://www.wikidata.org/entity/Q1190554>, minLength=0, reversed) [#257], results: 3.6K, wall time: 91 ms (0.2%)
+      │                 │  │  │  `─ Scan[POSC](?wiewelrh, <http://www.wikidata.org/prop/direct/P279>, <http://www.wikidata.org/entity/Q1190554>) [#256]
+      │                 │  │  `─ Scan[POSC](?event, <http://www.wikidata.org/prop/direct/P31>, ?wiewelrh) [#97.7M], results: 369K (with gaps), wall time: 684 ms (1.3%)
+      │                 │  `─ Scan[POSC](?event, <http://www.wikidata.org/prop/direct/P585>, ?date) [#829K]
+      │                 `─ Scan[POSC](?event, <http://www.wikidata.org/prop/direct/P580>, ?date) [#642K]
+      `─ Scan[PSOC](?event, rdfs:label, ?eventLabel) [#586.7M], results: 0, wall time: 0 ms (0.0%)
+
