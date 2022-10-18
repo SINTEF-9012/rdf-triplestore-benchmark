@@ -9,7 +9,7 @@ This repository contains analysis and supplementary infromation for the paper **
 The code in this package is licensed under the MIT License. The model, data, and results are licensed under the CC Zero license.
 
 ### 🎁 Support
-This project has been supported by several organizations:
+This work has been supported by several organizations:
 - [Ontotext](https://www.ontotext.com/)
 - [Oxford Semantic Technologies](https://www.oxfordsemantic.tech/)
 
