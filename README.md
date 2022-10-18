@@ -6,7 +6,7 @@ This repository contains analysis and supplementary infromation for the paper **
 
 
 ### ⚖️ License
-
+The code in this package is licensed under the MIT License. The model, data, and results are licensed under the CC Zero license.
 
 ### 🎁 Support
 This project has been supported by several organizations:
