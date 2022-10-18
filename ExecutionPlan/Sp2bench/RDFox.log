@@ -1,0 +1,471 @@
+***** Start import on Mon Mar 14 14:39:01 UTC 2022 *****
+Source code for RDFox v1.0 Copyright 2013 Oxford University Innovation Limited and subsequent improvements Copyright 2017-2021 by Oxford Semantic Technologies Limited.
+This copy of RDFox is licensed for Academic use to Morten Dalsmo (morten.dalsmo@sintef.no) of Sintef AS until 30-Nov-2022 13:41:54
+This system is equipped with 267.3 GB of RAM, and RDFox is configured to use at most 240.5 GB (89.9% of the total).
+Currently, 253.9 GB (105.5% of the amount allocated to RDFox) appear to be available on the system.
+Since RDFox is a RAM-based system, its performance can suffer when other running processes use a lot of memory.
+
+
+A new server connection was opened as role 'guest' and stored with name 'sc1'.
+Data store connection 'sp2b_125M' is active.
+query.explain = true
+query.monitor = "stats"
+dir.queries = "/data/queries"
+Answering query from file:   q1.sparql
+QUERY ?yr                                                                                                                     QueryIterator              
+    PROJECT ?yr                                                                        {             -->    ?yr }                                        
+        CONJUNCTION                                                                    {             -->    ?journal ?yr }    NestedIndexLoopJoinIterator
+            [?journal, <http://purl.org/dc/elements/1.1/title>, "Journal 1 (1940)"]    {             -->    ?journal }        TripleTableIterator        
+            [?journal, rdf:type, <http://localhost/vocabulary/bench/Journal>]          { ?journal    -->    ?journal }        TripleTableIterator        
+            [?journal, <http://purl.org/dc/terms/issued>, ?yr]                         { ?journal    -->    ?journal ?yr }    TripleTableIterator        
+Query compilation time: 0.000000 s
+Number of returned tuples:   1
+Total number of answers:     1
+Statement compilation time:      0 s
+Total statement evaluation time: 0.003 s
+== QUERY EVALUATION STATISTICS ==
+1 / 1    QUERY ?yr                                                                                                                     QueryIterator              
+             PROJECT ?yr                                                                        {             -->    ?yr }                                        
+1 / 1            CONJUNCTION                                                                    {             -->    ?journal ?yr }    NestedIndexLoopJoinIterator
+1 / 1                [?journal, <http://purl.org/dc/elements/1.1/title>, "Journal 1 (1940)"]    {             -->    ?journal }        TripleTableIterator        
+1 / 1                [?journal, rdf:type, <http://localhost/vocabulary/bench/Journal>]          { ?journal    -->    ?journal }        TripleTableIterator        
+1 / 1                [?journal, <http://purl.org/dc/terms/issued>, ?yr]                         { ?journal    -->    ?journal ?yr }    TripleTableIterator        
+=================================
+Answering query from file:   q2.sparql
+QUERY ?inproc ?author ?booktitle ?title ?proc ?ee ?page ?url ?yr ?abstract                                                                                                                                                                   QueryIterator              
+    ORDER BY ASC(?yr)                                                                     {                                                               -->    ?author ?booktitle ?ee ?inproc ?page ?proc ?title ?url ?yr | ?abstract }    OrderByIterator            
+        OPTIONAL                                                                          {                                                               -->    ?author ?booktitle ?ee ?inproc ?page ?proc ?title ?url ?yr | ?abstract }    OptionalIterator           
+            CONJUNCTION                                                                   {                                                               -->    ?author ?booktitle ?ee ?inproc ?page ?proc ?title ?url ?yr }                NestedIndexLoopJoinIterator
+                [?inproc, <http://purl.org/dc/terms/partOf>, ?proc]                       {                                                               -->    ?inproc ?proc }                                                             TripleTableIterator        
+                [?inproc, rdfs:seeAlso, ?ee]                                              { ?inproc ?proc                                                 -->    ?ee ?inproc ?proc }                                                         TripleTableIterator        
+                [?inproc, rdf:type, <http://localhost/vocabulary/bench/Inproceedings>]    { ?ee ?inproc ?proc                                             -->    ?ee ?inproc ?proc }                                                         TripleTableIterator        
+                [?inproc, <http://localhost/vocabulary/bench/booktitle>, ?booktitle]      { ?ee ?inproc ?proc                                             -->    ?booktitle ?ee ?inproc ?proc }                                              TripleTableIterator        
+                [?inproc, <http://purl.org/dc/terms/issued>, ?yr]                         { ?booktitle ?ee ?inproc ?proc                                  -->    ?booktitle ?ee ?inproc ?proc ?yr }                                          TripleTableIterator        
+                [?inproc, <http://swrc.ontoware.org/ontology#pages>, ?page]               { ?booktitle ?ee ?inproc ?proc ?yr                              -->    ?booktitle ?ee ?inproc ?page ?proc ?yr }                                    TripleTableIterator        
+                [?inproc, <http://xmlns.com/foaf/0.1/homepage>, ?url]                     { ?booktitle ?ee ?inproc ?page ?proc ?yr                        -->    ?booktitle ?ee ?inproc ?page ?proc ?url ?yr }                               TripleTableIterator        
+                [?inproc, <http://purl.org/dc/elements/1.1/title>, ?title]                { ?booktitle ?ee ?inproc ?page ?proc ?url ?yr                   -->    ?booktitle ?ee ?inproc ?page ?proc ?title ?url ?yr }                        TripleTableIterator        
+                [?inproc, <http://purl.org/dc/elements/1.1/creator>, ?author]             { ?booktitle ?ee ?inproc ?page ?proc ?title ?url ?yr            -->    ?author ?booktitle ?ee ?inproc ?page ?proc ?title ?url ?yr }                TripleTableIterator        
+            FILTER true                                                                                                                                                                                                                                                 
+                [?inproc, <http://localhost/vocabulary/bench/abstract>, ?abstract]        { ?author ?booktitle ?ee ?inproc ?page ?proc ?title ?url ?yr    -->    ?abstract ?author ?booktitle ?ee ?inproc ?page ?proc ?title ?url ?yr }      TripleTableIterator        
+Query compilation time: 0.000000 s
+Number of returned tuples:   11496005
+Total number of answers:     11496005
+Statement compilation time:      0 s
+Total statement evaluation time: 39.8 s
+== QUERY EVALUATION STATISTICS ==
+         1 / 11,496,005    QUERY ?inproc ?author ?booktitle ?title ?proc ?ee ?page ?url ?yr ?abstract                                                                                                                                                                   QueryIterator              
+         1 / 11,496,005        ORDER BY ASC(?yr)                                                                     {                                                               -->    ?author ?booktitle ?ee ?inproc ?page ?proc ?title ?url ?yr | ?abstract }    OrderByIterator            
+         1 / 11,496,005            OPTIONAL                                                                          {                                                               -->    ?author ?booktitle ?ee ?inproc ?page ?proc ?title ?url ?yr | ?abstract }    OptionalIterator           
+         1 / 11,496,005                CONJUNCTION                                                                   {                                                               -->    ?author ?booktitle ?ee ?inproc ?page ?proc ?title ?url ?yr }                NestedIndexLoopJoinIterator
+         1 /  6,184,870                    [?inproc, <http://purl.org/dc/terms/partOf>, ?proc]                       {                                                               -->    ?inproc ?proc }                                                             TripleTableIterator        
+ 6,184,870 /  4,032,882                    [?inproc, rdfs:seeAlso, ?ee]                                              { ?inproc ?proc                                                 -->    ?ee ?inproc ?proc }                                                         TripleTableIterator        
+ 4,032,882 /  4,032,882                    [?inproc, rdf:type, <http://localhost/vocabulary/bench/Inproceedings>]    { ?ee ?inproc ?proc                                             -->    ?ee ?inproc ?proc }                                                         TripleTableIterator        
+ 4,032,882 /  4,032,882                    [?inproc, <http://localhost/vocabulary/bench/booktitle>, ?booktitle]      { ?ee ?inproc ?proc                                             -->    ?booktitle ?ee ?inproc ?proc }                                              TripleTableIterator        
+ 4,032,882 /  4,032,882                    [?inproc, <http://purl.org/dc/terms/issued>, ?yr]                         { ?booktitle ?ee ?inproc ?proc                                  -->    ?booktitle ?ee ?inproc ?proc ?yr }                                          TripleTableIterator        
+ 4,032,882 /  3,826,373                    [?inproc, <http://swrc.ontoware.org/ontology#pages>, ?page]               { ?booktitle ?ee ?inproc ?proc ?yr                              -->    ?booktitle ?ee ?inproc ?page ?proc ?yr }                                    TripleTableIterator        
+ 3,826,373 /  3,826,373                    [?inproc, <http://xmlns.com/foaf/0.1/homepage>, ?url]                     { ?booktitle ?ee ?inproc ?page ?proc ?yr                        -->    ?booktitle ?ee ?inproc ?page ?proc ?url ?yr }                               TripleTableIterator        
+ 3,826,373 /  3,826,373                    [?inproc, <http://purl.org/dc/elements/1.1/title>, ?title]                { ?booktitle ?ee ?inproc ?page ?proc ?url ?yr                   -->    ?booktitle ?ee ?inproc ?page ?proc ?title ?url ?yr }                        TripleTableIterator        
+ 3,826,373 / 11,496,005                    [?inproc, <http://purl.org/dc/elements/1.1/creator>, ?author]             { ?booktitle ?ee ?inproc ?page ?proc ?title ?url ?yr            -->    ?author ?booktitle ?ee ?inproc ?page ?proc ?title ?url ?yr }                TripleTableIterator        
+                                       FILTER true                                                                                                                                                                                                                                                 
+11,496,005 /    116,142                    [?inproc, <http://localhost/vocabulary/bench/abstract>, ?abstract]        { ?author ?booktitle ?ee ?inproc ?page ?proc ?title ?url ?yr    -->    ?abstract ?author ?booktitle ?ee ?inproc ?page ?proc ?title ?url ?yr }      TripleTableIterator        
+=================================
+Answering query from file:   q3a.sparql
+QUERY ?article                                                                                                                                        QueryIterator              
+    PROJECT ?article                                                             {                              -->    ?article }                                                
+        CONJUNCTION                                                              {                              -->    ?article ?property ?value }    NestedIndexLoopJoinIterator
+            VALUES ?property                                                     {                              -->    ?property }                    ValuesIterator             
+            [?article, ?property, ?value]                                        { ?property                    -->    ?article ?property ?value }    TripleTableIterator        
+            [?article, rdf:type, <http://localhost/vocabulary/bench/Article>]    { ?article ?property ?value    -->    ?article ?property ?value }    TripleTableIterator        
+Query compilation time: 0.000000 s
+Number of returned tuples:   1719323
+Total number of answers:     1719323
+Statement compilation time:      0 s
+Total statement evaluation time: 3.78 s
+== QUERY EVALUATION STATISTICS ==
+        1 / 1,719,323    QUERY ?article                                                                                                                                        QueryIterator              
+                             PROJECT ?article                                                             {                              -->    ?article }                                                
+        1 / 1,719,323            CONJUNCTION                                                              {                              -->    ?article ?property ?value }    NestedIndexLoopJoinIterator
+        1 /         1                VALUES ?property                                                     {                              -->    ?property }                    ValuesIterator             
+        1 / 9,070,655                [?article, ?property, ?value]                                        { ?property                    -->    ?article ?property ?value }    TripleTableIterator        
+9,070,655 / 1,719,323                [?article, rdf:type, <http://localhost/vocabulary/bench/Article>]    { ?article ?property ?value    -->    ?article ?property ?value }    TripleTableIterator        
+=================================
+Answering query from file:   q3b.sparql
+QUERY ?article                                                                                                                                        QueryIterator              
+    PROJECT ?article                                                             {                              -->    ?article }                                                
+        CONJUNCTION                                                              {                              -->    ?article ?property ?value }    NestedIndexLoopJoinIterator
+            VALUES ?property                                                     {                              -->    ?property }                    ValuesIterator             
+            [?article, ?property, ?value]                                        { ?property                    -->    ?article ?property ?value }    TripleTableIterator        
+            [?article, rdf:type, <http://localhost/vocabulary/bench/Article>]    { ?article ?property ?value    -->    ?article ?property ?value }    TripleTableIterator        
+Query compilation time: 0.000000 s
+Number of returned tuples:   11865
+Total number of answers:     11865
+Statement compilation time:      0 s
+Total statement evaluation time: 0.02 s
+== QUERY EVALUATION STATISTICS ==
+     1 / 11,865    QUERY ?article                                                                                                                                        QueryIterator              
+                       PROJECT ?article                                                             {                              -->    ?article }                                                
+     1 / 11,865            CONJUNCTION                                                              {                              -->    ?article ?property ?value }    NestedIndexLoopJoinIterator
+     1 /      1                VALUES ?property                                                     {                              -->    ?property }                    ValuesIterator             
+     1 / 11,887                [?article, ?property, ?value]                                        { ?property                    -->    ?article ?property ?value }    TripleTableIterator        
+11,887 / 11,865                [?article, rdf:type, <http://localhost/vocabulary/bench/Article>]    { ?article ?property ?value    -->    ?article ?property ?value }    TripleTableIterator        
+=================================
+Answering query from file:   q3c.sparql
+QUERY ?article                                                                                                                                        QueryIterator              
+    PROJECT ?article                                                             {                              -->    ?article }                                                
+        CONJUNCTION                                                              {                              -->    ?article ?property ?value }    NestedIndexLoopJoinIterator
+            VALUES ?property                                                     {                              -->    ?property }                    ValuesIterator             
+            [?article, ?property, ?value]                                        { ?property                    -->    ?article ?property ?value }    TripleTableIterator        
+            [?article, rdf:type, <http://localhost/vocabulary/bench/Article>]    { ?article ?property ?value    -->    ?article ?property ?value }    TripleTableIterator        
+Query compilation time: 0.000000 s
+Number of returned tuples:   0
+Total number of answers:     0
+Statement compilation time:      0 s
+Total statement evaluation time: 0.056 s
+== QUERY EVALUATION STATISTICS ==
+      1 /       0    QUERY ?article                                                                                                                                        QueryIterator              
+                         PROJECT ?article                                                             {                              -->    ?article }                                                
+      1 /       0            CONJUNCTION                                                              {                              -->    ?article ?property ?value }    NestedIndexLoopJoinIterator
+      1 /       1                VALUES ?property                                                     {                              -->    ?property }                    ValuesIterator             
+      1 / 108,854                [?article, ?property, ?value]                                        { ?property                    -->    ?article ?property ?value }    TripleTableIterator        
+108,854 /       0                [?article, rdf:type, <http://localhost/vocabulary/bench/Article>]    { ?article ?property ?value    -->    ?article ?property ?value }    TripleTableIterator        
+=================================
+Answering query from file:   q4.sparql
+QUERY ?name1 ?name2                                                                                                                                                                                                              QueryIterator              
+    DISTINCT ?name1 ?name2                                                            {                                                                 -->    ?name1 ?name2 }                                                   DistinctIteratorMemoryless 
+        PROJECT ?name1 ?name2                                                         {                                                                 -->    ?name1 ?name2 }                                                                              
+            CONJUNCTION                                                               {                                                                 -->    ?article1 ?article2 ?author1 ?author2 ?journal ?name1 ?name2 }    NestedIndexLoopJoinIterator
+                [?article1, rdf:type, <http://localhost/vocabulary/bench/Article>]    {                                                                 -->    ?article1 }                                                       TripleTableIterator        
+                [?article1, <http://swrc.ontoware.org/ontology#journal>, ?journal]    { ?article1                                                       -->    ?article1 ?journal }                                              TripleTableIterator        
+                [?article2, <http://swrc.ontoware.org/ontology#journal>, ?journal]    { ?article1 ?journal                                              -->    ?article1 ?article2 ?journal }                                    TripleTableIterator        
+                [?article2, rdf:type, <http://localhost/vocabulary/bench/Article>]    { ?article1 ?article2 ?journal                                    -->    ?article1 ?article2 ?journal }                                    TripleTableIterator        
+                [?article1, <http://purl.org/dc/elements/1.1/creator>, ?author1]      { ?article1 ?article2 ?journal                                    -->    ?article1 ?article2 ?author1 ?journal }                           TripleTableIterator        
+                [?author1, <http://xmlns.com/foaf/0.1/name>, ?name1]                  { ?article1 ?article2 ?author1 ?journal                           -->    ?article1 ?article2 ?author1 ?journal ?name1 }                    TripleTableIterator        
+                [?article2, <http://purl.org/dc/elements/1.1/creator>, ?author2]      { ?article1 ?article2 ?author1 ?journal ?name1                    -->    ?article1 ?article2 ?author1 ?author2 ?journal ?name1 }           TripleTableIterator        
+                [?author2, <http://xmlns.com/foaf/0.1/name>, ?name2]                  { ?article1 ?article2 ?author1 ?author2 ?journal ?name1           -->    ?article1 ?article2 ?author1 ?author2 ?journal ?name1 ?name2 }    TripleTableIterator        
+                FILTER ATOM ?name1 < ?name2                                           { ?article1 ?article2 ?author1 ?author2 ?journal ?name1 ?name2    -->    ?article1 ?article2 ?author1 ?author2 ?journal ?name1 ?name2 }    FilterAtomIterator         
+Query compilation time: 0.000000 s
+Number of returned tuples:   573234679
+Total number of answers:     573234679
+Statement compilation time:      0 s
+Total statement evaluation time: 662 s
+== QUERY EVALUATION STATISTICS ==
+            1 /   573,234,679    QUERY ?name1 ?name2                                                                                                                                                                                                              QueryIterator              
+            1 /   573,234,679        DISTINCT ?name1 ?name2                                                            {                                                                 -->    ?name1 ?name2 }                                                   DistinctIteratorMemoryless 
+                                         PROJECT ?name1 ?name2                                                         {                                                                 -->    ?name1 ?name2 }                                                                              
+            1 /   577,890,887                CONJUNCTION                                                               {                                                                 -->    ?article1 ?article2 ?author1 ?author2 ?journal ?name1 ?name2 }    NestedIndexLoopJoinIterator
+            1 /     1,856,987                    [?article1, rdf:type, <http://localhost/vocabulary/bench/Article>]    {                                                                 -->    ?article1 }                                                       TripleTableIterator        
+    1,856,987 /     1,856,987                    [?article1, <http://swrc.ontoware.org/ontology#journal>, ?journal]    { ?article1                                                       -->    ?article1 ?journal }                                              TripleTableIterator        
+    1,856,987 /   133,516,817                    [?article2, <http://swrc.ontoware.org/ontology#journal>, ?journal]    { ?article1 ?journal                                              -->    ?article1 ?article2 ?journal }                                    TripleTableIterator        
+  133,516,817 /   133,516,817                    [?article2, rdf:type, <http://localhost/vocabulary/bench/Article>]    { ?article1 ?article2 ?journal                                    -->    ?article1 ?article2 ?journal }                                    TripleTableIterator        
+  133,516,817 /   390,215,802                    [?article1, <http://purl.org/dc/elements/1.1/creator>, ?author1]      { ?article1 ?article2 ?journal                                    -->    ?article1 ?article2 ?author1 ?journal }                           TripleTableIterator        
+  390,215,802 /   390,215,802                    [?author1, <http://xmlns.com/foaf/0.1/name>, ?name1]                  { ?article1 ?article2 ?author1 ?journal                           -->    ?article1 ?article2 ?author1 ?journal ?name1 }                    TripleTableIterator        
+  390,215,802 / 1,161,122,803                    [?article2, <http://purl.org/dc/elements/1.1/creator>, ?author2]      { ?article1 ?article2 ?author1 ?journal ?name1                    -->    ?article1 ?article2 ?author1 ?author2 ?journal ?name1 }           TripleTableIterator        
+1,161,122,803 / 1,161,122,803                    [?author2, <http://xmlns.com/foaf/0.1/name>, ?name2]                  { ?article1 ?article2 ?author1 ?author2 ?journal ?name1           -->    ?article1 ?article2 ?author1 ?author2 ?journal ?name1 ?name2 }    TripleTableIterator        
+1,161,122,803 /   577,890,887                    FILTER ATOM ?name1 < ?name2                                           { ?article1 ?article2 ?author1 ?author2 ?journal ?name1 ?name2    -->    ?article1 ?article2 ?author1 ?author2 ?journal ?name1 ?name2 }    FilterAtomIterator         
+=================================
+Answering query from file:   q5a.sparql
+QUERY ?person ?name                                                                                                                                                                                      QueryIterator              
+    DISTINCT ?name ?person                                                                {                                                   -->    ?name ?person }                                     DistinctIteratorMemoryless 
+        PROJECT ?name ?person                                                             {                                                   -->    ?name ?person }                                                                
+            CONJUNCTION                                                                   {                                                   -->    ?article ?inproc ?name ?name2 ?person ?person2 }    NestedIndexLoopJoinIterator
+                [?article, rdf:type, <http://localhost/vocabulary/bench/Article>]         {                                                   -->    ?article }                                          TripleTableIterator        
+                [?article, <http://purl.org/dc/elements/1.1/creator>, ?person]            { ?article                                          -->    ?article ?person }                                  TripleTableIterator        
+                [?person, <http://xmlns.com/foaf/0.1/name>, ?name]                        { ?article ?person                                  -->    ?article ?name ?person }                            TripleTableIterator        
+                [?inproc, rdf:type, <http://localhost/vocabulary/bench/Inproceedings>]    { ?article ?name ?person                            -->    ?article ?inproc ?name ?person }                    TripleTableIterator        
+                [?inproc, <http://purl.org/dc/elements/1.1/creator>, ?person2]            { ?article ?inproc ?name ?person                    -->    ?article ?inproc ?name ?person ?person2 }           TripleTableIterator        
+                [?person2, <http://xmlns.com/foaf/0.1/name>, ?name2]                      { ?article ?inproc ?name ?person ?person2           -->    ?article ?inproc ?name ?name2 ?person ?person2 }    TripleTableIterator        
+                FILTER ATOM ?name = ?name2                                                { ?article ?inproc ?name ?name2 ?person ?person2    -->    ?article ?inproc ?name ?name2 ?person ?person2 }    FilterAtomIterator         
+Query compilation time: 0.000000 s
+=================================
+Answering query from file:   q5b.sparql
+QUERY ?person ?name                                                                                                                                                      QueryIterator              
+    DISTINCT ?name ?person                                                                {                                   -->    ?name ?person }                     DistinctIteratorMemoryless 
+        PROJECT ?name ?person                                                             {                                   -->    ?name ?person }                                                
+            CONJUNCTION                                                                   {                                   -->    ?article ?inproc ?name ?person }    NestedIndexLoopJoinIterator
+                [?article, rdf:type, <http://localhost/vocabulary/bench/Article>]         {                                   -->    ?article }                          TripleTableIterator        
+                [?article, <http://purl.org/dc/elements/1.1/creator>, ?person]            { ?article                          -->    ?article ?person }                  TripleTableIterator        
+                [?person, <http://xmlns.com/foaf/0.1/name>, ?name]                        { ?article ?person                  -->    ?article ?name ?person }            TripleTableIterator        
+                [?inproc, <http://purl.org/dc/elements/1.1/creator>, ?person]             { ?article ?name ?person            -->    ?article ?inproc ?name ?person }    TripleTableIterator        
+                [?inproc, rdf:type, <http://localhost/vocabulary/bench/Inproceedings>]    { ?article ?inproc ?name ?person    -->    ?article ?inproc ?name ?person }    TripleTableIterator        
+Query compilation time: 0.000000 s
+Number of returned tuples:   2372868
+Total number of answers:     2372868
+Statement compilation time:      0 s
+Total statement evaluation time: 8.38 s
+== QUERY EVALUATION STATISTICS ==
+         1 /  2,372,868    QUERY ?person ?name                                                                                                                                                      QueryIterator              
+         1 /  2,372,868        DISTINCT ?name ?person                                                                {                                   -->    ?name ?person }                     DistinctIteratorMemoryless 
+                                   PROJECT ?name ?person                                                             {                                   -->    ?name ?person }                                                
+         1 /  7,371,808                CONJUNCTION                                                                   {                                   -->    ?article ?inproc ?name ?person }    NestedIndexLoopJoinIterator
+         1 /  1,856,987                    [?article, rdf:type, <http://localhost/vocabulary/bench/Article>]         {                                   -->    ?article }                          TripleTableIterator        
+ 1,856,987 /  5,310,867                    [?article, <http://purl.org/dc/elements/1.1/creator>, ?person]            { ?article                          -->    ?article ?person }                  TripleTableIterator        
+ 5,310,867 /  5,310,867                    [?person, <http://xmlns.com/foaf/0.1/name>, ?name]                        { ?article ?person                  -->    ?article ?name ?person }            TripleTableIterator        
+ 5,310,867 / 13,089,748                    [?inproc, <http://purl.org/dc/elements/1.1/creator>, ?person]             { ?article ?name ?person            -->    ?article ?inproc ?name ?person }    TripleTableIterator        
+13,089,748 /  7,371,808                    [?inproc, rdf:type, <http://localhost/vocabulary/bench/Inproceedings>]    { ?article ?inproc ?name ?person    -->    ?article ?inproc ?name ?person }    TripleTableIterator        
+=================================
+Answering query from file:   q6.sparql
+QUERY ?yr ?name ?document                                                                                                                                                                                                                      QueryIterator              
+    PROJECT ?document ?name ?yr                                                              {                                                               -->    ?document ?name ?yr }                                                                                 
+        FILTER QUERY !BOUND(?author2)                                                        {                                                               -->    ?author ?class ?document ?name ?yr | ?author2 ?class2 ?document2 ?yr2 }    FilterIterator             
+            OPTIONAL                                                                         {                                                               -->    ?author ?class ?document ?name ?yr | ?author2 ?class2 ?document2 ?yr2 }    OptionalIterator           
+                CONJUNCTION                                                                  {                                                               -->    ?author ?class ?document ?name ?yr }                                       NestedIndexLoopJoinIterator
+                    [?class, rdfs:subClassOf, <http://xmlns.com/foaf/0.1/Document>]          {                                                               -->    ?class }                                                                   TripleTableIterator        
+                    [?document, rdf:type, ?class]                                            { ?class                                                        -->    ?class ?document }                                                         TripleTableIterator        
+                    [?document, <http://purl.org/dc/terms/issued>, ?yr]                      { ?class ?document                                              -->    ?class ?document ?yr }                                                     TripleTableIterator        
+                    [?document, <http://purl.org/dc/elements/1.1/creator>, ?author]          { ?class ?document ?yr                                          -->    ?author ?class ?document ?yr }                                             TripleTableIterator        
+                    [?author, <http://xmlns.com/foaf/0.1/name>, ?name]                       { ?author ?class ?document ?yr                                  -->    ?author ?class ?document ?name ?yr }                                       TripleTableIterator        
+                FILTER ?author = ?author2 && ?yr2 < ?yr                                                                                                                                                                                                                   
+                    CONJUNCTION                                                              { ?author ?class ?document ?name ?yr                            -->    ?author ?author2 ?class ?class2 ?document ?document2 ?name ?yr ?yr2 }      NestedIndexLoopJoinIterator
+                        [?class2, rdfs:subClassOf, <http://xmlns.com/foaf/0.1/Document>]     { ?author ?class ?document ?name ?yr                            -->    ?author ?class ?class2 ?document ?name ?yr }                               TripleTableIterator        
+                        [?document2, rdf:type, ?class2]                                      { ?author ?class ?class2 ?document ?name ?yr                    -->    ?author ?class ?class2 ?document ?document2 ?name ?yr }                    TripleTableIterator        
+                        [?document2, <http://purl.org/dc/terms/issued>, ?yr2]                { ?author ?class ?class2 ?document ?document2 ?name ?yr         -->    ?author ?class ?class2 ?document ?document2 ?name ?yr ?yr2 }               TripleTableIterator        
+                        [?document2, <http://purl.org/dc/elements/1.1/creator>, ?author2]    { ?author ?class ?class2 ?document ?document2 ?name ?yr ?yr2    -->    ?author ?author2 ?class ?class2 ?document ?document2 ?name ?yr ?yr2 }      TripleTableIterator        
+Query compilation time: 0.000000 s
+=================================
+Answering query from file:   q7.sparql
+QUERY ?title                                                                                                                                                                                                                                                                                                                   QueryIterator              
+    DISTINCT ?title                                                                                     {                                                                                                      -->    ?title }                                                                                                 DistinctIteratorMemoryless 
+        PROJECT ?title                                                                                  {                                                                                                      -->    ?title }                                                                                                                            
+            FILTER QUERY !BOUND(?doc3)                                                                  {                                                                                                      -->    ?bag2 ?class ?doc ?doc2 ?member2 ?title | ?bag3 ?bag4 ?class3 ?class4 ?doc3 ?doc4 ?member3 ?member4 }    FilterIterator             
+                OPTIONAL                                                                                {                                                                                                      -->    ?bag2 ?class ?doc ?doc2 ?member2 ?title | ?bag3 ?bag4 ?class3 ?class4 ?doc3 ?doc4 ?member3 ?member4 }    OptionalIterator           
+                    CONJUNCTION                                                                         {                                                                                                      -->    ?bag2 ?class ?doc ?doc2 ?member2 ?title }                                                                NestedIndexLoopJoinIterator
+                        [?class, rdfs:subClassOf, <http://xmlns.com/foaf/0.1/Document>]                 {                                                                                                      -->    ?class }                                                                                                 TripleTableIterator        
+                        [?doc, rdf:type, ?class]                                                        { ?class                                                                                               -->    ?class ?doc }                                                                                            TripleTableIterator        
+                        [?doc, <http://purl.org/dc/elements/1.1/title>, ?title]                         { ?class ?doc                                                                                          -->    ?class ?doc ?title }                                                                                     TripleTableIterator        
+                        [?bag2, ?member2, ?doc]                                                         { ?class ?doc ?title                                                                                   -->    ?bag2 ?class ?doc ?member2 ?title }                                                                      TripleTableIterator        
+                        [?doc2, <http://purl.org/dc/terms/references>, ?bag2]                           { ?bag2 ?class ?doc ?member2 ?title                                                                    -->    ?bag2 ?class ?doc ?doc2 ?member2 ?title }                                                                TripleTableIterator        
+                    FILTER !BOUND(?doc4)                                                                                                                                                                                                                                                                                                                  
+                        OPTIONAL                                                                        { ?bag2 ?class ?doc ?doc2 ?member2 ?title                                                              -->    ?bag2 ?bag3 ?class ?class3 ?doc ?doc2 ?doc3 ?member2 ?member3 ?title | ?bag4 ?class4 ?doc4 ?member4 }    OptionalIterator           
+                            CONJUNCTION                                                                 { ?bag2 ?class ?doc ?doc2 ?member2 ?title                                                              -->    ?bag2 ?bag3 ?class ?class3 ?doc ?doc2 ?doc3 ?member2 ?member3 ?title }                                   NestedIndexLoopJoinIterator
+                                [?bag3, ?member3, ?doc]                                                 { ?bag2 ?class ?doc ?doc2 ?member2 ?title                                                              -->    ?bag2 ?bag3 ?class ?doc ?doc2 ?member2 ?member3 ?title }                                                 TripleTableIterator        
+                                [?doc3, <http://purl.org/dc/terms/references>, ?bag3]                   { ?bag2 ?bag3 ?class ?doc ?doc2 ?member2 ?member3 ?title                                               -->    ?bag2 ?bag3 ?class ?doc ?doc2 ?doc3 ?member2 ?member3 ?title }                                           TripleTableIterator        
+                                [?doc3, rdf:type, ?class3]                                              { ?bag2 ?bag3 ?class ?doc ?doc2 ?doc3 ?member2 ?member3 ?title                                         -->    ?bag2 ?bag3 ?class ?class3 ?doc ?doc2 ?doc3 ?member2 ?member3 ?title }                                   TripleTableIterator        
+                                [?class3, rdfs:subClassOf, <http://xmlns.com/foaf/0.1/Document>]        { ?bag2 ?bag3 ?class ?class3 ?doc ?doc2 ?doc3 ?member2 ?member3 ?title                                 -->    ?bag2 ?bag3 ?class ?class3 ?doc ?doc2 ?doc3 ?member2 ?member3 ?title }                                   TripleTableIterator        
+                            FILTER true                                                                                                                                                                                                                                                                                                                   
+                                CONJUNCTION                                                             { ?bag2 ?bag3 ?class ?class3 ?doc ?doc2 ?doc3 ?member2 ?member3 ?title                                 -->    ?bag2 ?bag3 ?bag4 ?class ?class3 ?class4 ?doc ?doc2 ?doc3 ?doc4 ?member2 ?member3 ?member4 ?title }      NestedIndexLoopJoinIterator
+                                    [?bag4, ?member4, ?doc3]                                            { ?bag2 ?bag3 ?class ?class3 ?doc ?doc2 ?doc3 ?member2 ?member3 ?title                                 -->    ?bag2 ?bag3 ?bag4 ?class ?class3 ?doc ?doc2 ?doc3 ?member2 ?member3 ?member4 ?title }                    TripleTableIterator        
+                                    [?doc4, <http://purl.org/dc/terms/references>, ?bag4]               { ?bag2 ?bag3 ?bag4 ?class ?class3 ?doc ?doc2 ?doc3 ?member2 ?member3 ?member4 ?title                  -->    ?bag2 ?bag3 ?bag4 ?class ?class3 ?doc ?doc2 ?doc3 ?doc4 ?member2 ?member3 ?member4 ?title }              TripleTableIterator        
+                                    [?doc4, rdf:type, ?class4]                                          { ?bag2 ?bag3 ?bag4 ?class ?class3 ?doc ?doc2 ?doc3 ?doc4 ?member2 ?member3 ?member4 ?title            -->    ?bag2 ?bag3 ?bag4 ?class ?class3 ?class4 ?doc ?doc2 ?doc3 ?doc4 ?member2 ?member3 ?member4 ?title }      TripleTableIterator        
+                                    [?class4, rdfs:subClassOf, <http://xmlns.com/foaf/0.1/Document>]    { ?bag2 ?bag3 ?bag4 ?class ?class3 ?class4 ?doc ?doc2 ?doc3 ?doc4 ?member2 ?member3 ?member4 ?title    -->    ?bag2 ?bag3 ?bag4 ?class ?class3 ?class4 ?doc ?doc2 ?doc3 ?doc4 ?member2 ?member3 ?member4 ?title }      TripleTableIterator        
+Query compilation time: 0.000000 s
+Number of returned tuples:   16694
+Total number of answers:     16694
+Statement compilation time:      0 s
+Total statement evaluation time: 36.6 s
+== QUERY EVALUATION STATISTICS ==
+         1 /     16,694    QUERY ?title                                                                                                                                                                                                                                                                                                                   QueryIterator              
+         1 /     16,694        DISTINCT ?title                                                                                     {                                                                                                      -->    ?title }                                                                                                 DistinctIteratorMemoryless 
+                                   PROJECT ?title                                                                                  {                                                                                                      -->    ?title }                                                                                                                            
+         1 /     18,155                FILTER QUERY !BOUND(?doc3)                                                                  {                                                                                                      -->    ?bag2 ?class ?doc ?doc2 ?member2 ?title | ?bag3 ?bag4 ?class3 ?class4 ?doc3 ?doc4 ?member3 ?member4 }    FilterIterator             
+         1 / 74,442,238                    OPTIONAL                                                                                {                                                                                                      -->    ?bag2 ?class ?doc ?doc2 ?member2 ?title | ?bag3 ?bag4 ?class3 ?class4 ?doc3 ?doc4 ?member3 ?member4 }    OptionalIterator           
+         1 /  1,066,229                        CONJUNCTION                                                                         {                                                                                                      -->    ?bag2 ?class ?doc ?doc2 ?member2 ?title }                                                                NestedIndexLoopJoinIterator
+         1 /          9                            [?class, rdfs:subClassOf, <http://xmlns.com/foaf/0.1/Document>]                 {                                                                                                      -->    ?class }                                                                                                 TripleTableIterator        
+         9 /  9,768,483                            [?doc, rdf:type, ?class]                                                        { ?class                                                                                               -->    ?class ?doc }                                                                                            TripleTableIterator        
+ 9,768,483 /  9,768,483                            [?doc, <http://purl.org/dc/elements/1.1/title>, ?title]                         { ?class ?doc                                                                                          -->    ?class ?doc ?title }                                                                                     TripleTableIterator        
+ 9,768,483 /  9,108,086                            [?bag2, ?member2, ?doc]                                                         { ?class ?doc ?title                                                                                   -->    ?bag2 ?class ?doc ?member2 ?title }                                                                      TripleTableIterator        
+ 9,108,086 /  1,066,229                            [?doc2, <http://purl.org/dc/terms/references>, ?bag2]                           { ?bag2 ?class ?doc ?member2 ?title                                                                    -->    ?bag2 ?class ?doc ?doc2 ?member2 ?title }                                                                TripleTableIterator        
+                                               FILTER !BOUND(?doc4)                                                                                                                                                                                                                                                                                                                  
+ 1,066,229 / 76,811,626                            OPTIONAL                                                                        { ?bag2 ?class ?doc ?doc2 ?member2 ?title                                                              -->    ?bag2 ?bag3 ?class ?class3 ?doc ?doc2 ?doc3 ?member2 ?member3 ?title | ?bag4 ?class4 ?doc4 ?member4 }    OptionalIterator           
+ 1,066,229 / 74,594,965                                CONJUNCTION                                                                 { ?bag2 ?class ?doc ?doc2 ?member2 ?title                                                              -->    ?bag2 ?bag3 ?class ?class3 ?doc ?doc2 ?doc3 ?member2 ?member3 ?title }                                   NestedIndexLoopJoinIterator
+ 1,066,229 / 74,594,965                                    [?bag3, ?member3, ?doc]                                                 { ?bag2 ?class ?doc ?doc2 ?member2 ?title                                                              -->    ?bag2 ?bag3 ?class ?doc ?doc2 ?member2 ?member3 ?title }                                                 TripleTableIterator        
+74,594,965 / 74,594,965                                    [?doc3, <http://purl.org/dc/terms/references>, ?bag3]                   { ?bag2 ?bag3 ?class ?doc ?doc2 ?member2 ?member3 ?title                                               -->    ?bag2 ?bag3 ?class ?doc ?doc2 ?doc3 ?member2 ?member3 ?title }                                           TripleTableIterator        
+74,594,965 / 74,594,965                                    [?doc3, rdf:type, ?class3]                                              { ?bag2 ?bag3 ?class ?doc ?doc2 ?doc3 ?member2 ?member3 ?title                                         -->    ?bag2 ?bag3 ?class ?class3 ?doc ?doc2 ?doc3 ?member2 ?member3 ?title }                                   TripleTableIterator        
+74,594,965 / 74,594,965                                    [?class3, rdfs:subClassOf, <http://xmlns.com/foaf/0.1/Document>]        { ?bag2 ?bag3 ?class ?class3 ?doc ?doc2 ?doc3 ?member2 ?member3 ?title                                 -->    ?bag2 ?bag3 ?class ?class3 ?doc ?doc2 ?doc3 ?member2 ?member3 ?title }                                   TripleTableIterator        
+                                                       FILTER true                                                                                                                                                                                                                                                                                                                   
+74,594,965 /  2,387,543                                    CONJUNCTION                                                             { ?bag2 ?bag3 ?class ?class3 ?doc ?doc2 ?doc3 ?member2 ?member3 ?title                                 -->    ?bag2 ?bag3 ?bag4 ?class ?class3 ?class4 ?doc ?doc2 ?doc3 ?doc4 ?member2 ?member3 ?member4 ?title }      NestedIndexLoopJoinIterator
+74,594,965 /  2,387,543                                        [?bag4, ?member4, ?doc3]                                            { ?bag2 ?bag3 ?class ?class3 ?doc ?doc2 ?doc3 ?member2 ?member3 ?title                                 -->    ?bag2 ?bag3 ?bag4 ?class ?class3 ?doc ?doc2 ?doc3 ?member2 ?member3 ?member4 ?title }                    TripleTableIterator        
+ 2,387,543 /  2,387,543                                        [?doc4, <http://purl.org/dc/terms/references>, ?bag4]               { ?bag2 ?bag3 ?bag4 ?class ?class3 ?doc ?doc2 ?doc3 ?member2 ?member3 ?member4 ?title                  -->    ?bag2 ?bag3 ?bag4 ?class ?class3 ?doc ?doc2 ?doc3 ?doc4 ?member2 ?member3 ?member4 ?title }              TripleTableIterator        
+ 2,387,543 /  2,387,543                                        [?doc4, rdf:type, ?class4]                                          { ?bag2 ?bag3 ?bag4 ?class ?class3 ?doc ?doc2 ?doc3 ?doc4 ?member2 ?member3 ?member4 ?title            -->    ?bag2 ?bag3 ?bag4 ?class ?class3 ?class4 ?doc ?doc2 ?doc3 ?doc4 ?member2 ?member3 ?member4 ?title }      TripleTableIterator        
+ 2,387,543 /  2,387,543                                        [?class4, rdfs:subClassOf, <http://xmlns.com/foaf/0.1/Document>]    { ?bag2 ?bag3 ?bag4 ?class ?class3 ?class4 ?doc ?doc2 ?doc3 ?doc4 ?member2 ?member3 ?member4 ?title    -->    ?bag2 ?bag3 ?bag4 ?class ?class3 ?class4 ?doc ?doc2 ?doc3 ?doc4 ?member2 ?member3 ?member4 ?title }      TripleTableIterator        
+=================================
+Answering query from file:   q8.sparql
+QUERY ?name                                                                                                                                                                                                       QueryIterator              
+    DISTINCT ?name                                                                           {                                                  -->    ?name }                                                    DistinctIteratorMemoryless 
+        PROJECT ?name                                                                        {                                                  -->    ?name }                                                                               
+            CONJUNCTION                                                                      {                                                  -->    ?author ?document ?erdoes ?name | ?author2 ?document2 }    NestedIndexLoopJoinIterator
+                [?erdoes, <http://xmlns.com/foaf/0.1/name>, "Paul Erdoes"]                   {                                                  -->    ?erdoes }                                                  TripleTableIterator        
+                [?erdoes, rdf:type, <http://xmlns.com/foaf/0.1/Person>]                      { ?erdoes                                          -->    ?erdoes }                                                  TripleTableIterator        
+                DISJUNCTION                                                                  { ?erdoes                                          -->    ?author ?document ?erdoes ?name | ?author2 ?document2 }    UnionIterator              
+                    CONJUNCTION                                                              { ?erdoes                                          -->    ?author ?author2 ?document ?document2 ?erdoes ?name }      NestedIndexLoopJoinIterator
+                        [?document, <http://purl.org/dc/elements/1.1/creator>, ?erdoes]      { ?erdoes                                          -->    ?document ?erdoes }                                        TripleTableIterator        
+                        [?document, <http://purl.org/dc/elements/1.1/creator>, ?author]      { ?document ?erdoes                                -->    ?author ?document ?erdoes }                                TripleTableIterator        
+                        FILTER ATOM ?author != ?erdoes                                       { ?author ?document ?erdoes                        -->    ?author ?document ?erdoes }                                FilterAtomIterator         
+                        [?document2, <http://purl.org/dc/elements/1.1/creator>, ?author]     { ?author ?document ?erdoes                        -->    ?author ?document ?document2 ?erdoes }                     TripleTableIterator        
+                        FILTER ATOM ?document2 != ?document                                  { ?author ?document ?document2 ?erdoes             -->    ?author ?document ?document2 ?erdoes }                     FilterAtomIterator         
+                        [?document2, <http://purl.org/dc/elements/1.1/creator>, ?author2]    { ?author ?document ?document2 ?erdoes             -->    ?author ?author2 ?document ?document2 ?erdoes }            TripleTableIterator        
+                        FILTER ATOM ?author2 != ?erdoes                                      { ?author ?author2 ?document ?document2 ?erdoes    -->    ?author ?author2 ?document ?document2 ?erdoes }            FilterAtomIterator         
+                        FILTER ATOM ?author2 != ?author                                      { ?author ?author2 ?document ?document2 ?erdoes    -->    ?author ?author2 ?document ?document2 ?erdoes }            FilterAtomIterator         
+                        [?author2, <http://xmlns.com/foaf/0.1/name>, ?name]                  { ?author ?author2 ?document ?document2 ?erdoes    -->    ?author ?author2 ?document ?document2 ?erdoes ?name }      TripleTableIterator        
+                    CONJUNCTION                                                              { ?erdoes                                          -->    ?author ?document ?erdoes ?name }                          NestedIndexLoopJoinIterator
+                        [?document, <http://purl.org/dc/elements/1.1/creator>, ?erdoes]      { ?erdoes                                          -->    ?document ?erdoes }                                        TripleTableIterator        
+                        [?document, <http://purl.org/dc/elements/1.1/creator>, ?author]      { ?document ?erdoes                                -->    ?author ?document ?erdoes }                                TripleTableIterator        
+                        FILTER ATOM ?author != ?erdoes                                       { ?author ?document ?erdoes                        -->    ?author ?document ?erdoes }                                FilterAtomIterator         
+                        [?author, <http://xmlns.com/foaf/0.1/name>, ?name]                   { ?author ?document ?erdoes                        -->    ?author ?document ?erdoes ?name }                          TripleTableIterator        
+Query compilation time: 0.000000 s
+Number of returned tuples:   493
+Total number of answers:     493
+Statement compilation time:      0 s
+Total statement evaluation time: 0.006 s
+== QUERY EVALUATION STATISTICS ==
+     1 /    493    QUERY ?name                                                                                                                                                                                                       QueryIterator              
+     1 /    493        DISTINCT ?name                                                                           {                                                  -->    ?name }                                                    DistinctIteratorMemoryless 
+                           PROJECT ?name                                                                        {                                                  -->    ?name }                                                                               
+     1 /  4,711                CONJUNCTION                                                                      {                                                  -->    ?author ?document ?erdoes ?name | ?author2 ?document2 }    NestedIndexLoopJoinIterator
+     1 /      1                    [?erdoes, <http://xmlns.com/foaf/0.1/name>, "Paul Erdoes"]                   {                                                  -->    ?erdoes }                                                  TripleTableIterator        
+     1 /      1                    [?erdoes, rdf:type, <http://xmlns.com/foaf/0.1/Person>]                      { ?erdoes                                          -->    ?erdoes }                                                  TripleTableIterator        
+     1 /  4,711                    DISJUNCTION                                                                  { ?erdoes                                          -->    ?author ?document ?erdoes ?name | ?author2 ?document2 }    UnionIterator              
+     1 /  3,923                        CONJUNCTION                                                              { ?erdoes                                          -->    ?author ?author2 ?document ?document2 ?erdoes ?name }      NestedIndexLoopJoinIterator
+     1 /    570                            [?document, <http://purl.org/dc/elements/1.1/creator>, ?erdoes]      { ?erdoes                                          -->    ?document ?erdoes }                                        TripleTableIterator        
+   570 /  1,358                            [?document, <http://purl.org/dc/elements/1.1/creator>, ?author]      { ?document ?erdoes                                -->    ?author ?document ?erdoes }                                TripleTableIterator        
+ 1,358 /    788                            FILTER ATOM ?author != ?erdoes                                       { ?author ?document ?erdoes                        -->    ?author ?document ?erdoes }                                FilterAtomIterator         
+   788 /  5,733                            [?document2, <http://purl.org/dc/elements/1.1/creator>, ?author]     { ?author ?document ?erdoes                        -->    ?author ?document ?document2 ?erdoes }                     TripleTableIterator        
+ 5,733 /  4,945                            FILTER ATOM ?document2 != ?document                                  { ?author ?document ?document2 ?erdoes             -->    ?author ?document ?document2 ?erdoes }                     FilterAtomIterator         
+ 4,945 / 11,554                            [?document2, <http://purl.org/dc/elements/1.1/creator>, ?author2]    { ?author ?document ?document2 ?erdoes             -->    ?author ?author2 ?document ?document2 ?erdoes }            TripleTableIterator        
+11,554 /  8,868                            FILTER ATOM ?author2 != ?erdoes                                      { ?author ?author2 ?document ?document2 ?erdoes    -->    ?author ?author2 ?document ?document2 ?erdoes }            FilterAtomIterator         
+ 8,868 /  3,923                            FILTER ATOM ?author2 != ?author                                      { ?author ?author2 ?document ?document2 ?erdoes    -->    ?author ?author2 ?document ?document2 ?erdoes }            FilterAtomIterator         
+ 3,923 /  3,923                            [?author2, <http://xmlns.com/foaf/0.1/name>, ?name]                  { ?author ?author2 ?document ?document2 ?erdoes    -->    ?author ?author2 ?document ?document2 ?erdoes ?name }      TripleTableIterator        
+     1 /    788                        CONJUNCTION                                                              { ?erdoes                                          -->    ?author ?document ?erdoes ?name }                          NestedIndexLoopJoinIterator
+     1 /    570                            [?document, <http://purl.org/dc/elements/1.1/creator>, ?erdoes]      { ?erdoes                                          -->    ?document ?erdoes }                                        TripleTableIterator        
+   570 /  1,358                            [?document, <http://purl.org/dc/elements/1.1/creator>, ?author]      { ?document ?erdoes                                -->    ?author ?document ?erdoes }                                TripleTableIterator        
+ 1,358 /    788                            FILTER ATOM ?author != ?erdoes                                       { ?author ?document ?erdoes                        -->    ?author ?document ?erdoes }                                FilterAtomIterator         
+   788 /    788                            [?author, <http://xmlns.com/foaf/0.1/name>, ?name]                   { ?author ?document ?erdoes                        -->    ?author ?document ?erdoes ?name }                          TripleTableIterator        
+=================================
+Answering query from file:   q9.sparql
+QUERY ?predicate                                                                                                                              QueryIterator              
+    DISTINCT ?predicate                                                        {            -->    ?predicate }                               DistinctIteratorMemoryless 
+        PROJECT ?predicate                                                     {            -->    ?predicate }                                                          
+            DISJUNCTION                                                        {            -->    ?person ?predicate | ?object ?subject }    UnionIterator              
+                CONJUNCTION                                                    {            -->    ?person ?predicate ?subject }              NestedIndexLoopJoinIterator
+                    [?person, rdf:type, <http://xmlns.com/foaf/0.1/Person>]    {            -->    ?person }                                  TripleTableIterator        
+                    [?subject, ?predicate, ?person]                            { ?person    -->    ?person ?predicate ?subject }              TripleTableIterator        
+                CONJUNCTION                                                    {            -->    ?object ?person ?predicate }               NestedIndexLoopJoinIterator
+                    [?person, rdf:type, <http://xmlns.com/foaf/0.1/Person>]    {            -->    ?person }                                  TripleTableIterator        
+                    [?person, ?predicate, ?object]                             { ?person    -->    ?object ?person ?predicate }               TripleTableIterator        
+Query compilation time: 0.000000 s
+Number of returned tuples:   4
+Total number of answers:     4
+Statement compilation time:      0 s
+Total statement evaluation time: 5.5 s
+== QUERY EVALUATION STATISTICS ==
+         1 /          4    QUERY ?predicate                                                                                                                              QueryIterator              
+         1 /          4        DISTINCT ?predicate                                                        {            -->    ?predicate }                               DistinctIteratorMemoryless 
+                                   PROJECT ?predicate                                                     {            -->    ?predicate }                                                          
+         1 / 54,021,854                DISJUNCTION                                                        {            -->    ?person ?predicate | ?object ?subject }    UnionIterator              
+         1 / 28,905,854                    CONJUNCTION                                                    {            -->    ?person ?predicate ?subject }              NestedIndexLoopJoinIterator
+         1 / 12,558,000                        [?person, rdf:type, <http://xmlns.com/foaf/0.1/Person>]    {            -->    ?person }                                  TripleTableIterator        
+12,558,000 / 28,905,854                        [?subject, ?predicate, ?person]                            { ?person    -->    ?person ?predicate ?subject }              TripleTableIterator        
+         1 / 25,116,000                    CONJUNCTION                                                    {            -->    ?object ?person ?predicate }               NestedIndexLoopJoinIterator
+         1 / 12,558,000                        [?person, rdf:type, <http://xmlns.com/foaf/0.1/Person>]    {            -->    ?person }                                  TripleTableIterator        
+12,558,000 / 25,116,000                        [?person, ?predicate, ?object]                             { ?person    -->    ?object ?person ?predicate }               TripleTableIterator        
+=================================
+Answering query from file:   q10.sparql
+QUERY ?subject ?predicate                                                                                  QueryIterator      
+    [?subject, ?predicate, <http://localhost/persons/Paul_Erdoes>]    {    -->    ?predicate ?subject }    TripleTableIterator
+Query compilation time: 0.000000 s
+Number of returned tuples:   656
+Total number of answers:     656
+Statement compilation time:      0 s
+Total statement evaluation time: 0.003 s
+== QUERY EVALUATION STATISTICS ==
+1 / 656    QUERY ?subject ?predicate                                                                                  QueryIterator      
+1 / 656        [?subject, ?predicate, <http://localhost/persons/Paul_Erdoes>]    {    -->    ?predicate ?subject }    TripleTableIterator
+=================================
+Answering query from file:   q11.sparql
+QUERY ?ee                                                                              QueryIterator                
+    OFFSET 50 LIMIT 10                               {    -->    ?ee }                 OffsetLimitIteratorMemoryless
+        TOP 60: ASC(?ee)                             {    -->    ?ee }                 TopKIterator                 
+            PROJECT ?ee                              {    -->    ?ee }                                              
+                [?publication, rdfs:seeAlso, ?ee]    {    -->    ?ee ?publication }    TripleTableIterator          
+Query compilation time: 0.000000 s
+Number of returned tuples:   10
+Total number of answers:     10
+Statement compilation time:      0 s
+Total statement evaluation time: 1.83 s
+== QUERY EVALUATION STATISTICS ==
+1 /        10    QUERY ?ee                                                                              QueryIterator                
+1 /        10        OFFSET 50 LIMIT 10                               {    -->    ?ee }                 OffsetLimitIteratorMemoryless
+1 /        60            TOP 60: ASC(?ee)                             {    -->    ?ee }                 TopKIterator                 
+                             PROJECT ?ee                              {    -->    ?ee }                                              
+1 / 6,310,461                    [?publication, rdfs:seeAlso, ?ee]    {    -->    ?ee ?publication }    TripleTableIterator          
+=================================
+Answering query from file:   q12a.sparql
+QUERY                                                                                                                                                                                                        QueryIterator              
+    DISTINCT                                                                              {                                                     -->    }                                                     DistinctIteratorMemoryless 
+        PROJECT                                                                           {                                                     -->    }                                                                                
+            CONJUNCTION                                                                   {                                                     -->    ?article ?inproc ?name1 ?name2 ?person1 ?person2 }    NestedIndexLoopJoinIterator
+                [?article, rdf:type, <http://localhost/vocabulary/bench/Article>]         {                                                     -->    ?article }                                            TripleTableIterator        
+                [?article, <http://purl.org/dc/elements/1.1/creator>, ?person1]           { ?article                                            -->    ?article ?person1 }                                   TripleTableIterator        
+                [?person1, <http://xmlns.com/foaf/0.1/name>, ?name1]                      { ?article ?person1                                   -->    ?article ?name1 ?person1 }                            TripleTableIterator        
+                [?inproc, rdf:type, <http://localhost/vocabulary/bench/Inproceedings>]    { ?article ?name1 ?person1                            -->    ?article ?inproc ?name1 ?person1 }                    TripleTableIterator        
+                [?inproc, <http://purl.org/dc/elements/1.1/creator>, ?person2]            { ?article ?inproc ?name1 ?person1                    -->    ?article ?inproc ?name1 ?person1 ?person2 }           TripleTableIterator        
+                [?person2, <http://xmlns.com/foaf/0.1/name>, ?name2]                      { ?article ?inproc ?name1 ?person1 ?person2           -->    ?article ?inproc ?name1 ?name2 ?person1 ?person2 }    TripleTableIterator        
+                FILTER ATOM ?name1 = ?name2                                               { ?article ?inproc ?name1 ?name2 ?person1 ?person2    -->    ?article ?inproc ?name1 ?name2 ?person1 ?person2 }    FilterAtomIterator         
+=================================
+Answering query from file:   q12b.sparql
+QUERY                                                                                                                                                                                                             QueryIterator              
+    DISTINCT                                                                                 {                                                  -->    }                                                          DistinctIteratorMemoryless 
+        PROJECT                                                                              {                                                  -->    }                                                                                     
+            CONJUNCTION                                                                      {                                                  -->    ?author ?document ?erdoes ?name | ?author2 ?document2 }    NestedIndexLoopJoinIterator
+                [?erdoes, <http://xmlns.com/foaf/0.1/name>, "Paul Erdoes"]                   {                                                  -->    ?erdoes }                                                  TripleTableIterator        
+                [?erdoes, rdf:type, <http://xmlns.com/foaf/0.1/Person>]                      { ?erdoes                                          -->    ?erdoes }                                                  TripleTableIterator        
+                DISJUNCTION                                                                  { ?erdoes                                          -->    ?author ?document ?erdoes ?name | ?author2 ?document2 }    UnionIterator              
+                    CONJUNCTION                                                              { ?erdoes                                          -->    ?author ?author2 ?document ?document2 ?erdoes ?name }      NestedIndexLoopJoinIterator
+                        [?document, <http://purl.org/dc/elements/1.1/creator>, ?erdoes]      { ?erdoes                                          -->    ?document ?erdoes }                                        TripleTableIterator        
+                        [?document, <http://purl.org/dc/elements/1.1/creator>, ?author]      { ?document ?erdoes                                -->    ?author ?document ?erdoes }                                TripleTableIterator        
+                        FILTER ATOM ?author != ?erdoes                                       { ?author ?document ?erdoes                        -->    ?author ?document ?erdoes }                                FilterAtomIterator         
+                        [?document2, <http://purl.org/dc/elements/1.1/creator>, ?author]     { ?author ?document ?erdoes                        -->    ?author ?document ?document2 ?erdoes }                     TripleTableIterator        
+                        FILTER ATOM ?document2 != ?document                                  { ?author ?document ?document2 ?erdoes             -->    ?author ?document ?document2 ?erdoes }                     FilterAtomIterator         
+                        [?document2, <http://purl.org/dc/elements/1.1/creator>, ?author2]    { ?author ?document ?document2 ?erdoes             -->    ?author ?author2 ?document ?document2 ?erdoes }            TripleTableIterator        
+                        FILTER ATOM ?author2 != ?erdoes                                      { ?author ?author2 ?document ?document2 ?erdoes    -->    ?author ?author2 ?document ?document2 ?erdoes }            FilterAtomIterator         
+                        FILTER ATOM ?author2 != ?author                                      { ?author ?author2 ?document ?document2 ?erdoes    -->    ?author ?author2 ?document ?document2 ?erdoes }            FilterAtomIterator         
+                        [?author2, <http://xmlns.com/foaf/0.1/name>, ?name]                  { ?author ?author2 ?document ?document2 ?erdoes    -->    ?author ?author2 ?document ?document2 ?erdoes ?name }      TripleTableIterator        
+                    CONJUNCTION                                                              { ?erdoes                                          -->    ?author ?document ?erdoes ?name }                          NestedIndexLoopJoinIterator
+                        [?document, <http://purl.org/dc/elements/1.1/creator>, ?erdoes]      { ?erdoes                                          -->    ?document ?erdoes }                                        TripleTableIterator        
+                        [?document, <http://purl.org/dc/elements/1.1/creator>, ?author]      { ?document ?erdoes                                -->    ?author ?document ?erdoes }                                TripleTableIterator        
+                        FILTER ATOM ?author != ?erdoes                                       { ?author ?document ?erdoes                        -->    ?author ?document ?erdoes }                                FilterAtomIterator         
+                        [?author, <http://xmlns.com/foaf/0.1/name>, ?name]                   { ?author ?document ?erdoes                        -->    ?author ?document ?erdoes ?name }                          TripleTableIterator        
+Query compilation time: 0.000000 s
+Number of returned tuples:   1
+Total number of answers:     1
+Statement compilation time:      0 s
+Total statement evaluation time: 0.006 s
+== QUERY EVALUATION STATISTICS ==
+     1 /      1    QUERY                                                                                                                                                                                                             QueryIterator              
+     1 /      1        DISTINCT                                                                                 {                                                  -->    }                                                          DistinctIteratorMemoryless 
+                           PROJECT                                                                              {                                                  -->    }                                                                                     
+     1 /  4,711                CONJUNCTION                                                                      {                                                  -->    ?author ?document ?erdoes ?name | ?author2 ?document2 }    NestedIndexLoopJoinIterator
+     1 /      1                    [?erdoes, <http://xmlns.com/foaf/0.1/name>, "Paul Erdoes"]                   {                                                  -->    ?erdoes }                                                  TripleTableIterator        
+     1 /      1                    [?erdoes, rdf:type, <http://xmlns.com/foaf/0.1/Person>]                      { ?erdoes                                          -->    ?erdoes }                                                  TripleTableIterator        
+     1 /  4,711                    DISJUNCTION                                                                  { ?erdoes                                          -->    ?author ?document ?erdoes ?name | ?author2 ?document2 }    UnionIterator              
+     1 /  3,923                        CONJUNCTION                                                              { ?erdoes                                          -->    ?author ?author2 ?document ?document2 ?erdoes ?name }      NestedIndexLoopJoinIterator
+     1 /    570                            [?document, <http://purl.org/dc/elements/1.1/creator>, ?erdoes]      { ?erdoes                                          -->    ?document ?erdoes }                                        TripleTableIterator        
+   570 /  1,358                            [?document, <http://purl.org/dc/elements/1.1/creator>, ?author]      { ?document ?erdoes                                -->    ?author ?document ?erdoes }                                TripleTableIterator        
+ 1,358 /    788                            FILTER ATOM ?author != ?erdoes                                       { ?author ?document ?erdoes                        -->    ?author ?document ?erdoes }                                FilterAtomIterator         
+   788 /  5,733                            [?document2, <http://purl.org/dc/elements/1.1/creator>, ?author]     { ?author ?document ?erdoes                        -->    ?author ?document ?document2 ?erdoes }                     TripleTableIterator        
+ 5,733 /  4,945                            FILTER ATOM ?document2 != ?document                                  { ?author ?document ?document2 ?erdoes             -->    ?author ?document ?document2 ?erdoes }                     FilterAtomIterator         
+ 4,945 / 11,554                            [?document2, <http://purl.org/dc/elements/1.1/creator>, ?author2]    { ?author ?document ?document2 ?erdoes             -->    ?author ?author2 ?document ?document2 ?erdoes }            TripleTableIterator        
+11,554 /  8,868                            FILTER ATOM ?author2 != ?erdoes                                      { ?author ?author2 ?document ?document2 ?erdoes    -->    ?author ?author2 ?document ?document2 ?erdoes }            FilterAtomIterator         
+ 8,868 /  3,923                            FILTER ATOM ?author2 != ?author                                      { ?author ?author2 ?document ?document2 ?erdoes    -->    ?author ?author2 ?document ?document2 ?erdoes }            FilterAtomIterator         
+ 3,923 /  3,923                            [?author2, <http://xmlns.com/foaf/0.1/name>, ?name]                  { ?author ?author2 ?document ?document2 ?erdoes    -->    ?author ?author2 ?document ?document2 ?erdoes ?name }      TripleTableIterator        
+     1 /    788                        CONJUNCTION                                                              { ?erdoes                                          -->    ?author ?document ?erdoes ?name }                          NestedIndexLoopJoinIterator
+     1 /    570                            [?document, <http://purl.org/dc/elements/1.1/creator>, ?erdoes]      { ?erdoes                                          -->    ?document ?erdoes }                                        TripleTableIterator        
+   570 /  1,358                            [?document, <http://purl.org/dc/elements/1.1/creator>, ?author]      { ?document ?erdoes                                -->    ?author ?document ?erdoes }                                TripleTableIterator        
+ 1,358 /    788                            FILTER ATOM ?author != ?erdoes                                       { ?author ?document ?erdoes                        -->    ?author ?document ?erdoes }                                FilterAtomIterator         
+   788 /    788                            [?author, <http://xmlns.com/foaf/0.1/name>, ?name]                   { ?author ?document ?erdoes                        -->    ?author ?document ?erdoes ?name }                          TripleTableIterator        
+=================================
+Answering query from file:   q12c.sparql
+QUERY                                                                                                                QueryIterator             
+    DISTINCT                                                                                        {    -->    }    DistinctIteratorMemoryless
+        [<http://localhost/persons/John_Q_Public>, rdf:type, <http://xmlns.com/foaf/0.1/Person>]    {    -->    }    TripleTableIterator       
+Query compilation time: 0.000000 s
+Number of returned tuples:   0
+Total number of answers:     0
+Statement compilation time:      0 s
+Total statement evaluation time: 0.003 s
+== QUERY EVALUATION STATISTICS ==
+1 / 0    QUERY                                                                                                                QueryIterator             
+1 / 0        DISTINCT                                                                                        {    -->    }    DistinctIteratorMemoryless
+1 / 0            [<http://localhost/persons/John_Q_Public>, rdf:type, <http://xmlns.com/foaf/0.1/Person>]    {    -->    }    TripleTableIterator       
+=================================
+***** End import on Tue Mar 15 09:07:45 UTC 2022 *****
+
