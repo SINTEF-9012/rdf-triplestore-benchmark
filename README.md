@@ -13,19 +13,6 @@ This work has been supported by several organizations:
 - [Ontotext](https://www.ontotext.com/)
 - [Oxford Semantic Technologies](https://www.oxfordsemantic.tech/)
 
-### 🏦 Funding
-This work has been funded by the following projects:
-|       **Project**      |  **No** |
-|:----------------------:|:-------:|
-| DataBench-Norway (NFR) | 310134  |
-| SkyTrack (NFR)         | 309714  |
-| VesselAI (EU H2020)    |  957237 |
-
-### :email: Contact
-- An Lam <an.lam@sintef.no>
-- Brian Elvesæter <brian.elvesater@sintef.no>
-- Francisco Martin-Recuerda <francisco.martin-recuerda@sintef.no>
-
 
 
 
