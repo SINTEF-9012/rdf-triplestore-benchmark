@@ -1,0 +1,16 @@
+# https://docs.oxfordsemantic.tech/getting-started.html
+
+# Data store option 'import.invalid-literal-policy' can be used to import the data despite these inconsistencies; please refer to the user manual for details.
+# https://docs.oxfordsemantic.tech/4.1/data-stores.html
+# https://docs.oxfordsemantic.tech/3.1/structure-of-information.html
+
+dstore create dataset type par-complex-nn import.invalid-literal-policy as-string
+active dataset
+
+import /input/dataset.nt.bz2
+
+set output out
+
+SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 100
+
+endpoint start

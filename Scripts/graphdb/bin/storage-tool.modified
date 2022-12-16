@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source "`dirname "$0"`/setvars.in.sh"
+
+call_java -Xmx64g -Xms64g com.ontotext.trree.util.convert.storage.StorageTool "$@"

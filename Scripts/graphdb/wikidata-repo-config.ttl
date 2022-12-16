@@ -1,0 +1,42 @@
+#
+# Configuration template for an GraphDB-EE repository
+#
+# See https://graphdb.ontotext.com/documentation/8.4/standard/configuring-a-repository.html for more details
+#
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rep: <http://www.openrdf.org/config/repository#>.
+@prefix sr: <http://www.openrdf.org/config/repository/sail#>.
+@prefix sail: <http://www.openrdf.org/config/sail#>.
+@prefix owlim: <http://www.ontotext.com/trree/owlim#>.
+
+[] a rep:Repository ;
+    rep:repositoryID "wikidata" ;
+    rdfs:label "Wikidata repository" ;
+    rep:repositoryImpl [
+        rep:repositoryType "owlim:ReplicationClusterWorker" ;
+        rep:delegate [
+            rep:repositoryType "owlim:MonitorRepository" ;
+            sr:sailImpl [
+                sail:sailType "owlimClusterWorker:Sail" ;
+
+                # entity index and id sizes
+                owlim:entity-index-size "150000000" ;
+                owlim:entity-id-size "40" ;
+                
+                # ruleset to use
+                owlim:ruleset "rdfsplus-optimized" ;
+
+                # disable context index (because my data do not uses contexts)
+                owlim:enable-context-index "false" ;
+
+                # indexes to speed up the read queries
+                owlim:enablePredicateList "true" ;
+                owlim:enable-literal-index "true" ;
+                owlim:in-memory-literal-properties "true" ;
+
+                # query timeout (in seconds)
+                owlim:query-timeout "300" ;
+                owlim:throw-QueryEvaluationException-on-timeout "true" ;
+            ]
+        ]
+    ].

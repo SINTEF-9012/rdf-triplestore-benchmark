@@ -1,0 +1,5 @@
+dstore create wikidata type par-complex-nw import.invalid-literal-policy as-string
+active wikidata
+import /input/latest-all.ttl.gz
+set output out
+export "/export/wikidata-export.ttl" "text/turtle"

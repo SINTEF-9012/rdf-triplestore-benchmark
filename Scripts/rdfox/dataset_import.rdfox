@@ -1,0 +1,5 @@
+dstore create dataset type par-complex-nw import.invalid-literal-policy as-string
+active dataset
+import /input/dataset.nt.gz
+set output out
+quit

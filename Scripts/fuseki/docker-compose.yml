@@ -1,0 +1,18 @@
+version: '3'
+services:
+  fuseki:
+    image: stain/jena-fuseki:4.0.0
+    container_name: fuseki
+    ports:
+      - "3030:3030"
+    volumes:
+      - /data/fuseki:/fuseki
+      - /input:/staging
+    env_file:
+      - ./fuseki.env
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "fuseki-log"

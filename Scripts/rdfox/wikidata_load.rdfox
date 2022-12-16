@@ -1,0 +1,7 @@
+active wikidata
+set output out
+set endpoint.query-time-limit 300
+set endpoint.allow-query-time-limit-override true
+endpoint start
+echo ***** End timestamp *****
+tstamp

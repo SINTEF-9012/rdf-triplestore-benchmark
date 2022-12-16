@@ -1,0 +1,1 @@
+https://wikidata-instance-1.cybqqkizomiw.eu-west-1.neptune.amazonaws.com:8182/sparql

@@ -26,18 +26,6 @@ Query_009.sparql,5,5,"{'select': 1, 'distinct': 1, 'where': 1, 'Order': 2}",Succ
 Query_010.sparql,5,7,"{'select': 1, 'distinct': 1, 'where': 1, 'PropertyPath': 2, 'Order': 2}",Success,0.000404,0.00039999999999999996,1.64046063991524e-05,0.0023209999999999997,0.002302,0.00012203642443503852,0,Empty Response
 Query_011.sparql,5,3,"{'select': 1, 'where': 1, 'limit': 1}",Success,0.00039249999999999995,0.0003905,1.781541155541709e-05,0.0017329000000000001,0.0017125,8.838859906370535e-05,200,
 Query_012.sparql,9,8,"{'select': 1, 'SetFunc': 1, 'as': 1, 'where': 1, 'groupby': 1, 'Order': 2, 'limit': 1}",Error,0.0003855,0.00038449999999999997,1.042699487974469e-05,0.0021319999999999998,0.002128,2.9253679730553178e-05,,"BAD QUERY (Groupby variable ?authorLabel is not groupable; in ../src/engine/GroupBy.cpp, line 283, function virtual void GroupBy::computeResult(ResultTable*))"
-Query_013.sparql,12,17,"{'select': 1, 'where': 1, 'PropertyPath': 2, 'optional': 3, 'filter': 3, 'bound': 1, 'TermFunc': 2, 'bind': 1, 'DateFunc': 1, 'as': 1, 'limit': 1}",Error,0.0003768,0.000374,1.4875781958905175e-05,0.0012147999999999998,0.0012165000000000001,2.880123454144134e-05,,"ParseException, cause: Unexpected input: BOUND(?date) && DATATYPE(?date) = xsd:dateTime).
-  # not in the future, and not more than 31 days ago
-  BIND(NOW() - ?date AS ?distance).
-  FILTER(0 <= ?distance && ?distance < 31).
-  # and get a label as well
-  OPTIONAL {
-    ?event rdfs:label ?eventLabel.
-    FILTER(LANG(?eventLabel) = ""en"").
-  }
-}
-# limit to 10 results so we don't timeout
-LIMIT 10"
 Query_014.sparql,5,5,"{'select': 1, 'SetFunc': 1, 'as': 1, 'where': 1, 'groupby': 1}",Error,0.0003844,0.00038199999999999996,9.45398211219896e-06,0.0015152,0.001498,6.766059086023083e-05,,"BAD QUERY (Groupby variable ?eyeColorLabel is not groupable; in ../src/engine/GroupBy.cpp, line 283, function virtual void GroupBy::computeResult(ResultTable*))"
 Query_016.sparql,2,2,"{'select': 1, 'where': 1}",Success,0.0003839,0.000383,1.1049886877249e-05,0.0015477,0.001544,9.223406215830578e-05,325,
 Query_017.sparql,7,7,"{'select': 1, 'distinct': 1, 'where': 1, 'filter': 2, 'in': 1, 'StringFunc': 1}",Error,0.0003806,0.0003835,1.0079682534683326e-05,0.0012207000000000001,0.001214,5.542773072509219e-05,,"ParseException, cause: Unexpected input: [ wikibase:wikiGroup ""wikipedia"" ] .
@@ -277,47 +265,6 @@ Query_108.sparql,8,7,"{'select': 1, 'where': 1, 'PropertyPath': 2, 'Order': 2, '
 Query_109.sparql,12,12,"{'select': 2, 'where': 2, 'SetFunc': 1, 'as': 1, 'PropertyPath': 4, 'groupby': 1, 'Order': 1}",Error,0.00038920000000000003,0.0003875,1.0379466909881906e-05,0.008085400000000001,0.0083465,0.0008919996512206594,,"CHECK FAILED (Variable could not be mapped to result column. Var: ?continentLabel; in ../src/engine/QueryExecutionTree.cpp, line 77, function size_t QueryExecutionTree::getVariableColumn(const string&) const)"
 Query_110.sparql,5,5,"{'select': 1, 'where': 1, 'PropertyPath': 2, 'optional': 1}",Success,0.00038899999999999997,0.00038500000000000003,2.0714997251052467e-05,0.0031271,0.0021255,0.0030716469143875678,77,
 Query_111.sparql,6,9,"{'select': 1, 'SetFunc': 1, 'as': 1, 'where': 1, 'PropertyPath': 1, 'groupby': 1, 'Order': 2, 'limit': 1}",Success,0.0003919,0.000387,1.9621133730977146e-05,0.0016493,0.001616,7.989444425128836e-05,10,
-Query_112.sparql,25,53,"{'select': 2, 'SetFunc': 11, 'as': 10, 'StringFunc': 5, 'DateFunc': 2, 'if': 3, 'bound': 1, 'where': 2, 'PropertyPath': 5, 'optional': 5, 'filter': 1, 'exists': 2, 'TermFunc': 3, 'groupby': 1}",Error,0.00041809999999999997,0.000415,1.0692157042534594e-05,0.0017176000000000001,0.001715,2.6584038653130052e-05,,"ParseException, cause: Unexpected input: CONCAT(SAMPLE(?sKey),"": "",STR(YEAR(SAMPLE(?s)))) AS ?start)
-       (CONCAT(SAMPLE(?eKey),"": "",STR(YEAR(SAMPLE(?e)))) AS ?end)
-       (SAMPLE(?article) AS ?article) (IF(BOUND(?article),CONCAT(?bridgeLabel,"" in Wikipedia""),1/0) AS ?articleLabel)
-WHERE {
-  {
-    SELECT ?bridge ?watercourse WHERE {
-      ?bridge wdt:P31/wdt:P279* wd:Q12280; wdt:P177 ?watercourse.
-      ?watercourse wdt:P31/wdt:P279* wd:Q355304.
-      # the following actually yields a perf penalty atm
-      #?bridge wdt:P17 wd:Q183.
-      #OPTIONAL { ?bridge wdt:P17 ?country. }. FILTER(!BOUND(?country) || ?country = wd:Q183).
-    }
-  }
-
-  # wd:Q1202, wd:Q183 work as well atm and take progressively more time to complete
-  ?bridge (p:P131|ps:P131)+ wd:Q24186.
-
-  OPTIONAL { ?bridge wdt:P625 ?loc. }.
-  OPTIONAL { ?bridge wdt:P18 ?pic. }.
-  OPTIONAL { ?bridge wdt:P571 ?s. }.
-  OPTIONAL { ?bridge wdt:P576 ?e. }.
-  
-  OPTIONAL {
-    ?article schema:about ?bridge.
-    FILTER (IF(EXISTS {?article schema:inLanguage ""[AUTO_LANGUAGE]"".},
-               SUBSTR(str(?article), 1, 25) = ""https://[AUTO_LANGUAGE].wikipedia.org/"",
-               IF(EXISTS {?article schema:inLanguage ""en"".},
-                  SUBSTR(str(?article), 1, 25) = ""https://en.wikipedia.org/"",
-                  SUBSTR(str(?article), 1, 25) = ""https://de.wikipedia.org/""
-               )
-            )).
-  }
-
-  #SERVICE wikibase:label { bd:serviceParam wikibase:language ""[AUTO_LANGUAGE],en,de"".
-#    ?bridge rdfs:label ?bridgeLabel.
-#    ?watercourse rdfs:label ?watercourseLabel.
-#    wd:P571 rdfs:label ?sKey.
-#    wd:P576 rdfs:label ?eKey.
-#  }
-}
-GROUP BY ?bridge ?watercourse"
 Query_113.sparql,12,5,"{'select': 1, 'distinct': 1, 'filter': 1, 'Order': 2}",Error,0.0003849,0.00038449999999999997,1.2206100478403773e-05,0.0011206,0.0011205,3.017799050816854e-05,,"ParseException, cause: Error in SELECT: unexpected token: {"
 Query_114.sparql,6,5,"{'select': 1, 'where': 1, 'filter': 1, 'Order': 2}",Success,0.0004091,0.000401,1.9421923465792756e-05,0.018411,0.0174265,0.006164839332861806,2407,
 Query_115.sparql,10,5,"{'select': 1, 'where': 1, 'filter': 1, 'Order': 2}",Error,0.0003866,0.0003865,1.4369721252998909e-05,0.0012803,0.0012845,4.730762212488712e-05,,"ParseException, cause: Unexpected input: a wikibase:BestRank .
@@ -528,7 +475,6 @@ Query_178.sparql,4,4,"{'select': 1, 'where': 1, 'optional': 2}",Error,0.0004639,
 Query_179.sparql,3,2,"{'select': 1, 'where': 1}",Success,0.0003862,0.0003855,8.56089299599573e-06,0.0021008,0.002071,7.800256406042044e-05,670,
 Query_180.sparql,15,12,"{'select': 1, 'distinct': 1, 'where': 1, 'values': 1, 'optional': 2, 'filter': 2, 'TermFunc': 2, 'Order': 2}",Success,0.00047829999999999997,0.000475,2.728471285455564e-05,0.0472737,0.047108,0.0006604695383672977,4,
 Query_181.sparql,4,5,"{'select': 1, 'SetFunc': 1, 'as': 1, 'where': 1, 'groupby': 1}",Error,0.0003858,0.000379,1.5389751279486116e-05,0.0015848999999999998,0.0015875,3.5334748399336926e-05,,"BAD QUERY (Groupby variable ?citationLabel is not groupable; in ../src/engine/GroupBy.cpp, line 283, function virtual void GroupBy::computeResult(ResultTable*))"
-Query_182.sparql,13,17,"{'select': 3, 'where': 3, 'distinct': 2, 'SetFunc': 2, 'as': 2, 'groupby': 2, 'optional': 1, 'Order': 2}",Error,0.00039820000000000003,0.00040050000000000003,1.1951754868823418e-05,0.0029728999999999997,0.0029905,8.658258742059186e-05,,"BAD QUERY (Groupby variable ?metabolites is not groupable; in ../src/engine/GroupBy.cpp, line 283, function virtual void GroupBy::computeResult(ResultTable*))"
 Query_183.sparql,9,13,"{'select': 1, 'SetFunc': 1, 'distinct': 1, 'as': 1, 'where': 1, 'values': 1, 'PropertyPath': 1, 'union': 1, 'optional': 2, 'groupby': 1, 'Order': 2}",Error,0.00038679999999999997,0.00038599999999999995,1.1745448290957458e-05,0.0032082,0.0031785,7.696434961143444e-05,,"BAD QUERY (Groupby variable ?pathwayLabel is not groupable; in ../src/engine/GroupBy.cpp, line 283, function virtual void GroupBy::computeResult(ResultTable*))"
 Query_184.sparql,14,8,"{'select': 1, 'distinct': 1, 'where': 1, 'values': 3, 'PropertyPath': 1, 'union': 1}",Error,0.0003995,0.000398,8.82232017857737e-06,0.0015716,0.001559,6.08699889564271e-05,,"BAD QUERY (Could not find a suitable execution tree. Likely cause: Queries that require joins of the full index with itself are not supported at the moment.; in ../src/engine/QueryPlanner.cpp, line 2287, function std::vector<std::vector<QueryPlanner::SubtreePlan> > QueryPlanner::fillDpTab(const QueryPlanner::TripleGraph&, const std::vector<SparqlFilter>&, const std::vector<std::vector<QueryPlanner::SubtreePlan> >&))"
 Query_185.sparql,4,4,"{'select': 1, 'distinct': 1, 'where': 1, 'values': 1}",Success,0.000393,0.0003905,1.376791761870892e-05,0.0017602,0.001732,9.202270251290052e-05,1,
@@ -592,10 +538,6 @@ Query_205.sparql,6,10,"{'select': 1, 'distinct': 1, 'SetFunc': 1, 'as': 1, 'wher
 Query_206.sparql,5,2,"{'select': 1, 'where': 1}",Success,0.0003883,0.0003865,1.2193349735727993e-05,0.0016841999999999998,0.001673,8.044846521566195e-05,26,
 Query_207.sparql,9,3,"{'select': 1, 'where': 1, 'limit': 1}",Success,0.00039370000000000003,0.0003895,2.012212712413875e-05,0.01234,0.012314,0.00012460782925286483,50,
 Query_208.sparql,9,12,"{'select': 1, 'SetFunc': 4, 'as': 4, 'where': 1, 'groupby': 1, 'Order': 1}",Success,0.00039610000000000003,0.00039150000000000003,1.4775730852388384e-05,0.0050427,0.0050349999999999995,0.00010806279038904479,118,
-Query_209.sparql,7,10,"{'select': 1, 'SetFunc': 1, 'as': 2, 'where': 1, 'optional': 1, 'bind': 1, 'if': 1, 'bound': 1, 'groupby': 1}",Error,0.0003854,0.000383,1.0511369505867865e-05,0.0013493,0.001337,6.306971451409065e-05,,"ParseException, cause: Unexpected input: IF(BOUND(?rgb),?rgb,""CCCCCC"") AS ?rgb).
-  #SERVICE wikibase:label { bd:serviceParam wikibase:language ""en"". }
-}
-GROUP BY ?rgb ?colorLabel"
 Query_210.sparql,8,5,"{'select': 1, 'where': 1, 'optional': 2, 'PropertyPath': 1}",Error,0.0006035000000000001,0.0003995,0.0005547199994391564,8.3095596,0.00049,26.273372003930913,,"Tried to allocate 42089MB, but only 21485MB  were available. Clear the cache or allow more memory for QLever during startup"
 Query_211.sparql,3,3,"{'select': 1, 'distinct': 1, 'where': 1}",Error,0.0004455,0.0004475,1.8727579187450322e-05,0.1523272,0.15258349999999998,0.002315662218699234,100000,
 Query_212.sparql,4,4,"{'select': 1, 'distinct': 1, 'where': 1, 'filter': 1}",Success,0.00039249999999999995,0.000389,1.8007714396274117e-05,0.0032254,0.0031964999999999997,0.00022273013067636592,838,
@@ -637,34 +579,6 @@ GROUP BY ?item ?itemLabel ?linkcount
 ORDER BY DESC(?linkcount)"
 Query_229.sparql,3,2,"{'select': 1, 'where': 1}",Success,0.0003947,0.000396,2.1969928943393924e-05,0.008499499999999998,0.0017634999999999999,0.021312226064710678,4,
 Query_230.sparql,7,7,"{'select': 1, 'SetFunc': 1, 'as': 1, 'where': 1, 'groupby': 1, 'Order': 2}",Error,0.00039890000000000005,0.000402,2.1532662528251282e-05,0.0018359000000000001,0.0018005,0.00011237383048458292,,"BAD QUERY (Groupby variable ?authorLabel is not groupable; in ../src/engine/GroupBy.cpp, line 283, function virtual void GroupBy::computeResult(ResultTable*))"
-Query_231.sparql,19,13,"{'select': 1, 'if': 1, 'bound': 1, 'as': 2, 'where': 1, 'PropertyPath': 2, 'optional': 1, 'bind': 1, 'filter': 1, 'Order': 2}",Error,0.0004084,0.00040899999999999997,1.176813022059531e-05,0.0011802,0.0011749999999999998,1.8641649903136576e-05,,"ParseException, cause: Unexpected input: IF(BOUND(?title), ?title, ?paperLabel) AS ?title)
-  # author labels (should be names) and their Erdos numbers
-  ?author1Label
-  ?erdos1
-  ?author2Label
-  ?erdos2
-  # distance between Erdos numbers
-  ?distance
-WHERE
-{
-  # paper, instance of or subclass of scientific article; also has two authors
-  ?paper wdt:P31/wdt:P279* wd:Q13442814;
-           wdt:P50 ?author1, ?author2.
-  # if it has a title, we’ll grab that as well, but it’s also okay if there’s no title
-  OPTIONAL { ?paper wdt:P1476 ?title. }
-  # grab Erdos numbers of the two authors
-  ?author1 wdt:P2021 ?erdos1.
-  ?author2 wdt:P2021 ?erdos2.
-  # introduce a new variable for the difference of the Erdos numbers
-  BIND(?erdos2 - ?erdos1 AS ?distance).
-  # select those cases where the distance is > 1
-  # (note: by *not* taking the absolute value of the distance, we avoid getting duplicated cases because the author variables might be swapped)
-  FILTER(?distance > 1).
-  # get *Label variables automagically
-  #SERVICE wikibase:label { bd:serviceParam wikibase:language ""en"". }
-}
-# sort by distance first (descending), then by first author, then by second author
-ORDER BY DESC(?distance) ?author1Label ?author2Label"
 Query_232.sparql,9,6,"{'select': 1, 'distinct': 1, 'where': 1, 'optional': 1, 'PropertyPath': 2}",Success,0.0004058,0.000397,2.6330379581177488e-05,0.0065931,0.00636,0.0006066998983572249,21,
 Query_233.sparql,4,3,"{'select': 1, 'distinct': 1, 'where': 1}",Error,0.00043819999999999997,0.000435,1.786865660560101e-05,0.1075566,0.105977,0.004452443004813319,100000,
 Query_234.sparql,5,8,"{'select': 1, 'SetFunc': 1, 'as': 1, 'PropertyPath': 2, 'groupby': 1, 'Order': 2}",Error,0.0003871,0.000377,2.1184113544509396e-05,0.0013813,0.001396,0.00010388888294711808,,"ParseException, cause: Error in SELECT: unexpected token: {"
@@ -771,7 +685,6 @@ WHERE
   #SERVICE wikibase:label { bd:serviceParam wikibase:language ""[AUTO_LANGUAGE],en"" }
 }"
 Query_262.sparql,6,3,"{'select': 1, 'where': 1, 'Order': 1}",Success,0.0003935,0.0003895,1.2677626837157736e-05,0.0038935999999999997,0.0038465,0.00015082160175371295,744,
-Query_263.sparql,8,6,"{'select': 1, 'filter': 2, 'bind': 1, 'DateFunc': 1, 'as': 1}",Error,0.0003861,0.000385,9.097618736057621e-06,0.0011591000000000001,0.00115,4.654854097248013e-05,,"ParseException, cause: Error in SELECT: unexpected token: {"
 Query_264.sparql,13,12,"{'select': 1, 'SetFunc': 1, 'distinct': 1, 'as': 1, 'values': 2, 'PropertyPath': 2, 'filter': 1, 'groupby': 1, 'Order': 2}",Error,0.0004196,0.00041600000000000003,1.5493367756703012e-05,0.0013861,0.001374,5.670870989343501e-05,,"ParseException, cause: Error in SELECT: unexpected token: {"
 Query_265.sparql,4,2,"{'select': 1, 'where': 1}",Success,0.00038510000000000004,0.000384,9.134184875145311e-06,0.0014538,0.0014675,6.1595093599698e-05,26,
 Query_266.sparql,8,7,"{'select': 1, 'where': 1, 'PropertyPath': 2, 'optional': 2, 'Order': 1}",Error,0.00039610000000000003,0.000392,1.3900039967968106e-05,0.0014297000000000001,0.001422,4.0483329902566066e-05,,"NOT YET IMPLEMENTED (The property path (<http://www.wikidata.org/prop/direct/P279>)* can evaluate to the empty path which is not yet supported.; in ../src/engine/QueryPlanner.cpp, line 1487, function std::vector<QueryPlanner::SubtreePlan> QueryPlanner::seedFromPropertyPathTriple(const SparqlTriple&))"
@@ -920,7 +833,6 @@ Query_297.sparql,6,3,"{'select': 1, 'where': 1, 'minus': 1}",Error,0.0003883,0.0
   
   #SERVICE wikibase:label { bd:serviceParam wikibase:language ""[AUTO_LANGUAGE],en"". }
 }"
-Query_298.sparql,7,2,"{'select': 1, 'filter': 1}",Error,0.0003784,0.000379,7.381658952355413e-06,0.0011623,0.001167,4.3685873638460714e-05,,"ParseException, cause: Error in SELECT: unexpected token: {"
 Query_299.sparql,6,3,"{'select': 1, 'where': 1, 'values': 1}",Success,0.00038500000000000003,0.00038100000000000005,1.7788885418835096e-05,0.0017678,0.0017560000000000002,5.8671969457314076e-05,41,
 Query_300.sparql,5,7,"{'select': 1, 'SetFunc': 1, 'as': 1, 'where': 1, 'groupby': 1, 'Order': 2}",Error,0.0003902,0.000387,1.731922502756852e-05,0.0014128,0.0014125,6.777380680534985e-05,,absl::container_internal::raw_hash_map<>::at
 Query_301.sparql,4,3,"{'select': 1, 'where': 1, 'PropertyPath': 1}",Success,0.00043490000000000005,0.00043,1.571588014999123e-05,0.0822961,0.082771,0.002117451006910589,23483,
@@ -1091,6 +1003,7 @@ Query_351.sparql,19,15,"{'select': 1, 'distinct': 1, 'where': 1, 'optional': 5, 
   ))
   #SERVICE wikibase:l"
 Query_352.sparql,6,6,"{'select': 1, 'distinct': 1, 'where': 1, 'filter': 1, 'optional': 1, 'Order': 1}",Error,0.0003941,0.00039,1.6010066277883488e-05,0.0015425,0.001527,5.4441099670500175e-05,,"CHECK FAILED (Variable could not be mapped to result column. Var: ?itemLabel; in ../src/engine/QueryExecutionTree.cpp, line 77, function size_t QueryExecutionTree::getVariableColumn(const string&) const)"
+Query_013.sparql,12,17,"{'select': 1, 'where': 1, 'PropertyPath': 2, 'optional': 3, 'filter': 3, 'bound': 1, 'TermFunc': 2, 'bind': 1, 'DateFunc': 1, 'as': 1, 'limit': 1}",,0.0003768,0.000374,1.4875781958905175e-05,0.0012147999999999998,0.0012165000000000001,2.880123454144134e-05,,
 Query_015.sparql,4,3,"{'select': 1, 'where': 1, 'filter': 1}",,0.0003744,0.0003745,1.0844353369380765e-05,0.0011624,0.0011485,5.227959023897903e-05,,
 Query_055.sparql,8,16,"{'select': 1, 'where': 1, 'PropertyPath': 3, 'optional': 2, 'bind': 2, 'StringFunc': 2, 'TermFunc': 1, 'as': 2, 'coalesce': 1, 'values': 1}",,0.0003846,0.00038449999999999997,3.502380143083641e-06,0.0012269,0.0012185,6.596034162029986e-05,,
 Query_068.sparql,8,7,"{'select': 1, 'distinct': 1, 'where': 1, 'PropertyPath': 2, 'filter': 1, 'Order': 1}",,0.00037989999999999996,0.0003835,1.0450412006763706e-05,0.0012052999999999999,0.001204,2.0683058015895265e-05,,
@@ -1101,5 +1014,11 @@ Query_102.sparql,14,23,"{'select': 3, 'as': 6, 'where': 3, 'SetFunc': 2, 'Proper
 Query_103.sparql,14,23,"{'select': 3, 'as': 6, 'where': 3, 'SetFunc': 2, 'PropertyPath': 4, 'groupby': 2, 'optional': 1, 'bind': 1, 'Order': 1}",,0.00039319999999999996,0.000393,5.5936471902408026e-06,0.0016359999999999999,0.0016315000000000001,4.566058353644735e-05,,
 Query_104.sparql,21,32,"{'select': 3, 'as': 7, 'where': 3, 'SetFunc': 2, 'PropertyPath': 4, 'groupby': 2, 'optional': 1, 'bind': 2, 'coalesce': 1, 'if': 6, 'Order': 1}",,0.000411,0.000407,1.9189117286165672e-05,0.0017363,0.00168,0.00013294531039324237,,
 Query_105.sparql,30,60,"{'select': 5, 'where': 5, 'SetFunc': 7, 'as': 15, 'StringFunc': 3, 'PropertyPath': 9, 'TermFunc': 1, 'if': 2, 'NumbericFunc': 3, 'groupby': 4, 'optional': 2, 'bind': 2, 'filter': 1, 'Order': 1}",,0.0004198,0.00041799999999999997,1.0601886624558847e-05,0.0017562,0.0017255,0.0001235509791318727,,
+Query_112.sparql,25,53,"{'select': 2, 'SetFunc': 11, 'as': 10, 'StringFunc': 5, 'DateFunc': 2, 'if': 3, 'bound': 1, 'where': 2, 'PropertyPath': 5, 'optional': 5, 'filter': 1, 'exists': 2, 'TermFunc': 3, 'groupby': 1}",,0.00041809999999999997,0.000415,1.0692157042534594e-05,0.0017176000000000001,0.001715,2.6584038653130052e-05,,
 Query_119.sparql,5,3,"{'select': 1, 'where': 1, 'filter': 1}",,0.00038409999999999996,0.00038250000000000003,1.1454741861391333e-05,0.0011972,0.001176,5.371695366558974e-05,,
 Query_125.sparql,6,6,"{'select': 1, 'where': 1, 'optional': 1, 'bind': 1, 'as': 1, 'Order': 1}",,0.0004021,0.000398,1.6795832816505406e-05,0.0013795,0.001363,6.823041029400959e-05,,
+Query_182.sparql,13,17,"{'select': 3, 'where': 3, 'distinct': 2, 'SetFunc': 2, 'as': 2, 'groupby': 2, 'optional': 1, 'Order': 2}",,0.00039820000000000003,0.00040050000000000003,1.1951754868823418e-05,0.0029728999999999997,0.0029905,8.658258742059186e-05,,
+Query_209.sparql,7,10,"{'select': 1, 'SetFunc': 1, 'as': 2, 'where': 1, 'optional': 1, 'bind': 1, 'if': 1, 'bound': 1, 'groupby': 1}",,0.0003854,0.000383,1.0511369505867865e-05,0.0013493,0.001337,6.306971451409065e-05,,
+Query_231.sparql,19,13,"{'select': 1, 'if': 1, 'bound': 1, 'as': 2, 'where': 1, 'PropertyPath': 2, 'optional': 1, 'bind': 1, 'filter': 1, 'Order': 2}",,0.0004084,0.00040899999999999997,1.176813022059531e-05,0.0011802,0.0011749999999999998,1.8641649903136576e-05,,
+Query_263.sparql,8,6,"{'select': 1, 'filter': 2, 'bind': 1, 'DateFunc': 1, 'as': 1}",,0.0003861,0.000385,9.097618736057621e-06,0.0011591000000000001,0.00115,4.654854097248013e-05,,
+Query_298.sparql,7,2,"{'select': 1, 'filter': 1}",,0.0003784,0.000379,7.381658952355413e-06,0.0011623,0.001167,4.3685873638460714e-05,,

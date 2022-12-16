@@ -11,7 +11,6 @@ Query_009.sparql,5,5,"{'select': 1, 'distinct': 1, 'where': 1, 'Order': 2}",Succ
 Query_010.sparql,5,7,"{'select': 1, 'distinct': 1, 'where': 1, 'PropertyPath': 2, 'Order': 2}",Timeout,,,,,,,,Query timed out
 Query_011.sparql,5,3,"{'select': 1, 'where': 1, 'limit': 1}",Success,0.0004151,0.00041,1.703884450959694e-05,0.0102544,0.010016500000000001,0.0020011284705274547,200,
 Query_012.sparql,9,8,"{'select': 1, 'SetFunc': 1, 'as': 1, 'where': 1, 'groupby': 1, 'Order': 2, 'limit': 1}",Timeout,0.0004641,0.00046699999999999997,1.4487159065109256e-05,33.5347723,8.289821,79.78661545713318,,Query timed out
-Query_013.sparql,12,17,"{'select': 1, 'where': 1, 'PropertyPath': 2, 'optional': 3, 'filter': 3, 'bound': 1, 'TermFunc': 2, 'bind': 1, 'DateFunc': 1, 'as': 1, 'limit': 1}",Timeout,,,,,,,,Query timed out
 Query_014.sparql,5,5,"{'select': 1, 'SetFunc': 1, 'as': 1, 'where': 1, 'groupby': 1}",Timeout,0.0005362,0.000469,0.00017201366224809007,300.0048022,300.004736,0.00047542160237346736,,Query timed out
 Query_016.sparql,2,2,"{'select': 1, 'where': 1}",Success,0.0004179,0.00041799999999999997,1.8999707600089236e-05,0.0061833,0.005555,0.0011544211680895905,325,
 Query_017.sparql,7,7,"{'select': 1, 'distinct': 1, 'where': 1, 'filter': 2, 'in': 1, 'StringFunc': 1}",Success,0.00044039999999999997,0.0004415,9.227976785599077e-06,0.0130329,0.013004499999999999,0.0009330526304079056,4,
@@ -99,7 +98,6 @@ Query_108.sparql,8,7,"{'select': 1, 'where': 1, 'PropertyPath': 2, 'Order': 2, '
 Query_109.sparql,12,12,"{'select': 2, 'where': 2, 'SetFunc': 1, 'as': 1, 'PropertyPath': 4, 'groupby': 1, 'Order': 1}",Error,,,,,,,,Parse error: Variable used when already in-scope: ?length in ((AGG ?.0 MAX(?length)) AS ?length)
 Query_110.sparql,5,5,"{'select': 1, 'where': 1, 'PropertyPath': 2, 'optional': 1}",Success,0.00044330000000000004,0.000447,1.3300375934536586e-05,2.8606645,2.8598995,0.010766750673046954,77,
 Query_111.sparql,6,9,"{'select': 1, 'SetFunc': 1, 'as': 1, 'where': 1, 'PropertyPath': 1, 'groupby': 1, 'Order': 2, 'limit': 1}",Success,0.00045630000000000003,0.00045450000000000004,1.422087667246058e-05,4.2555756,4.24896,0.12012897950971041,10,
-Query_112.sparql,25,53,"{'select': 2, 'SetFunc': 11, 'as': 10, 'StringFunc': 5, 'DateFunc': 2, 'if': 3, 'bound': 1, 'where': 2, 'PropertyPath': 5, 'optional': 5, 'filter': 1, 'exists': 2, 'TermFunc': 3, 'groupby': 1}",Error,,,,,,,,Parse error: Variable used when already in-scope: ?bridge in ((AGG ?.0 SAMPLE(?bridge)) AS ?bridge)
 Query_113.sparql,12,5,"{'select': 1, 'distinct': 1, 'filter': 1, 'Order': 2}",Success,0.0004158,0.00041200000000000004,1.934941859591652e-05,0.0195778,0.019334999999999998,0.0008646062430699631,210,
 Query_114.sparql,6,5,"{'select': 1, 'where': 1, 'filter': 1, 'Order': 2}",Success,0.0004516,0.000454,1.1057425860780924e-05,0.9766272,0.9753565,0.0038372545683368828,2379,
 Query_115.sparql,10,5,"{'select': 1, 'where': 1, 'filter': 1, 'Order': 2}",Timeout,,,,,,,,Query timed out
@@ -166,7 +164,6 @@ Query_178.sparql,4,4,"{'select': 1, 'where': 1, 'optional': 2}",Timeout,,,,,,,,#
 Query_179.sparql,3,2,"{'select': 1, 'where': 1}",Success,0.00044720000000000003,0.0004435,1.7561321134812153e-05,0.7084824000000001,0.7070935,0.00405100018376806,670,
 Query_180.sparql,15,12,"{'select': 1, 'distinct': 1, 'where': 1, 'values': 1, 'optional': 2, 'filter': 2, 'TermFunc': 2, 'Order': 2}",Timeout,,,,,,,,Query timed out
 Query_181.sparql,4,5,"{'select': 1, 'SetFunc': 1, 'as': 1, 'where': 1, 'groupby': 1}",Success,0.00042110000000000004,0.0004265,1.7116918206525618e-05,0.039698500000000005,0.0396475,0.0006140232080304499,3267,
-Query_182.sparql,13,17,"{'select': 3, 'where': 3, 'distinct': 2, 'SetFunc': 2, 'as': 2, 'groupby': 2, 'optional': 1, 'Order': 2}",Success,0.00045890000000000004,0.000458,1.2836146877730351e-05,10.8352623,10.8391745,0.02382235487496758,416,
 Query_183.sparql,9,13,"{'select': 1, 'SetFunc': 1, 'distinct': 1, 'as': 1, 'where': 1, 'values': 1, 'PropertyPath': 1, 'union': 1, 'optional': 2, 'groupby': 1, 'Order': 2}",Success,0.00045710000000000005,0.000459,1.3723054405715299e-05,9.6439434,9.641217999999999,0.019551332737750532,7796,
 Query_184.sparql,14,8,"{'select': 1, 'distinct': 1, 'where': 1, 'values': 3, 'PropertyPath': 1, 'union': 1}",Timeout,,,,,,,,Query timed out
 Query_185.sparql,4,4,"{'select': 1, 'distinct': 1, 'where': 1, 'values': 1}",Success,0.0003974,0.00039,1.53637379710943e-05,0.0028335,0.002627,0.000579655309453625,1,
@@ -193,7 +190,6 @@ Query_205.sparql,6,10,"{'select': 1, 'distinct': 1, 'SetFunc': 1, 'as': 1, 'wher
 Query_206.sparql,5,2,"{'select': 1, 'where': 1}",Success,0.000393,0.00038250000000000003,2.6579022638999437e-05,0.0050104,0.004626,0.0008967184867306152,26,
 Query_207.sparql,9,3,"{'select': 1, 'where': 1, 'limit': 1}",Success,0.0003899,0.000386,1.301665599658122e-05,0.007137500000000001,0.0077205,0.00108065671905765,50,
 Query_208.sparql,9,12,"{'select': 1, 'SetFunc': 4, 'as': 4, 'where': 1, 'groupby': 1, 'Order': 1}",Error,,,,,,,,Parse error: Variable used when already in-scope: ?symbol in ((AGG ?.0 SAMPLE(?symbol)) AS ?symbol)
-Query_209.sparql,7,10,"{'select': 1, 'SetFunc': 1, 'as': 2, 'where': 1, 'optional': 1, 'bind': 1, 'if': 1, 'bound': 1, 'groupby': 1}",Error,,,,,,,,"Parse error: BIND: Variable used when already in-scope: ?rgb in BIND(if(bound(?rgb), ?rgb, ""CCCCCC"") AS ?rgb)"
 Query_210.sparql,8,5,"{'select': 1, 'where': 1, 'optional': 2, 'PropertyPath': 1}",Timeout,0.00045509999999999995,0.0004485,2.2825181026420988e-05,19.667088,5.830476,43.744330285931255,,##  Query cancelled due to timeout during execution   ##
 Query_211.sparql,3,3,"{'select': 1, 'distinct': 1, 'where': 1}",Timeout,,,,,,,,##  Query cancelled due to timeout during execution   ##
 Query_212.sparql,4,4,"{'select': 1, 'distinct': 1, 'where': 1, 'filter': 1}",Timeout,0.0004586,0.0004625,1.4072826455422697e-05,20.8107217,5.0393965000000005,49.859920539661175,,##  Query cancelled due to timeout during execution   ##
@@ -214,7 +210,6 @@ Query_227.sparql,4,3,"{'select': 1, 'where': 1, 'values': 1}",Timeout,,,,,,,,## 
 Query_228.sparql,12,8,"{'select': 1, 'where': 1, 'filter': 2, 'notexists': 1, 'groupby': 1, 'Order': 2}",Timeout,,,,,,,,Query timed out
 Query_229.sparql,3,2,"{'select': 1, 'where': 1}",Success,0.000509,0.0005155,2.83156807754604e-05,0.026343299999999997,0.025663,0.005367478034939271,4,
 Query_230.sparql,7,7,"{'select': 1, 'SetFunc': 1, 'as': 1, 'where': 1, 'groupby': 1, 'Order': 2}",Timeout,,,,,,,,Query timed out
-Query_231.sparql,19,13,"{'select': 1, 'if': 1, 'bound': 1, 'as': 2, 'where': 1, 'PropertyPath': 2, 'optional': 1, 'bind': 1, 'filter': 1, 'Order': 2}",Error,,,,,,,,Parse error: Variable used when already in-scope: ?title in ((if (bound ?title) ?title ?paperLabel) AS ?title)
 Query_232.sparql,9,6,"{'select': 1, 'distinct': 1, 'where': 1, 'optional': 1, 'PropertyPath': 2}",Timeout,,,,,,,,##  Query cancelled due to timeout during execution   ##
 Query_233.sparql,4,3,"{'select': 1, 'distinct': 1, 'where': 1}",Timeout,,,,,,,,##  Query cancelled due to timeout during execution   ##
 Query_234.sparql,5,8,"{'select': 1, 'SetFunc': 1, 'as': 1, 'PropertyPath': 2, 'groupby': 1, 'Order': 2}",Error,,,,,,,,File is empty
@@ -244,7 +239,6 @@ Query_258.sparql,9,8,"{'select': 1, 'DateFunc': 2, 'as': 2, 'where': 1, 'filter'
 Query_259.sparql,5,4,"{'select': 1, 'where': 1, 'filter': 1, 'TermFunc': 1}",Success,0.00042119999999999994,0.0004225,1.5526321736543616e-05,0.0472931,0.0467775,0.0009035805873179082,1211,
 Query_261.sparql,11,12,"{'select': 1, 'StringFunc': 1, 'as': 1, 'where': 1, 'values': 1, 'optional': 5, 'PropertyPath': 2}",Success,0.00043309999999999996,0.000435,1.3633700076566801e-05,0.0384156,0.036865999999999996,0.005294272779775015,495,
 Query_262.sparql,6,3,"{'select': 1, 'where': 1, 'Order': 1}",Timeout,0.00046170000000000006,0.000459,2.0499593491904508e-05,118.66351970000001,24.3723925,130.25667419032538,,Query timed out
-Query_263.sparql,8,6,"{'select': 1, 'filter': 2, 'bind': 1, 'DateFunc': 1, 'as': 1}",Success,0.00046740000000000003,0.000468,1.733461533720575e-05,63.1803727,63.182025499999995,0.06664749159578909,0,Empty Response
 Query_264.sparql,13,12,"{'select': 1, 'SetFunc': 1, 'distinct': 1, 'as': 1, 'values': 2, 'PropertyPath': 2, 'filter': 1, 'groupby': 1, 'Order': 2}",Error,,,,,,,,File is empty
 Query_265.sparql,4,2,"{'select': 1, 'where': 1}",Success,0.0004,0.000387,3.32064250810994e-05,0.0037738,0.003717,0.0003228345981733954,26,
 Query_266.sparql,8,7,"{'select': 1, 'where': 1, 'PropertyPath': 2, 'optional': 2, 'Order': 1}",Success,0.00045599999999999997,0.000458,1.2849556844930921e-05,14.009982299999999,14.007825,0.012884286028165331,2,
@@ -279,7 +273,6 @@ Query_294.sparql,4,4,"{'select': 1, 'where': 1, 'PropertyPath': 2}",Success,0.00
 Query_295.sparql,10,20,"{'select': 1, 'SetFunc': 2, 'as': 4, 'distinct': 1, 'where': 1, 'bind': 2, 'DateFunc': 1, 'optional': 1, 'filter': 2, 'TermFunc': 1, 'notexists': 1, 'groupby': 1, 'Order': 2}",Success,0.0004631,0.00046350000000000004,1.9711530748382877e-05,0.48616469999999995,0.474202,0.030691485026342783,552,
 Query_296.sparql,5,6,"{'select': 1, 'distinct': 1, 'where': 1, 'PropertyPath': 2, 'filter': 1}",Timeout,,,,,,,,##  Query cancelled due to timeout during execution   ##
 Query_297.sparql,6,3,"{'select': 1, 'where': 1, 'minus': 1}",Timeout,0.0005719,0.000484,0.00021176110754023427,209.6220374,300.0049375,128.56040913382256,,##  Query cancelled due to timeout during execution   ##
-Query_298.sparql,7,2,"{'select': 1, 'filter': 1}",Success,0.00047559999999999996,0.0004725,1.7727567985109125e-05,8.9871292,8.990834,0.01605129476812837,0,Empty Response
 Query_299.sparql,6,3,"{'select': 1, 'where': 1, 'values': 1}",Success,0.0004241,0.0004205,2.0057971538074892e-05,0.0043888,0.004351000000000001,0.00018494972289787351,41,
 Query_300.sparql,5,7,"{'select': 1, 'SetFunc': 1, 'as': 1, 'where': 1, 'groupby': 1, 'Order': 2}",Success,0.000445,0.000446,1.1990737165736628e-05,0.008999799999999999,0.0085745,0.0013887106570084668,1,
 Query_301.sparql,4,3,"{'select': 1, 'where': 1, 'PropertyPath': 1}",Success,0.0004772,0.0004755,1.715808847162176e-05,1.1674279,1.1659735,0.0073636410747521305,23483,
@@ -338,3 +331,6 @@ Query_015.sparql,4,3,"{'select': 1, 'where': 1, 'filter': 1}",,0.000444199999999
 Query_055.sparql,8,16,"{'select': 1, 'where': 1, 'PropertyPath': 3, 'optional': 2, 'bind': 2, 'StringFunc': 2, 'TermFunc': 1, 'as': 2, 'coalesce': 1, 'values': 1}",,0.0004346,0.000429,1.5529183995160697e-05,0.060271,0.056764,0.01017064247943287,,
 Query_068.sparql,8,7,"{'select': 1, 'distinct': 1, 'where': 1, 'PropertyPath': 2, 'filter': 1, 'Order': 1}",,0.0004431,0.000446,1.4239616099694074e-05,0.0633312,0.0640905,0.0013787362006965355,,
 Query_119.sparql,5,3,"{'select': 1, 'where': 1, 'filter': 1}",,0.00045430000000000004,0.000456,2.0575335828229997e-05,0.1310702,0.13103199999999998,0.0006981845983214837,,
+Query_182.sparql,13,17,"{'select': 3, 'where': 3, 'distinct': 2, 'SetFunc': 2, 'as': 2, 'groupby': 2, 'optional': 1, 'Order': 2}",,0.00045890000000000004,0.000458,1.2836146877730351e-05,10.8352623,10.8391745,0.02382235487496758,,
+Query_263.sparql,8,6,"{'select': 1, 'filter': 2, 'bind': 1, 'DateFunc': 1, 'as': 1}",,0.00046740000000000003,0.000468,1.733461533720575e-05,63.1803727,63.182025499999995,0.06664749159578909,,
+Query_298.sparql,7,2,"{'select': 1, 'filter': 1}",,0.00047559999999999996,0.0004725,1.7727567985109125e-05,8.9871292,8.990834,0.01605129476812837,,
