@@ -3,9 +3,11 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6477753.svg)](https://doi.org/10.5281/zenodo.6477753)
 
 This repository contains analysis and supplementary infromation for the paper **Evaluation of a representative collection of SPARQL query engines**.
-Due to large files, all of the query results were uploaded to [Zenodo](https://doi.org/10.5281/zenodo.6477753).
 
-### Directory Description:
+
+### Repository Description:
+Due to large files, all of the **query results** were uploaded to [Zenodo](https://doi.org/10.5281/zenodo.6477753).
+
 | **Directory**   | **Description**                                                                                                                                       |
 |-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
 | AnalyzedResults | The combined results of all queries for each triplestores: query statistics, types (timeout, success, error), execution times, types of errors, etc.  |
