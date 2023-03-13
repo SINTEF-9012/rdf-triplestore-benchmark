@@ -17,15 +17,15 @@ Due to large files, all of the **query results** were uploaded to [Zenodo](https
 ### 🏦 Funding & Support
 This work has been funded by the following projects:
 
-|         **Project**         | **Grant Agreement No** |
-|-----------------------------|------------------------|
-| DataBench-Norway (NFR)      | 310134                 |
-| SkyTrack (NFR)              | 309714                 |
-| DataBench (EU 2020)         | 780966                 |
-| VesselAI (EU H2020)         | 957237                 |
-| Iliad (EU H2020)            | 101037643              |
-| enRichMyData(EU H2020)      | 101070284              |
-| Graph-Massivizer (EU H2020) | 101093202              |
+|       **Project**      | **Grant Agreement No** |
+|------------------------|------------------------|
+| DataBench-Norway (NFR) |         310134         |
+| SkyTrack (NFR)         |         309714         |
+| DataBench (EU 2020)    |         780966         |
+| VesselAI (EU H2020)    |         957237         |
+| Iliad (EU H2020)       |        101037643       |
+| enRichMyData (HEU)     |        101070284       |
+| Graph-Massivizer (HEU) |        101093202       |
 
 
 This work has been supported by several organizations:
