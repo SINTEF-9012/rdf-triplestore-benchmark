@@ -18,7 +18,7 @@ Due to large files, all of the **query results** were uploaded to [Zenodo](https
 This work has been funded by the following projects:
 
 |         **Project**         | **Grant Agreement No** |
-|:---------------------------:|:----------------------:|
+|-----------------------------|------------------------|
 | DataBench-Norway (NFR)      | 310134                 |
 | SkyTrack (NFR)              | 309714                 |
 | DataBench (EU 2020)         | 780966                 |
