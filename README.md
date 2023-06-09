@@ -26,11 +26,24 @@ This work has been funded by the following projects:
 | Iliad (EU H2020)       |        101037643       |
 | enRichMyData (HEU)     |        101070284       |
 | Graph-Massivizer (HEU) |        101093202       |
+| Circular TwAIn (HEU)   |        101058585       |
 
 
 This work has been supported by several organizations:
 - [Ontotext](https://www.ontotext.com/)
 - [Oxford Semantic Technologies](https://www.oxfordsemantic.tech/)
+
+### 📖 Citation
+```bibtex
+@inproceedings{lam2023evaluation,
+  title={Evaluation of a Representative Selection of SPARQL Query Engines Using Wikidata},
+  author={Lam, An Ngoc and Elves{\ae}ter, Brian and Martin-Recuerda, Francisco},
+  booktitle={The Semantic Web: 20th International Conference, ESWC 2023, Hersonissos, Crete, Greece, May 28--June 1, 2023, Proceedings},
+  pages={679--696},
+  year={2023},
+  organization={Springer}
+}
+```
 
 ### :email: Contact
 - An Lam <an.lam@sintef.no>
